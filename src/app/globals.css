@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 171 100% 28%; /* Emerald/Teal representation of trust & blockchain */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 171 100% 15%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 171 100% 28%;
+    --radius: 0.5rem;
+    --app-font-scale: 100;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 210 40% 98%;
+    --card: 224 71% 7%;
+    --card-foreground: 210 40% 98%;
+    --popover: 224 71% 5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 171 100% 38%; /* Cyber Emerald Teal */
+    --primary-foreground: 224 71% 4%;
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222.2 47.4% 11.2%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 171 100% 88%;
+    --accent-foreground: 224 71% 4%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222.2 47.4% 18%;
+    --input: 222.2 47.4% 18%;
+    --ring: 171 100% 38%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: calc(16px * var(--app-font-scale, 100) / 100);
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-200 font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-variant-ligatures: contextual;
+    font-variant-ligatures: contextual;
+    line-height: 1.45;
+  }
+
+  /* Heading scale and typographic rhythm */
+  h1 { @apply text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4 font-serif; }
+  h2 { @apply text-2xl md:text-3xl font-bold tracking-tight leading-snug mb-3 font-serif; }
+  h3 { @apply text-xl md:text-2xl font-semibold mb-2; }
+  h4 { @apply text-lg font-medium mb-2; }
+  h5 { @apply text-base font-medium mb-1; }
+  h6 { @apply text-sm font-medium text-muted-foreground mb-1; }
+
+  /* Utility font-size helpers retained */
+  .text-sz-sm { font-size: 0.875rem; }
+  .text-sz-base { font-size: 1rem; }
+  .text-sz-lg { font-size: 1.125rem; }
+
+  /* Glassmorphism utility */
+  .glass {
+    background-color: rgba(255,255,255,0.6);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  /* Card base */
+  .card {
+    @apply rounded-lg bg-card p-4 shadow-md;
+  }
+}
+
+/* Custom styles for terminal and blockchain pulsing */
+.blockchain-terminal {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2dd4bf;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #14b8a6;
+}
