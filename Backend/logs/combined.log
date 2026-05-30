@@ -1,0 +1,56 @@
+{"error":{"clientVersion":"5.22.0","errorCode":"P1001","name":"PrismaClientInitializationError"},"level":"error","message":"❌ Failed to start server","timestamp":"2026-05-30T13:34:42.710Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T14:05:57.530Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-30T14:05:57.544Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-30T14:05:57.546Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-30T14:05:57.548Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-30T14:05:57.549Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-30T14:05:57.551Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-30T14:05:57.552Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-30T14:05:57.553Z"}
+{"ip":"::1","level":"debug","message":"GET /api/health","timestamp":"2026-05-30T14:06:30.141Z","userAgent":"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8457"}
+{"error":{"clientVersion":"5.22.0","errorCode":"P1001","name":"PrismaClientInitializationError"},"level":"error","message":"❌ Failed to start server","timestamp":"2026-05-30T16:02:07.737Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T20:50:49.849Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-30T20:50:49.870Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-30T20:50:49.871Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-30T20:50:49.871Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-30T20:50:49.872Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-30T20:50:49.872Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-30T20:50:49.873Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-30T20:50:49.873Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T20:55:28.520Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-30T20:55:28.535Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-30T20:55:28.535Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-30T20:55:28.535Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-30T20:55:28.536Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-30T20:55:28.536Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-30T20:55:28.536Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-30T20:55:28.537Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T21:40:59.366Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T21:42:31.177Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-30T21:42:31.189Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-30T21:42:31.191Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-30T21:42:31.192Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-30T21:42:31.193Z"}
+{"level":"info","message":"   Blockchain Mode: 🟢 LIVE","timestamp":"2026-05-30T21:42:31.195Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-30T21:42:31.195Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-30T21:42:31.196Z"}
+{"ip":"::1","level":"debug","message":"GET /api/health","timestamp":"2026-05-30T21:42:52.581Z","userAgent":"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8457"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T21:45:07.413Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T21:50:32.587Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T21:51:16.684Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-30T21:51:16.691Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-30T21:51:16.692Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-30T21:51:16.692Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-30T21:51:16.693Z"}
+{"level":"info","message":"   Blockchain Mode: 🟢 LIVE","timestamp":"2026-05-30T21:51:16.693Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-30T21:51:16.694Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-30T21:51:16.694Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T21:54:21.762Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-30T22:44:17.323Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-30T22:44:17.344Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-30T22:44:17.346Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-30T22:44:17.347Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-30T22:44:17.348Z"}
+{"level":"info","message":"   Blockchain Mode: 🟢 LIVE","timestamp":"2026-05-30T22:44:17.349Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-30T22:44:17.350Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-30T22:44:17.351Z"}

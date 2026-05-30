@@ -1,0 +1,2 @@
+{"error":{"clientVersion":"5.22.0","errorCode":"P1001","name":"PrismaClientInitializationError"},"level":"error","message":"❌ Failed to start server","timestamp":"2026-05-30T13:34:42.709Z"}
+{"error":{"clientVersion":"5.22.0","errorCode":"P1001","name":"PrismaClientInitializationError"},"level":"error","message":"❌ Failed to start server","timestamp":"2026-05-30T16:02:07.724Z"}

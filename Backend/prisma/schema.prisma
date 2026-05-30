@@ -1,0 +1,352 @@
+// ============================================================
+// Decentralized TenderChain - Prisma Schema (PostgreSQL)
+// Blockchain-Based Transparent E-Procurement & Tender Management
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- Enums ---
+
+enum UserRole {
+  officer
+  vendor
+  public
+}
+
+enum KYCStatus {
+  Pending
+  UnderReview
+  Approved
+  Rejected
+}
+
+enum TenderStatus {
+  Draft
+  Open
+  Closed
+  UnderEvaluation
+  Awarded
+  Cancelled
+}
+
+enum BidStatus {
+  Submitted
+  Revealed
+  Evaluated
+  Withdrawn
+}
+
+enum NotificationCategory {
+  tender
+  bid
+  kyc
+  system
+}
+
+enum TxType {
+  TENDER_PUBLISHED
+  BID_SUBMITTED
+  SMART_CONTRACT_EXECUTED
+  WINNER_DECLARED
+  WALLET_CONNECTED
+  KYC_APPROVED
+}
+
+enum TxStatus {
+  success
+  pending
+  failed
+}
+
+enum AuditIconType {
+  created
+  published
+  bid_submitted
+  evaluation
+  completed
+}
+
+enum DisputeStatus {
+  Open
+  UnderReview
+  Resolved
+  Dismissed
+}
+
+enum NewsCategory {
+  Announcement
+  Reform
+  Ministry
+  Blockchain
+}
+
+// --- Core Tables ---
+
+/// Registered users of the TenderChain system (Officers, Vendors, Public)
+model User {
+  id             String    @id @default(cuid())
+  name           String
+  email          String    @unique
+  mobile         String?
+  passwordHash   String?
+  role           UserRole  @default(public)
+  walletAddress  String?   @unique
+  kycStatus      KYCStatus @default(Pending)
+  
+  // Vendor-specific fields
+  companyName    String?
+  regNumber      String?
+  pan            String?
+  gst            String?
+  turnover       String?
+  itrYears       String?   // JSON array stored as string
+  solvencyCertificate String?
+  experienceScore Float?
+  
+  // Officer-specific fields
+  designation    String?
+  ministry       String?
+  ministryCode   String?
+  permissions    String?   // JSON array stored as string
+
+  // Metadata
+  deviceInfo     String?
+  ipAddress      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  tenders        Tender[]
+  bids           Bid[]
+  notifications  Notification[]
+  disputes       Dispute[]
+  refreshTokens  RefreshToken[]
+  nonces         Nonce[]
+  auditLogs      AuditLog[]
+  transactions   BlockchainTx[]
+  vendorProfiles VendorProfile[]
+
+  @@map("users")
+}
+
+/// Refresh tokens for JWT token rotation
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+/// Nonces for MetaMask wallet signature verification
+model Nonce {
+  id            String   @id @default(cuid())
+  walletAddress String
+  nonce         String
+  expiresAt     DateTime
+  used          Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+
+  @@map("nonces")
+}
+
+/// Tenders created by government officers
+model Tender {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  ipfsHash    String?
+  budget      Float
+  deadline    DateTime
+  status      TenderStatus @default(Draft)
+  ministry    String?
+  msmeQuota   Boolean      @default(false)
+  criteria    String?      // JSON array
+  minScore    Float?       @default(0)
+
+  // Blockchain
+  txHash      String?
+  blockNumber Int?
+
+  // Winner info
+  winnerAddress String?
+  winnerPrice   Float?
+  winnerName    String?
+
+  // Relations
+  officerId     String
+  officer       User      @relation(fields: [officerId], references: [id])
+  bids          Bid[]
+  tenderFiles   TenderFile[]
+  auditLogs     AuditLog[]
+  disputes      Dispute[]
+  transactions  BlockchainTx[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("tenders")
+}
+
+/// IPFS file attachments for tenders
+model TenderFile {
+  id         String   @id @default(cuid())
+  name       String
+  size       String
+  hash       String
+  uploadedAt DateTime @default(now())
+  tenderId   String
+  tender     Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+
+  @@map("tender_files")
+}
+
+/// Bids submitted by vendors for tenders
+model Bid {
+  id         String    @id @default(cuid())
+  price      Float?
+  
+  // Encrypted bid data (commit-reveal scheme)
+  encryptedBidHash String?
+  bidHash     String?   // SHA3-256 hash of bid parameters
+  
+  // Revealed scoring parameters (0-100 each)
+  priceScore         Float?
+  financialStrength  Float?
+  pastExperience     Float?
+  performanceFeedback Float?
+  technicalCapability Float?
+  compliance         Float?
+  proposalQuality    Float?
+  totalScore         Float?   // Weighted total score
+  
+  status     BidStatus @default(Submitted)
+
+  // Blockchain
+  txHash     String?
+  blockNumber Int?
+
+  // Relations
+  tenderId   String
+  tender     Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  vendorId   String
+  vendor     User     @relation(fields: [vendorId], references: [id])
+
+  submittedAt DateTime @default(now())
+  revealedAt  DateTime?
+  
+  @@map("bids")
+}
+
+/// Vendor profile documents and credentials
+model VendorProfile {
+  id          String   @id @default(cuid())
+  documentsIpfs String? // Comma-separated IPFS hashes
+  turnover    Float?
+  experienceScore Float?
+  feedback    String?
+  
+  vendorId    String   @unique
+  vendor      User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("vendor_profiles")
+}
+
+/// Immutable audit trail for tender lifecycle
+model AuditLog {
+  id          String        @id @default(cuid())
+  title       String
+  description String
+  timestamp   DateTime      @default(now())
+  txHash      String?
+  iconType    AuditIconType @default(created)
+  
+  tenderId    String
+  tender      Tender        @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?         @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+/// User notifications
+model Notification {
+  id         String             @id @default(cuid())
+  title      String
+  message    String
+  category   NotificationCategory @default(system)
+  read       Boolean            @default(false)
+  actionUrl  String?
+  
+  userId     String
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt  DateTime           @default(now())
+
+  @@map("notifications")
+}
+
+/// On-chain blockchain transactions
+model BlockchainTx {
+  id            String   @id @default(cuid())
+  txHash        String   @unique
+  blockNumber   Int?
+  gasFee        Float?
+  timestamp     DateTime @default(now())
+  walletAddress String
+  type          TxType
+  status        TxStatus @default(pending)
+  metadata      String?  // JSON string for flexible metadata storage
+
+  tenderId      String?
+  tender        Tender?  @relation(fields: [tenderId], references: [id])
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+
+  @@map("blockchain_txs")
+}
+
+/// Disputes raised by vendors or public
+model Dispute {
+  id        String        @id @default(cuid())
+  text      String
+  status    DisputeStatus @default(Open)
+  
+  tenderId  String
+  tender    Tender        @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("disputes")
+}
+
+/// Live news feed items
+model NewsFeed {
+  id        String       @id @default(cuid())
+  title     String
+  source    String
+  timestamp DateTime     @default(now())
+  category  NewsCategory @default(Announcement)
+  url       String?
+
+  @@map("news_feed")
+}
