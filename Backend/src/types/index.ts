@@ -17,7 +17,7 @@ export interface AuthRequest extends Request {
 
 // --- User ---
 
-export type UserRole = "officer" | "vendor" | "public";
+export type UserRole = "officer" | "vendor";
 export type KYCStatus = "Pending" | "UnderReview" | "Approved" | "Rejected";
 
 export interface IUserProfile {

@@ -61,7 +61,44 @@ export const refreshTokenSchema = z.object({
   refreshToken: z.string().min(1, "Refresh token is required"),
 });
 
+/**
+ * Send OTP schema.
+ */
+export const sendOtpSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  type: z.enum(["VERIFY_EMAIL", "FORGOT_PASSWORD"]).default("VERIFY_EMAIL"),
+});
+
+/**
+ * Verify OTP schema.
+ */
+export const verifyOtpSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  otp: z.string().length(6, "OTP must be 6 digits"),
+  type: z.enum(["VERIFY_EMAIL", "FORGOT_PASSWORD"]).default("VERIFY_EMAIL"),
+});
+
+/**
+ * Forgot password schema.
+ */
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+/**
+ * Reset password schema.
+ */
+export const resetPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  otp: z.string().length(6, "OTP must be 6 digits"),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type NonceRequestInput = z.infer<typeof nonceRequestSchema>;
 export type MetaMaskLoginInput = z.infer<typeof metamaskLoginSchema>;
+export type SendOtpInput = z.infer<typeof sendOtpSchema>;
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

@@ -8,12 +8,30 @@ import * as uploadController from "../controllers/upload.controller";
 import { authenticate } from "../middleware/auth";
 import multer from "multer";
 import path from "path";
+import os from "os";
+import fs from "fs";
 
 const router = Router();
 
-// Configure multer for file uploads
+// Ensure temp directory exists
+const tempDir = path.join(os.tmpdir(), "tenderchain-uploads");
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
+// Configure multer for file uploads - use diskStorage for file.path compatibility
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, tempDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB
   },
@@ -33,7 +51,7 @@ const upload = multer({
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(null, false);
+      cb(new Error("File type not allowed. Allowed: PDF, DOC, DOCX, XLS, XLSX, JPEG, PNG, GIF") as any, false);
     }
   },
 });

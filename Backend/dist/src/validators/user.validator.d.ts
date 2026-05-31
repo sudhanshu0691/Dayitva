@@ -62,11 +62,11 @@ export declare const createDisputeSchema: z.ZodObject<{
     tenderId: z.ZodString;
     text: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    tenderId: string;
     text: string;
+    tenderId: string;
 }, {
-    tenderId: string;
     text: string;
+    tenderId: string;
 }>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type KYCVerificationInput = z.infer<typeof kycVerificationSchema>;

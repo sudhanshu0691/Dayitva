@@ -86,5 +86,38 @@ router.post("/logout", auth_1.authenticate, authController.logout);
  * Get current user profile. Requires authentication.
  */
 router.get("/me", auth_1.authenticate, authController.getMe);
+// ============================================================
+// OTP & Email Verification Routes
+// ============================================================
+/**
+ * POST /api/auth/send-otp
+ * Send OTP to email for verification.
+ * Body: { email, type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" }
+ */
+router.post("/send-otp", (0, validate_1.validate)(auth_validator_1.sendOtpSchema), authController.sendOtpHandler);
+/**
+ * POST /api/auth/verify-otp
+ * Verify OTP code.
+ * Body: { email, otp, type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" }
+ */
+router.post("/verify-otp", (0, validate_1.validate)(auth_validator_1.verifyOtpSchema), authController.verifyOtpHandler);
+/**
+ * POST /api/auth/resend-otp
+ * Resend OTP with 30s cooldown.
+ * Body: { email, type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" }
+ */
+router.post("/resend-otp", (0, validate_1.validate)(auth_validator_1.sendOtpSchema), authController.resendOtpHandler);
+/**
+ * POST /api/auth/forgot-password
+ * Send password reset OTP to email.
+ * Body: { email }
+ */
+router.post("/forgot-password", (0, validate_1.validate)(auth_validator_1.forgotPasswordSchema), authController.forgotPasswordHandler);
+/**
+ * POST /api/auth/reset-password
+ * Reset password using OTP.
+ * Body: { email, otp, newPassword }
+ */
+router.post("/reset-password", (0, validate_1.validate)(auth_validator_1.resetPasswordSchema), authController.resetPasswordHandler);
 exports.default = router;
 //# sourceMappingURL=auth.routes.js.map

@@ -14,11 +14,11 @@ export declare function createDispute(tenderId: string, userId: string, text: st
 } & {
     userId: string;
     status: import(".prisma/client").$Enums.DisputeStatus;
+    text: string;
     id: string;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
-    text: string;
 }>;
 /**
  * Get dispute by ID
@@ -38,11 +38,11 @@ export declare function getDisputeById(disputeId: string): Promise<{
 } & {
     userId: string;
     status: import(".prisma/client").$Enums.DisputeStatus;
+    text: string;
     id: string;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
-    text: string;
 }>;
 /**
  * Get disputes for a tender
@@ -56,11 +56,11 @@ export declare function getDisputesByTender(tenderId: string): Promise<({
 } & {
     userId: string;
     status: import(".prisma/client").$Enums.DisputeStatus;
+    text: string;
     id: string;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
-    text: string;
 })[]>;
 /**
  * Update dispute status
@@ -77,11 +77,11 @@ export declare function updateDisputeStatus(disputeId: string, status: string, r
 } & {
     userId: string;
     status: import(".prisma/client").$Enums.DisputeStatus;
+    text: string;
     id: string;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
-    text: string;
 }>;
 /**
  * List disputes with filters
@@ -100,11 +100,11 @@ export declare function listDisputes(query: any): Promise<{
     } & {
         userId: string;
         status: import(".prisma/client").$Enums.DisputeStatus;
+        text: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         tenderId: string;
-        text: string;
     })[];
     pagination: {
         page: number;

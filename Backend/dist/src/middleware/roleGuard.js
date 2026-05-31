@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authorize = authorize;
 exports.isOfficer = isOfficer;
 exports.isVendor = isVendor;
-exports.isPublic = isPublic;
 const errorHandler_1 = require("./errorHandler");
 /**
  * Role guard middleware factory.
@@ -45,11 +44,5 @@ function isOfficer(req, _res, next) {
  */
 function isVendor(req, _res, next) {
     authorize("vendor")(req, _res, next);
-}
-/**
- * Check if the request user is a public/citizen/auditor.
- */
-function isPublic(req, _res, next) {
-    authorize("public")(req, _res, next);
 }
 //# sourceMappingURL=roleGuard.js.map

@@ -14,6 +14,10 @@ import {
   nonceRequestSchema,
   metamaskLoginSchema,
   refreshTokenSchema,
+  sendOtpSchema,
+  verifyOtpSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
 } from "../validators/auth.validator";
 
 const router = Router();
@@ -67,5 +71,44 @@ router.post("/logout", authenticate, authController.logout);
  * Get current user profile. Requires authentication.
  */
 router.get("/me", authenticate, authController.getMe);
+
+// ============================================================
+// OTP & Email Verification Routes
+// ============================================================
+
+/**
+ * POST /api/auth/send-otp
+ * Send OTP to email for verification.
+ * Body: { email, type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" }
+ */
+router.post("/send-otp", validate(sendOtpSchema), authController.sendOtpHandler);
+
+/**
+ * POST /api/auth/verify-otp
+ * Verify OTP code.
+ * Body: { email, otp, type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" }
+ */
+router.post("/verify-otp", validate(verifyOtpSchema), authController.verifyOtpHandler);
+
+/**
+ * POST /api/auth/resend-otp
+ * Resend OTP with 30s cooldown.
+ * Body: { email, type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" }
+ */
+router.post("/resend-otp", validate(sendOtpSchema), authController.resendOtpHandler);
+
+/**
+ * POST /api/auth/forgot-password
+ * Send password reset OTP to email.
+ * Body: { email }
+ */
+router.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPasswordHandler);
+
+/**
+ * POST /api/auth/reset-password
+ * Reset password using OTP.
+ * Body: { email, otp, newPassword }
+ */
+router.post("/reset-password", validate(resetPasswordSchema), authController.resetPasswordHandler);
 
 export default router;

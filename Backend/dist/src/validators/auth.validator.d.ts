@@ -100,8 +100,67 @@ export declare const refreshTokenSchema: z.ZodObject<{
 }, {
     refreshToken: string;
 }>;
+/**
+ * Send OTP schema.
+ */
+export declare const sendOtpSchema: z.ZodObject<{
+    email: z.ZodString;
+    type: z.ZodDefault<z.ZodEnum<["VERIFY_EMAIL", "FORGOT_PASSWORD"]>>;
+}, "strip", z.ZodTypeAny, {
+    email: string;
+    type: "VERIFY_EMAIL" | "FORGOT_PASSWORD";
+}, {
+    email: string;
+    type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" | undefined;
+}>;
+/**
+ * Verify OTP schema.
+ */
+export declare const verifyOtpSchema: z.ZodObject<{
+    email: z.ZodString;
+    otp: z.ZodString;
+    type: z.ZodDefault<z.ZodEnum<["VERIFY_EMAIL", "FORGOT_PASSWORD"]>>;
+}, "strip", z.ZodTypeAny, {
+    otp: string;
+    email: string;
+    type: "VERIFY_EMAIL" | "FORGOT_PASSWORD";
+}, {
+    otp: string;
+    email: string;
+    type?: "VERIFY_EMAIL" | "FORGOT_PASSWORD" | undefined;
+}>;
+/**
+ * Forgot password schema.
+ */
+export declare const forgotPasswordSchema: z.ZodObject<{
+    email: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    email: string;
+}, {
+    email: string;
+}>;
+/**
+ * Reset password schema.
+ */
+export declare const resetPasswordSchema: z.ZodObject<{
+    email: z.ZodString;
+    otp: z.ZodString;
+    newPassword: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    otp: string;
+    email: string;
+    newPassword: string;
+}, {
+    otp: string;
+    email: string;
+    newPassword: string;
+}>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type NonceRequestInput = z.infer<typeof nonceRequestSchema>;
 export type MetaMaskLoginInput = z.infer<typeof metamaskLoginSchema>;
+export type SendOtpInput = z.infer<typeof sendOtpSchema>;
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 //# sourceMappingURL=auth.validator.d.ts.map

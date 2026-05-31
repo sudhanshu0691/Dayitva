@@ -11,8 +11,12 @@ export declare const env: {
     readonly PINATA_SECRET_KEY: string;
     readonly AWS_ACCESS_KEY_ID: string;
     readonly AWS_SECRET_ACCESS_KEY: string;
+    readonly AWS_SESSION_TOKEN: string;
     readonly AWS_REGION: string;
     readonly AWS_S3_BUCKET: string;
+    readonly AWS_S3_ENDPOINT: string;
+    readonly AWS_S3_PUBLIC_URL: string;
+    readonly AWS_S3_FORCE_PATH_STYLE: boolean;
     readonly ETH_RPC_URL: string;
     readonly ETH_CHAIN_ID: number;
     readonly CONTRACT_ADDRESS: string;
@@ -20,6 +24,12 @@ export declare const env: {
     readonly VENDOR_PRIVATE_KEY: string;
     readonly BLOCKCHAIN_SIMULATION_MODE: boolean;
     readonly SOCKET_CORS_ORIGIN: string;
+    readonly EMAIL_HOST: string;
+    readonly EMAIL_PORT: number;
+    readonly EMAIL_USER: string;
+    readonly EMAIL_PASS: string;
+    readonly GMAIL_USER: string;
+    readonly GMAIL_APP_PASSWORD: string;
     readonly LOG_LEVEL: string;
 };
 export declare function validateEnv(): void;

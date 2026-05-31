@@ -121,10 +121,10 @@ export const Header: React.FC = () => {
       allBids: "All Public Bids",
       deptBids: "Departmental Bids",
       industryBids: "Industry Bids",
-      signupLogin: "Sign In / Register",
-      forOrg: "For Government Admin",
-      forVendor: "For Corporate Vendor",
-      forPublic: "For Citizen / Auditor",
+        signupLogin: "Sign In",
+        forOrg: "For Government Admin",
+        forVendor: "For Corporate Vendor",
+        forPublic: "For Public View",
       walletConnect: "Connect Wallet",
       walletConnected: "Wallet Active",
       disconnect: "Disconnect Session",
@@ -147,10 +147,10 @@ export const Header: React.FC = () => {
       allBids: "सभी सार्वजनिक बोलियां",
       deptBids: "विभागीय बोलियां",
       industryBids: "उद्योग बोलियां",
-      signupLogin: "लॉगिन / पंजीकरण",
-      forOrg: "सरकारी व्यवस्थापक के लिए",
-      forVendor: "कॉरपोरेट विक्रेता के लिए",
-      forPublic: "नागरिक / लेखा परीक्षक",
+        signupLogin: "लॉगिन",
+        forOrg: "सरकारी व्यवस्थापक के लिए",
+        forVendor: "कॉरपोरेट विक्रेता के लिए",
+        forPublic: "सार्वजनिक दृश्य",
       walletConnect: "वॉलेट कनेक्ट करें",
       walletConnected: "वॉलेट सक्रिय",
       disconnect: "सत्र डिस्कनेक्ट करें",
@@ -577,6 +577,16 @@ export const Header: React.FC = () => {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Register Button */}
+            {!currentUser && (
+              <button 
+                onClick={() => router.push("/register")}
+                className="flex items-center space-x-1 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-emerald-600/50 bg-emerald-950/30 text-emerald-400 hover:bg-emerald-950/50 transition-all shrink-0"
+              >
+                <span>Register</span>
+              </button>
+            )}
 
             {/* 1. Bell Notification Icon (completely to extreme top-right corner) */}
             <div ref={notifRef} className="relative shrink-0">

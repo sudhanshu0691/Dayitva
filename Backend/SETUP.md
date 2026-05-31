@@ -238,6 +238,12 @@ CONTRACT_ADDRESS="0xDEPLOYED_CONTRACT_ADDRESS"
 ### "Module not found"
 - Run `npm install` again from the Backend directory.
 
+### "The request signature we calculated does not match the signature you provided" (S3)
+- Ensure `AWS_REGION` exactly matches the bucket region.
+- If you use temporary credentials (STS/IAM role), set `AWS_SESSION_TOKEN` too.
+- If you use S3-compatible storage (MinIO/R2/DigitalOcean Spaces), set `AWS_S3_ENDPOINT` and try `AWS_S3_FORCE_PATH_STYLE="true"`.
+- Restart backend after updating `.env`.
+
 ---
 
 ## 📁 What's Already Done (Automated)

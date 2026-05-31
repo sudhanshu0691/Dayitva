@@ -44,8 +44,14 @@ exports.metamaskLogin = metamaskLogin;
 exports.refresh = refresh;
 exports.logout = logout;
 exports.getMe = getMe;
+exports.sendOtpHandler = sendOtpHandler;
+exports.verifyOtpHandler = verifyOtpHandler;
+exports.resendOtpHandler = resendOtpHandler;
+exports.forgotPasswordHandler = forgotPasswordHandler;
+exports.resetPasswordHandler = resetPasswordHandler;
 const authService = __importStar(require("../services/auth.service"));
 const logger_1 = require("../utils/logger");
+const errorHandler_1 = require("../middleware/errorHandler");
 /**
  * POST /api/auth/register
  * Register a new user (officer or vendor).
@@ -56,7 +62,7 @@ async function register(req, res, next) {
         logger_1.logger.info(`User registered: ${result.user.email} (role: ${result.user.role})`);
         res.status(201).json({
             success: true,
-            message: "Registration successful",
+            message: "Registration successful. Please verify your email using the OTP sent to your email.",
             data: result,
         });
     }
@@ -79,6 +85,26 @@ async function login(req, res, next) {
         });
     }
     catch (error) {
+        // If login fails because email is not verified, auto-send OTP
+        if (error instanceof errorHandler_1.AppError && error.message.includes("Email not verified")) {
+            try {
+                const otpResult = await authService.sendOtp({
+                    email: req.body.email,
+                    type: "VERIFY_EMAIL",
+                });
+                return res.status(403).json({
+                    success: false,
+                    message: error.message,
+                    needsVerification: true,
+                    email: req.body.email,
+                    devOtp: otpResult.devOtp,
+                });
+            }
+            catch (otpError) {
+                // If OTP send also fails, still return the original error
+                return next(error);
+            }
+        }
         next(error);
     }
 }
@@ -161,6 +187,89 @@ async function getMe(req, res, next) {
         res.status(200).json({
             success: true,
             data: user,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+// ============================================================
+// OTP & Email Verification Handlers
+// ============================================================
+/**
+ * POST /api/auth/send-otp
+ * Send OTP to user's email for verification.
+ */
+async function sendOtpHandler(req, res, next) {
+    try {
+        const result = await authService.sendOtp(req.body);
+        res.status(200).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+/**
+ * POST /api/auth/verify-otp
+ * Verify OTP sent to user's email.
+ */
+async function verifyOtpHandler(req, res, next) {
+    try {
+        const result = await authService.verifyOtp(req.body);
+        res.status(200).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+/**
+ * POST /api/auth/resend-otp
+ * Resend OTP with cooldown check.
+ */
+async function resendOtpHandler(req, res, next) {
+    try {
+        const result = await authService.resendOtp(req.body);
+        res.status(200).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+/**
+ * POST /api/auth/forgot-password
+ * Send password reset OTP to email.
+ */
+async function forgotPasswordHandler(req, res, next) {
+    try {
+        const result = await authService.forgotPassword(req.body.email);
+        res.status(200).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+/**
+ * POST /api/auth/reset-password
+ * Reset password using OTP.
+ */
+async function resetPasswordHandler(req, res, next) {
+    try {
+        const result = await authService.resetPassword(req.body);
+        res.status(200).json({
+            success: true,
+            data: result,
         });
     }
     catch (error) {

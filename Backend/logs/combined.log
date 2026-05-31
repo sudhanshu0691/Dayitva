@@ -54,3 +54,487 @@
 {"level":"info","message":"   Blockchain Mode: 🟢 LIVE","timestamp":"2026-05-30T22:44:17.349Z"}
 {"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-30T22:44:17.350Z"}
 {"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-30T22:44:17.351Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T14:55:50.335Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T14:55:50.346Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T14:55:50.347Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T14:55:50.349Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T14:55:50.351Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T14:55:50.352Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T14:55:50.353Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T14:55:50.355Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T14:57:13.701Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T14:57:15.538Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T14:58:00.524Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid email or password","statusCode":401,"timestamp":"2026-05-31T14:58:01.760Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/register","timestamp":"2026-05-31T15:01:40.339Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User registered: sudhanshu0691.s@gmail.com (role: vendor)","timestamp":"2026-05-31T15:01:50.340Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/send-otp","timestamp":"2026-05-31T15:01:56.112Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/send-otp","timestamp":"2026-05-31T15:01:56.128Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"No email configuration found. OTP will be logged to console only.","timestamp":"2026-05-31T15:01:57.830Z"}
+{"level":"info","message":"[DEV] OTP for sudhanshu0691.s@gmail.com: 379214","timestamp":"2026-05-31T15:01:57.831Z"}
+{"level":"warn","message":"No email configuration found. OTP will be logged to console only.","timestamp":"2026-05-31T15:02:01.210Z"}
+{"level":"info","message":"[DEV] OTP for sudhanshu0691.s@gmail.com: 102836","timestamp":"2026-05-31T15:02:01.211Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/verify-otp","timestamp":"2026-05-31T15:02:05.892Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:02:15.379Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:02:16.668Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T15:03:29.186Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid email or password","statusCode":401,"timestamp":"2026-05-31T15:03:33.551Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T15:03:53.011Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: sudhanshu0691.s@gmail.com","timestamp":"2026-05-31T15:03:54.788Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:03:59.412Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:03:59.987Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T15:04:38.940Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: sudhanshu0691.s@gmail.com","timestamp":"2026-05-31T15:04:40.730Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:04:41.122Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:04:42.483Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/auth/me","timestamp":"2026-05-31T15:23:34.401Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T15:23:34.421Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T15:23:34.444Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Refresh token has been revoked","statusCode":401,"timestamp":"2026-05-31T15:23:39.957Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:23:40.037Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:23:42.109Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T15:23:42.591Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T15:25:29.617Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T15:26:15.317Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T15:26:15.328Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T15:26:15.329Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T15:26:15.330Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T15:26:15.331Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T15:26:15.332Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T15:26:15.333Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T15:26:15.333Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T15:30:37.239Z"}
+{"ip":"::1","level":"debug","message":"GET /api/health","timestamp":"2026-05-31T15:38:09.850Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T16:22:24.572Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T16:23:16.098Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T16:23:16.101Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T16:23:16.102Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T16:23:16.102Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T16:23:16.102Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T16:23:16.103Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T16:23:16.103Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T16:23:16.103Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:24:18.036Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:24:18.058Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:24:20.755Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:25:03.082Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:25:29.493Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:26:08.938Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:26:09.386Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:26:14.942Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:26:15.239Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:26:59.784Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:27:00.672Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:27:05.495Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:27:05.823Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:27:10.600Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:27:10.933Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:27:19.023Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:27:19.734Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:27:22.688Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:27:23.018Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:27:25.259Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:27:25.683Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T16:37:10.647Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T16:37:10.653Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T16:37:10.654Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T16:37:10.654Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T16:37:10.654Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T16:37:10.654Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T16:37:10.655Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T16:37:10.655Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:39:50.034Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:39:50.075Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:39:52.227Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:39:57.753Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:39:59.095Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:40:08.586Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:40:09.751Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:40:17.699Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:40:18.082Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:40:51.169Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:41:28.086Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:43:44.069Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:43:44.749Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:46:59.269Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:47:09.666Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:47:15.876Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T16:47:15.879Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T16:47:17.520Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T18:18:38.123Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T18:18:38.128Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T18:18:38.128Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T18:18:38.128Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T18:18:38.129Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T18:18:38.129Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T18:18:38.129Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T18:18:38.130Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/register","timestamp":"2026-05-31T18:18:43.334Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User registered: sudhanshu0691.s@gmail.com (role: vendor)","timestamp":"2026-05-31T18:18:44.915Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/send-otp","timestamp":"2026-05-31T18:18:51.780Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/send-otp","timestamp":"2026-05-31T18:18:51.785Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"No email configuration found. OTP will be logged to console only.","timestamp":"2026-05-31T18:18:53.050Z"}
+{"level":"info","message":"[DEV] OTP for sudhanshu0691.s@gmail.com: 916037","timestamp":"2026-05-31T18:18:53.051Z"}
+{"level":"warn","message":"No email configuration found. OTP will be logged to console only.","timestamp":"2026-05-31T18:18:54.264Z"}
+{"level":"info","message":"[DEV] OTP for sudhanshu0691.s@gmail.com: 667280","timestamp":"2026-05-31T18:18:54.264Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/verify-otp","timestamp":"2026-05-31T18:18:56.873Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:19:01.127Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:19:01.812Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T18:19:15.148Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=UnderEvaluation","timestamp":"2026-05-31T18:19:16.338Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:19:42.831Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid email or password","statusCode":401,"timestamp":"2026-05-31T18:19:43.181Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:19:45.313Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:20:28.451Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: sudhanshu0691.s@gmail.com","timestamp":"2026-05-31T18:20:29.413Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:20:32.153Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:20:32.504Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:22:38.616Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: sudhanshu0691.s@gmail.com","timestamp":"2026-05-31T18:22:39.404Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:22:39.544Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:22:39.803Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/auth/me","timestamp":"2026-05-31T18:23:41.228Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T18:23:41.231Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T18:23:41.250Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/auth/me","timestamp":"2026-05-31T18:23:42.580Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T18:23:42.583Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T18:23:42.631Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:23:42.696Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:23:57.549Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:24:02.003Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:24:02.840Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:24:04.962Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:24:18.468Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T18:25:34.378Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T18:25:34.384Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T18:25:35.189Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T18:26:00.234Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"Shutting down gracefully...","timestamp":"2026-05-31T18:26:11.898Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T19:04:39.992Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T19:04:39.997Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T19:04:39.997Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T19:04:39.997Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T19:04:39.998Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T19:04:39.998Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T19:04:39.998Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T19:04:39.998Z"}
+{"ip":"::1","level":"debug","message":"GET /api/health","timestamp":"2026-05-31T19:05:41.193Z","userAgent":"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8457"}
+{"ip":"::1","level":"debug","message":"GET /api/health","timestamp":"2026-05-31T19:10:53.365Z","userAgent":"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8457"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T19:17:33.739Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T19:17:33.750Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T19:17:33.752Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T19:17:33.754Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T19:17:33.755Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T19:17:33.757Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T19:17:33.758Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T19:17:33.759Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:18:02.640Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:18:02.830Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:18:03.940Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:18:16.580Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:18:31.127Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:20:00.303Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T19:21:17.324Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: sudhanshu0691.s@gmail.com","timestamp":"2026-05-31T19:21:19.485Z"}
+{"ip":"::1","level":"debug","message":"GET /api/notifications","timestamp":"2026-05-31T19:21:19.632Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:21:23.181Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:21:23.430Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:22:10.118Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:22:10.538Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/logout","timestamp":"2026-05-31T19:23:00.861Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:23:03.286Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:23:03.569Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:23:03.895Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:23:06.034Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T19:23:59.249Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: sudhanshu0691.s@gmail.com","timestamp":"2026-05-31T19:24:01.073Z"}
+{"ip":"::1","level":"debug","message":"GET /api/notifications","timestamp":"2026-05-31T19:24:01.180Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:01.516Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:02.029Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:35.779Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:36.509Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:47.152Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:47.463Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/logout","timestamp":"2026-05-31T19:24:57.475Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:24:57.960Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:58.262Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:24:58.692Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:25:00.376Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:25:20.001Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T19:25:20.440Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/register","timestamp":"2026-05-31T19:35:22.975Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User registered: cse23.rajnikumari@ggct.co.in (role: officer)","timestamp":"2026-05-31T19:35:26.469Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/send-otp","timestamp":"2026-05-31T19:35:26.697Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/send-otp","timestamp":"2026-05-31T19:35:26.709Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"No email configuration found. OTP will be logged to console only.","timestamp":"2026-05-31T19:35:27.539Z"}
+{"level":"info","message":"[DEV] OTP for cse23.rajnikumari@ggct.co.in: 162960","timestamp":"2026-05-31T19:35:27.540Z"}
+{"level":"warn","message":"No email configuration found. OTP will be logged to console only.","timestamp":"2026-05-31T19:35:28.423Z"}
+{"level":"info","message":"[DEV] OTP for cse23.rajnikumari@ggct.co.in: 178086","timestamp":"2026-05-31T19:35:28.423Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/verify-otp","timestamp":"2026-05-31T19:35:30.896Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T19:36:14.613Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: cse23.rajnikumari@ggct.co.in","timestamp":"2026-05-31T19:36:15.424Z"}
+{"ip":"::1","level":"debug","message":"GET /api/notifications","timestamp":"2026-05-31T19:36:15.467Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T19:36:18.202Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:36:18.207Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:36:18.755Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T19:36:19.395Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T19:39:16.910Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"error":{"$fault":"client","$metadata":{"attempts":1,"extendedRequestId":"SuN+L5ynCVaWWtoGj1PQ/t3r9Cm9uSc2jUJnz4ts5GR7jap3xkfNYHvKEZWU+VLtfosHuzZ87Sw=","httpStatusCode":403,"requestId":"8QYMS72RX0MR5VF3","totalRetryDelay":0},"AWSAccessKeyId":"AKIAVRUVR5KJQMTDNGVW","CanonicalRequest":"PUT\n/cmpu6j6ck000410tngqzb53gg/1780256356939-Machine%20Learning%20Practical%20LAB_6th%20Sem_CSE.pdf\nx-id=PutObject\namz-sdk-invocation-id:43280f14-5f4e-4d90-8e45-39b9582f19fd\namz-sdk-request:attempt=1; max=3\ncontent-length:444854\ncontent-type:application/pdf\nhost:tenderchain-documents.s3.ap-south-1.amazonaws.com\nx-amz-checksum-crc32:4pxKPQ==\nx-amz-content-sha256:f2ea86254115b9298cbaedbe11ebbc843e5ac839e4b736ecf7484e52dc7b20a0\nx-amz-date:20260531T193918Z\nx-amz-sdk-checksum-algorithm:CRC32\nx-amz-user-agent:aws-sdk-js/3.1057.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-checksum-crc32;x-amz-content-sha256;x-amz-date;x-amz-sdk-checksum-algorithm;x-amz-user-agent\nf2ea86254115b9298cbaedbe11ebbc843e5ac839e4b736ecf7484e52dc7b20a0","CanonicalRequestBytes":"50 55 54 0a 2f 63 6d 70 75 36 6a 36 63 6b 30 30 30 34 31 30 74 6e 67 71 7a 62 35 33 67 67 2f 31 37 38 30 32 35 36 33 35 36 39 33 39 2d 4d 61 63 68 69 6e 65 25 32 30 4c 65 61 72 6e 69 6e 67 25 32 30 50 72 61 63 74 69 63 61 6c 25 32 30 4c 41 42 5f 36 74 68 25 32 30 53 65 6d 5f 43 53 45 2e 70 64 66 0a 78 2d 69 64 3d 50 75 74 4f 62 6a 65 63 74 0a 61 6d 7a 2d 73 64 6b 2d 69 6e 76 6f 63 61 74 69 6f 6e 2d 69 64 3a 34 33 32 38 30 66 31 34 2d 35 66 34 65 2d 34 64 39 30 2d 38 65 34 35 2d 33 39 62 39 35 38 32 66 31 39 66 64 0a 61 6d 7a 2d 73 64 6b 2d 72 65 71 75 65 73 74 3a 61 74 74 65 6d 70 74 3d 31 3b 20 6d 61 78 3d 33 0a 63 6f 6e 74 65 6e 74 2d 6c 65 6e 67 74 68 3a 34 34 34 38 35 34 0a 63 6f 6e 74 65 6e 74 2d 74 79 70 65 3a 61 70 70 6c 69 63 61 74 69 6f 6e 2f 70 64 66 0a 68 6f 73 74 3a 74 65 6e 64 65 72 63 68 61 69 6e 2d 64 6f 63 75 6d 65 6e 74 73 2e 73 33 2e 61 70 2d 73 6f 75 74 68 2d 31 2e 61 6d 61 7a 6f 6e 61 77 73 2e 63 6f 6d 0a 78 2d 61 6d 7a 2d 63 68 65 63 6b 73 75 6d 2d 63 72 63 33 32 3a 34 70 78 4b 50 51 3d 3d 0a 78 2d 61 6d 7a 2d 63 6f 6e 74 65 6e 74 2d 73 68 61 32 35 36 3a 66 32 65 61 38 36 32 35 34 31 31 35 62 39 32 39 38 63 62 61 65 64 62 65 31 31 65 62 62 63 38 34 33 65 35 61 63 38 33 39 65 34 62 37 33 36 65 63 66 37 34 38 34 65 35 32 64 63 37 62 32 30 61 30 0a 78 2d 61 6d 7a 2d 64 61 74 65 3a 32 30 32 36 30 35 33 31 54 31 39 33 39 31 38 5a 0a 78 2d 61 6d 7a 2d 73 64 6b 2d 63 68 65 63 6b 73 75 6d 2d 61 6c 67 6f 72 69 74 68 6d 3a 43 52 43 33 32 0a 78 2d 61 6d 7a 2d 75 73 65 72 2d 61 67 65 6e 74 3a 61 77 73 2d 73 64 6b 2d 6a 73 2f 33 2e 31 30 35 37 2e 30 0a 0a 61 6d 7a 2d 73 64 6b 2d 69 6e 76 6f 63 61 74 69 6f 6e 2d 69 64 3b 61 6d 7a 2d 73 64 6b 2d 72 65 71 75 65 73 74 3b 63 6f 6e 74 65 6e 74 2d 6c 65 6e 67 74 68 3b 63 6f 6e 74 65 6e 74 2d 74 79 70 65 3b 68 6f 73 74 3b 78 2d 61 6d 7a 2d 63 68 65 63 6b 73 75 6d 2d 63 72 63 33 32 3b 78 2d 61 6d 7a 2d 63 6f 6e 74 65 6e 74 2d 73 68 61 32 35 36 3b 78 2d 61 6d 7a 2d 64 61 74 65 3b 78 2d 61 6d 7a 2d 73 64 6b 2d 63 68 65 63 6b 73 75 6d 2d 61 6c 67 6f 72 69 74 68 6d 3b 78 2d 61 6d 7a 2d 75 73 65 72 2d 61 67 65 6e 74 0a 66 32 65 61 38 36 32 35 34 31 31 35 62 39 32 39 38 63 62 61 65 64 62 65 31 31 65 62 62 63 38 34 33 65 35 61 63 38 33 39 65 34 62 37 33 36 65 63 66 37 34 38 34 65 35 32 64 63 37 62 32 30 61 30","Code":"SignatureDoesNotMatch","HostId":"SuN+L5ynCVaWWtoGj1PQ/t3r9Cm9uSc2jUJnz4ts5GR7jap3xkfNYHvKEZWU+VLtfosHuzZ87Sw=","RequestId":"8QYMS72RX0MR5VF3","SignatureProvided":"567b2b8f609200e3b23592ec5bb9da51c03e796bf08bd36b33877eeff3eb54d8","StringToSign":"AWS4-HMAC-SHA256\n20260531T193918Z\n20260531/ap-south-1/s3/aws4_request\nbaaba7701df0533ad9979cc77d6de1fa150224bcf68ef6a883622d0c98756b6a","StringToSignBytes":"41 57 53 34 2d 48 4d 41 43 2d 53 48 41 32 35 36 0a 32 30 32 36 30 35 33 31 54 31 39 33 39 31 38 5a 0a 32 30 32 36 30 35 33 31 2f 61 70 2d 73 6f 75 74 68 2d 31 2f 73 33 2f 61 77 73 34 5f 72 65 71 75 65 73 74 0a 62 61 61 62 61 37 37 30 31 64 66 30 35 33 33 61 64 39 39 37 39 63 63 37 37 64 36 64 65 31 66 61 31 35 30 32 32 34 62 63 66 36 38 65 66 36 61 38 38 33 36 32 32 64 30 63 39 38 37 35 36 62 36 61","message":"The request signature we calculated does not match the signature you provided. Check your key and signing method.","name":"SignatureDoesNotMatch"},"level":"error","message":"S3 upload error for Machine Learning Practical LAB_6th Sem_CSE.pdf","timestamp":"2026-05-31T19:39:20.197Z"}
+{"level":"warn","message":"Operational error: Failed to upload file to S3","statusCode":500,"timestamp":"2026-05-31T19:39:20.199Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T19:39:30.870Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"error":{"$fault":"client","$metadata":{"attempts":1,"extendedRequestId":"f7gSkABe1z4jMa1GS+Xod00x76n2tZeQZEUtMzpAJPBSS24Cyb3XhyYhYGLMzu1QuiIG75YTdcM=","httpStatusCode":403,"requestId":"S1JMZ10MCSM95GTR","totalRetryDelay":0},"AWSAccessKeyId":"AKIAVRUVR5KJQMTDNGVW","CanonicalRequest":"PUT\n/cmpu6j6ck000410tngqzb53gg/1780256370891-Governments%20and%20AI.pdf\nx-id=PutObject\namz-sdk-invocation-id:eada7b1b-bf7f-4245-ae77-8fd25b775700\namz-sdk-request:attempt=1; max=3\ncontent-length:1598192\ncontent-type:application/pdf\nhost:tenderchain-documents.s3.ap-south-1.amazonaws.com\nx-amz-checksum-crc32:+fiQrw==\nx-amz-content-sha256:7d972089648ea8310ecccd7c08da5bafb865db743dfbd7b7ff3a497c61ec71de\nx-amz-date:20260531T193930Z\nx-amz-sdk-checksum-algorithm:CRC32\nx-amz-user-agent:aws-sdk-js/3.1057.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-checksum-crc32;x-amz-content-sha256;x-amz-date;x-amz-sdk-checksum-algorithm;x-amz-user-agent\n7d972089648ea8310ecccd7c08da5bafb865db743dfbd7b7ff3a497c61ec71de","CanonicalRequestBytes":"50 55 54 0a 2f 63 6d 70 75 36 6a 36 63 6b 30 30 30 34 31 30 74 6e 67 71 7a 62 35 33 67 67 2f 31 37 38 30 32 35 36 33 37 30 38 39 31 2d 47 6f 76 65 72 6e 6d 65 6e 74 73 25 32 30 61 6e 64 25 32 30 41 49 2e 70 64 66 0a 78 2d 69 64 3d 50 75 74 4f 62 6a 65 63 74 0a 61 6d 7a 2d 73 64 6b 2d 69 6e 76 6f 63 61 74 69 6f 6e 2d 69 64 3a 65 61 64 61 37 62 31 62 2d 62 66 37 66 2d 34 32 34 35 2d 61 65 37 37 2d 38 66 64 32 35 62 37 37 35 37 30 30 0a 61 6d 7a 2d 73 64 6b 2d 72 65 71 75 65 73 74 3a 61 74 74 65 6d 70 74 3d 31 3b 20 6d 61 78 3d 33 0a 63 6f 6e 74 65 6e 74 2d 6c 65 6e 67 74 68 3a 31 35 39 38 31 39 32 0a 63 6f 6e 74 65 6e 74 2d 74 79 70 65 3a 61 70 70 6c 69 63 61 74 69 6f 6e 2f 70 64 66 0a 68 6f 73 74 3a 74 65 6e 64 65 72 63 68 61 69 6e 2d 64 6f 63 75 6d 65 6e 74 73 2e 73 33 2e 61 70 2d 73 6f 75 74 68 2d 31 2e 61 6d 61 7a 6f 6e 61 77 73 2e 63 6f 6d 0a 78 2d 61 6d 7a 2d 63 68 65 63 6b 73 75 6d 2d 63 72 63 33 32 3a 2b 66 69 51 72 77 3d 3d 0a 78 2d 61 6d 7a 2d 63 6f 6e 74 65 6e 74 2d 73 68 61 32 35 36 3a 37 64 39 37 32 30 38 39 36 34 38 65 61 38 33 31 30 65 63 63 63 64 37 63 30 38 64 61 35 62 61 66 62 38 36 35 64 62 37 34 33 64 66 62 64 37 62 37 66 66 33 61 34 39 37 63 36 31 65 63 37 31 64 65 0a 78 2d 61 6d 7a 2d 64 61 74 65 3a 32 30 32 36 30 35 33 31 54 31 39 33 39 33 30 5a 0a 78 2d 61 6d 7a 2d 73 64 6b 2d 63 68 65 63 6b 73 75 6d 2d 61 6c 67 6f 72 69 74 68 6d 3a 43 52 43 33 32 0a 78 2d 61 6d 7a 2d 75 73 65 72 2d 61 67 65 6e 74 3a 61 77 73 2d 73 64 6b 2d 6a 73 2f 33 2e 31 30 35 37 2e 30 0a 0a 61 6d 7a 2d 73 64 6b 2d 69 6e 76 6f 63 61 74 69 6f 6e 2d 69 64 3b 61 6d 7a 2d 73 64 6b 2d 72 65 71 75 65 73 74 3b 63 6f 6e 74 65 6e 74 2d 6c 65 6e 67 74 68 3b 63 6f 6e 74 65 6e 74 2d 74 79 70 65 3b 68 6f 73 74 3b 78 2d 61 6d 7a 2d 63 68 65 63 6b 73 75 6d 2d 63 72 63 33 32 3b 78 2d 61 6d 7a 2d 63 6f 6e 74 65 6e 74 2d 73 68 61 32 35 36 3b 78 2d 61 6d 7a 2d 64 61 74 65 3b 78 2d 61 6d 7a 2d 73 64 6b 2d 63 68 65 63 6b 73 75 6d 2d 61 6c 67 6f 72 69 74 68 6d 3b 78 2d 61 6d 7a 2d 75 73 65 72 2d 61 67 65 6e 74 0a 37 64 39 37 32 30 38 39 36 34 38 65 61 38 33 31 30 65 63 63 63 64 37 63 30 38 64 61 35 62 61 66 62 38 36 35 64 62 37 34 33 64 66 62 64 37 62 37 66 66 33 61 34 39 37 63 36 31 65 63 37 31 64 65","Code":"SignatureDoesNotMatch","HostId":"f7gSkABe1z4jMa1GS+Xod00x76n2tZeQZEUtMzpAJPBSS24Cyb3XhyYhYGLMzu1QuiIG75YTdcM=","RequestId":"S1JMZ10MCSM95GTR","SignatureProvided":"e836aff39683e643b1103ea85604f31a97662dcec53325dffe95f2cc94e22287","StringToSign":"AWS4-HMAC-SHA256\n20260531T193930Z\n20260531/ap-south-1/s3/aws4_request\nbfbf5a0c8c83df763e5a7e477aa66a74eb0d70f71e33d1a5ff3ceda26c507227","StringToSignBytes":"41 57 53 34 2d 48 4d 41 43 2d 53 48 41 32 35 36 0a 32 30 32 36 30 35 33 31 54 31 39 33 39 33 30 5a 0a 32 30 32 36 30 35 33 31 2f 61 70 2d 73 6f 75 74 68 2d 31 2f 73 33 2f 61 77 73 34 5f 72 65 71 75 65 73 74 0a 62 66 62 66 35 61 30 63 38 63 38 33 64 66 37 36 33 65 35 61 37 65 34 37 37 61 61 36 36 61 37 34 65 62 30 64 37 30 66 37 31 65 33 33 64 31 61 35 66 66 33 63 65 64 61 32 36 63 35 30 37 32 32 37","message":"The request signature we calculated does not match the signature you provided. Check your key and signing method.","name":"SignatureDoesNotMatch"},"level":"error","message":"S3 upload error for Governments and AI.pdf","timestamp":"2026-05-31T19:39:35.735Z"}
+{"level":"warn","message":"Operational error: Failed to upload file to S3","statusCode":500,"timestamp":"2026-05-31T19:39:35.735Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T19:40:38.851Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T19:40:38.865Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T19:40:38.866Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T19:40:38.867Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T19:40:38.867Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T19:40:38.868Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T19:40:38.868Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T19:40:38.869Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T19:40:43.684Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T19:40:43.687Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T19:40:43.687Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T19:40:43.688Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T19:40:43.688Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T19:40:43.688Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T19:40:43.689Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T19:40:43.689Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T19:44:28.474Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T19:44:28.479Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T19:44:28.479Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T19:44:28.480Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T19:44:28.480Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T19:44:28.480Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T19:44:28.480Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T19:44:28.481Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T19:45:40.666Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"awsExtendedRequestId":"SACPM0tj9gzbl2uilrwTfy/4NDHvjdMuO5iLps/s2eC120qhfOQv3h68jWB078eXFp+egirjS0VSm8JCB/uVhSuZp+Xn3tdG","awsRequestId":"7CP9ZX8BD05QS90C","bucket":"tenderchain-documents","endpoint":"aws-default","forcePathStyle":false,"hasSessionToken":false,"httpStatusCode":403,"level":"error","message":"S3 upload error for Machine Learning Practical LAB_6th Sem_CSE.pdf The request signature we calculated does not match the signature you provided. Check your key and signing method.","name":"SignatureDoesNotMatch","region":"ap-south-1","timestamp":"2026-05-31T19:45:43.673Z"}
+{"level":"warn","message":"Operational error: S3 signature mismatch. Check AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN (if temporary creds), and AWS_S3_ENDPOINT/path-style settings.","statusCode":500,"timestamp":"2026-05-31T19:45:43.674Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T19:54:40.336Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T19:54:40.377Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T19:54:40.773Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T19:54:43.703Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T19:54:43.703Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T19:55:37.104Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T19:55:37.113Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T19:55:37.114Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T19:55:37.114Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T19:55:37.114Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T19:55:37.115Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T19:55:37.115Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T19:55:37.115Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T19:55:48.165Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T19:55:48.167Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T19:55:48.187Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Refresh token has been revoked","statusCode":401,"timestamp":"2026-05-31T19:55:48.449Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:55:57.303Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T19:56:43.200Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: cse23.rajnikumari@ggct.co.in","timestamp":"2026-05-31T19:56:46.101Z"}
+{"ip":"::1","level":"debug","message":"GET /api/notifications","timestamp":"2026-05-31T19:56:46.132Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:56:46.535Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T19:56:46.538Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T19:56:46.860Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T19:56:48.009Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T19:57:01.926Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"awsExtendedRequestId":"SzDw1fU4mYxOa66zwcnpP2bA+8UxAC0wnnsMzK3LHlkiJK7bLMGUpqLGqahw8/aGqKOaRtJIKtXFOYlnka1wYf4/nSba67iq","awsRequestId":"TRX6GKJN2XKXZ6WF","bucket":"tenderchain-documents","endpoint":"aws-default","forcePathStyle":false,"hasSessionToken":false,"httpStatusCode":403,"level":"error","message":"S3 upload error for Machine Learning Practical LAB_6th Sem_CSE.pdf The request signature we calculated does not match the signature you provided. Check your key and signing method.","name":"SignatureDoesNotMatch","region":"ap-south-1","timestamp":"2026-05-31T19:57:03.319Z"}
+{"level":"warn","message":"Operational error: S3 signature mismatch. Check AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN (if temporary creds), and AWS_S3_ENDPOINT/path-style settings.","statusCode":500,"timestamp":"2026-05-31T19:57:03.321Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:17:55.282Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:17:55.298Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:17:55.300Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:17:55.302Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:17:55.304Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:17:55.306Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:17:55.308Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:17:55.310Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T20:19:11.980Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T20:19:11.994Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T20:19:12.432Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T20:19:14.145Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T20:19:14.150Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T20:21:19.333Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T20:21:19.336Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T20:21:19.361Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Refresh token has been revoked","statusCode":401,"timestamp":"2026-05-31T20:21:19.727Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T20:21:23.776Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:22:59.088Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:22:59.106Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:22:59.111Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:22:59.114Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:22:59.118Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:22:59.119Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:22:59.121Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:22:59.122Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T20:23:12.097Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: cse23.rajnikumari@ggct.co.in","timestamp":"2026-05-31T20:23:13.610Z"}
+{"ip":"::1","level":"debug","message":"GET /api/notifications","timestamp":"2026-05-31T20:23:13.792Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T20:23:36.375Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T20:23:36.384Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T20:23:37.248Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T20:23:38.280Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T20:24:14.204Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"awsExtendedRequestId":"MIqth3XFHH8LKOPBwinbnpdz8oZtfeJocnYCH3t/rQ+74bzS80rLlKZ2jQAPDnAzaVBEUi1SAbZRMnyUGWXpI033aM7+lb9P","awsRequestId":"QP6QBFR3EW7YS8RG","bucket":"tenderchain-documents","endpoint":"aws-default","forcePathStyle":false,"hasSessionToken":false,"httpStatusCode":403,"level":"error","message":"S3 upload error for Machine Learning Practical LAB_6th Sem_CSE.pdf The request signature we calculated does not match the signature you provided. Check your key and signing method.","name":"SignatureDoesNotMatch","region":"ap-south-1","timestamp":"2026-05-31T20:24:15.433Z"}
+{"level":"warn","message":"Operational error: S3 signature mismatch. Check AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN (if temporary creds), and AWS_S3_ENDPOINT/path-style settings.","statusCode":500,"timestamp":"2026-05-31T20:24:15.435Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:26:38.242Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:26:38.251Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:26:38.252Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:26:38.253Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:26:38.253Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:26:38.254Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:26:38.254Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:26:38.254Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:26:48.677Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:26:48.697Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:26:48.699Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:26:48.700Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:26:48.704Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:26:48.712Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:26:48.714Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:26:48.716Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:28:06.570Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:28:06.580Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:28:06.582Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:28:06.583Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:28:06.588Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:28:06.590Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:28:06.591Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:28:06.592Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:28:17.941Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:28:17.958Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:28:17.960Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:28:17.962Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:28:17.966Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:28:17.969Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:28:17.971Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:28:17.972Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:28:49.260Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:28:49.277Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:28:49.279Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:28:49.280Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:28:49.281Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:28:49.286Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:28:49.289Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:28:49.291Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:29:08.246Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:29:08.254Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:29:08.255Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:29:08.258Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:29:08.260Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:29:08.262Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:29:08.263Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:29:08.264Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:29:14.535Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:29:14.551Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:29:14.552Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:29:14.555Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:29:14.558Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:29:14.561Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:29:14.563Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:29:14.564Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:29:52.067Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:29:52.102Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:29:52.118Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:29:52.128Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:29:52.134Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:29:52.152Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:29:52.159Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:29:52.163Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T20:30:21.118Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T20:30:21.133Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T20:30:21.134Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T20:30:21.136Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T20:30:21.137Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T20:30:21.139Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T20:30:21.142Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T20:30:21.144Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T20:30:59.774Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"awsExtendedRequestId":"8eWHEmhUFZtd2EmVZRsLnj2xxl+GbSBjo5hjLyM1EFVTYJZ3VeZkb9EaYkUz7EO9i4x2672mseM=","awsRequestId":"211173SAD2ZN20G3","bucket":"tenderchain-documents","endpoint":"aws-default","forcePathStyle":false,"hasSessionToken":false,"httpStatusCode":403,"level":"error","message":"S3 upload error for Machine Learning Practical LAB_6th Sem_CSE.pdf The request signature we calculated does not match the signature you provided. Check your key and signing method.","name":"SignatureDoesNotMatch","region":"ap-south-1","timestamp":"2026-05-31T20:31:01.352Z"}
+{"level":"warn","message":"Operational error: S3 signature mismatch. Check AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN (if temporary creds), and AWS_S3_ENDPOINT/path-style settings.","statusCode":500,"timestamp":"2026-05-31T20:31:01.354Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T20:31:37.272Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"awsExtendedRequestId":"/he6jk6CrW173D2fvyMhrPgjhbeATSBdWAEn03kx6fA3ySnK63+XwTj6lUX58UMLm+iVFOIjnLYs2m5X7g/GIW2aG0y5qp5x","awsRequestId":"HF02877MFVYGQN2R","bucket":"tenderchain-documents","endpoint":"aws-default","forcePathStyle":false,"hasSessionToken":false,"httpStatusCode":403,"level":"error","message":"S3 upload error for Governments and AI.pdf The request signature we calculated does not match the signature you provided. Check your key and signing method.","name":"SignatureDoesNotMatch","region":"ap-south-1","timestamp":"2026-05-31T20:31:39.168Z"}
+{"level":"warn","message":"Operational error: S3 signature mismatch. Check AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN (if temporary creds), and AWS_S3_ENDPOINT/path-style settings.","statusCode":500,"timestamp":"2026-05-31T20:31:39.169Z"}
+{"level":"info","message":"Shutting down gracefully...","timestamp":"2026-05-31T20:35:17.781Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-31T21:00:41.155Z"}
+{"level":"info","message":"🚀 Decentralized TenderChain API Server","timestamp":"2026-05-31T21:00:41.159Z"}
+{"level":"info","message":"   Port: 4000","timestamp":"2026-05-31T21:00:41.159Z"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-05-31T21:00:41.160Z"}
+{"level":"info","message":"   Frontend URL: http://localhost:3000","timestamp":"2026-05-31T21:00:41.160Z"}
+{"level":"info","message":"   Blockchain Mode: 🟡 SIMULATION","timestamp":"2026-05-31T21:00:41.160Z"}
+{"level":"info","message":"   API: http://localhost:4000/api","timestamp":"2026-05-31T21:00:41.161Z"}
+{"level":"info","message":"   Health: http://localhost:4000/api/health","timestamp":"2026-05-31T21:00:41.161Z"}
+{"ip":"::1","level":"debug","message":"GET /api/auth/me","timestamp":"2026-05-31T21:01:07.570Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Invalid or expired token","statusCode":401,"timestamp":"2026-05-31T21:01:07.587Z"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/refresh","timestamp":"2026-05-31T21:01:07.703Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/auth/me","timestamp":"2026-05-31T21:01:08.908Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/notifications","timestamp":"2026-05-31T21:01:09.231Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:01:09.237Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T21:01:33.438Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"File uploaded to S3: Sudhanshu Singh CV Resume.pdf -> https://tenderchain-documents.s3.ap-south-1.amazonaws.com/cmpu6j6ck000410tngqzb53gg/1780261293448-Sudhanshu%20Singh%20CV%20Resume.pdf","timestamp":"2026-05-31T21:01:34.349Z"}
+{"level":"info","message":"Files uploaded to S3: https://tenderchain-documents.s3.ap-south-1.amazonaws.com/cmpu6j6ck000410tngqzb53gg/1780261293448-Sudhanshu%20Singh%20CV%20Resume.pdf","timestamp":"2026-05-31T21:01:34.349Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T21:01:45.995Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"File uploaded to S3: Machine Learning Practical LAB_6th Sem_CSE.pdf -> https://tenderchain-documents.s3.ap-south-1.amazonaws.com/cmpu6j6ck000410tngqzb53gg/1780261306005-Machine%20Learning%20Practical%20LAB_6th%20Sem_CSE.pdf","timestamp":"2026-05-31T21:01:47.643Z"}
+{"level":"info","message":"Files uploaded to S3: https://tenderchain-documents.s3.ap-south-1.amazonaws.com/cmpu6j6ck000410tngqzb53gg/1780261306005-Machine%20Learning%20Practical%20LAB_6th%20Sem_CSE.pdf","timestamp":"2026-05-31T21:01:47.644Z"}
+{"ip":"::1","level":"debug","message":"POST /api/tenders","timestamp":"2026-05-31T21:03:30.641Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"error":"ZodError: [\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 5,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"Title must be at least 5 characters\",\n    \"path\": [\n      \"title\"\n    ]\n  },\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 20,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"Description must be at least 20 characters\",\n    \"path\": [\n      \"description\"\n    ]\n  }\n]\n    at Object.get error [as error] (D:\\tender\\Dayitva\\Backend\\node_modules\\zod\\v3\\types.cjs:45:31)\n    at ZodObject.parse (D:\\tender\\Dayitva\\Backend\\node_modules\\zod\\v3\\types.cjs:120:22)\n    at D:\\tender\\Dayitva\\Backend\\src\\middleware\\validate.ts:28:27\n    at Layer.handle [as handle_request] (D:\\tender\\Dayitva\\Backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (D:\\tender\\Dayitva\\Backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at D:\\tender\\Dayitva\\Backend\\node_modules\\express-rate-limit\\dist\\index.cjs:807:7\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at D:\\tender\\Dayitva\\Backend\\node_modules\\express-rate-limit\\dist\\index.cjs:691:5","level":"error","message":"Unexpected error: [\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 5,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"Title must be at least 5 characters\",\n    \"path\": [\n      \"title\"\n    ]\n  },\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 20,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"Description must be at least 20 characters\",\n    \"path\": [\n      \"description\"\n    ]\n  }\n]","timestamp":"2026-05-31T21:03:30.646Z"}
+{"ip":"::1","level":"debug","message":"POST /api/uploads/s3","timestamp":"2026-05-31T21:07:02.083Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"File uploaded to S3: Machine Learning Practical LAB_6th Sem_CSE.pdf -> https://tenderchain-documents.s3.ap-south-1.amazonaws.com/cmpu6j6ck000410tngqzb53gg/1780261622100-Machine%20Learning%20Practical%20LAB_6th%20Sem_CSE.pdf","timestamp":"2026-05-31T21:07:03.225Z"}
+{"level":"info","message":"Files uploaded to S3: https://tenderchain-documents.s3.ap-south-1.amazonaws.com/cmpu6j6ck000410tngqzb53gg/1780261622100-Machine%20Learning%20Practical%20LAB_6th%20Sem_CSE.pdf","timestamp":"2026-05-31T21:07:03.226Z"}
+{"ip":"::1","level":"debug","message":"POST /api/tenders","timestamp":"2026-05-31T21:08:02.110Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:08:08.336Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T21:08:08.339Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:08:09.253Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/pending","timestamp":"2026-05-31T21:08:09.628Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:08:28.254Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:08:29.536Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:08:29.543Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:08:30.203Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/logout","timestamp":"2026-05-31T21:08:50.665Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T21:08:52.165Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T21:08:53.297Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/login","timestamp":"2026-05-31T21:09:25.619Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"User logged in: sudhanshu0691.s@gmail.com","timestamp":"2026-05-31T21:09:26.593Z"}
+{"ip":"::1","level":"debug","message":"GET /api/notifications","timestamp":"2026-05-31T21:09:26.619Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:09:27.862Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:09:28.657Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:09:34.592Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:09:35.400Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:09:35.407Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Access denied. Required role: officer. Your role: vendor","statusCode":403,"timestamp":"2026-05-31T21:09:35.408Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:09:35.922Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Access denied. Required role: officer. Your role: vendor","statusCode":403,"timestamp":"2026-05-31T21:09:35.923Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:09:40.170Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:09:40.764Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:09:48.773Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:09:49.363Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:09:49.371Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Access denied. Required role: officer. Your role: vendor","statusCode":403,"timestamp":"2026-05-31T21:09:49.372Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:09:50.043Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Access denied. Required role: officer. Your role: vendor","statusCode":403,"timestamp":"2026-05-31T21:09:50.046Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:09:57.975Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:09:58.635Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:10:19.591Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:10:20.176Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:10:20.186Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Access denied. Required role: officer. Your role: vendor","statusCode":403,"timestamp":"2026-05-31T21:10:20.188Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:10:20.665Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Access denied. Required role: officer. Your role: vendor","statusCode":403,"timestamp":"2026-05-31T21:10:20.669Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:10:38.379Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:10:38.939Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:11:47.437Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:11:48.148Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/tenders/cmpu9ubes00038qw5gnbxmi4w/bids","timestamp":"2026-05-31T21:12:08.649Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"warn","message":"Operational error: Your KYC must be approved before submitting bids","statusCode":403,"timestamp":"2026-05-31T21:12:09.558Z"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:12:25.579Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:12:26.211Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:12:28.763Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:12:29.331Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/users/kyc/status","timestamp":"2026-05-31T21:13:16.211Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders/cmpu9ubes00038qw5gnbxmi4w","timestamp":"2026-05-31T21:13:16.216Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:14:29.463Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:14:30.564Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"POST /api/auth/logout","timestamp":"2026-05-31T21:14:46.425Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T21:14:46.719Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders?status=Open","timestamp":"2026-05-31T21:14:47.590Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:14:48.224Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"debug","message":"GET /api/tenders","timestamp":"2026-05-31T21:14:49.466Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+{"level":"info","message":"Shutting down gracefully...","timestamp":"2026-05-31T21:15:09.619Z"}

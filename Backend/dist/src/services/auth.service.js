@@ -14,12 +14,19 @@ exports.loginWithMetaMask = loginWithMetaMask;
 exports.refreshAccessToken = refreshAccessToken;
 exports.logoutUser = logoutUser;
 exports.getCurrentUser = getCurrentUser;
+exports.sendOtp = sendOtp;
+exports.verifyOtp = verifyOtp;
+exports.forgotPassword = forgotPassword;
+exports.resetPassword = resetPassword;
+exports.resendOtp = resendOtp;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const ethers_1 = require("ethers");
 const uuid_1 = require("uuid");
 const database_1 = require("../config/database");
+const env_1 = require("../config/env");
 const jwt_1 = require("../utils/jwt");
 const errorHandler_1 = require("../middleware/errorHandler");
+const email_service_1 = require("./email.service");
 const SALT_ROUNDS = 12;
 const NONCE_EXPIRY_MINUTES = 5;
 /**
@@ -106,24 +113,11 @@ async function registerUser(input) {
             },
         });
     }
-    // Generate JWT tokens
-    const tokenPayload = {
-        userId: user.id,
-        role: user.role,
-        walletAddress: user.walletAddress || undefined,
-    };
-    const tokens = (0, jwt_1.generateTokenPair)(tokenPayload);
-    // Store refresh token
-    await database_1.prisma.refreshToken.create({
-        data: {
-            token: tokens.refreshToken,
-            userId: user.id,
-            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-        },
-    });
+    // Do NOT generate tokens or auto-login - user must verify email first
+    // Registration only creates the user account
     return {
         user: formatUserProfile(user),
-        ...tokens,
+        message: "Registration successful. Please verify your email and then login.",
     };
 }
 /**
@@ -141,6 +135,10 @@ async function loginWithCredentials(input) {
     const isValid = await bcrypt_1.default.compare(input.password, user.passwordHash);
     if (!isValid) {
         throw new errorHandler_1.AppError("Invalid email or password", 401);
+    }
+    // Check if email is verified
+    if (!user.emailVerified) {
+        throw new errorHandler_1.AppError("Email not verified. Please verify your email before logging in.", 403);
     }
     // Generate tokens
     const tokenPayload = {
@@ -312,5 +310,148 @@ async function getCurrentUser(userId) {
         throw new errorHandler_1.AppError("User not found", 404);
     }
     return formatUserProfile(user);
+}
+// ============================================================
+// OTP & Email Verification Functions
+// ============================================================
+const OTP_EXPIRY_MINUTES = 10;
+/**
+ * Send an OTP to the user's email for verification or password reset.
+ */
+async function sendOtp(input) {
+    const { email, type } = input;
+    // Check if email exists for forgot password
+    if (type === "FORGOT_PASSWORD") {
+        const user = await database_1.prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            throw new errorHandler_1.AppError("No account found with this email address", 404);
+        }
+    }
+    // Mark any existing unused OTPs as used
+    await database_1.prisma.otp.updateMany({
+        where: { email, type, used: false },
+        data: { used: true },
+    });
+    // Generate and store new OTP
+    const otp = (0, email_service_1.generateOtp)();
+    await database_1.prisma.otp.create({
+        data: {
+            email,
+            otp,
+            type,
+            expiresAt: new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000),
+        },
+    });
+    // Send OTP via email
+    if (type === "FORGOT_PASSWORD") {
+        await (0, email_service_1.sendPasswordResetOtpEmail)(email, otp);
+    }
+    else {
+        await (0, email_service_1.sendOtpEmail)(email, otp);
+    }
+    // In development, return the OTP for convenience
+    const response = {
+        message: `OTP sent to ${email}. Valid for ${OTP_EXPIRY_MINUTES} minutes.`,
+        expiresIn: OTP_EXPIRY_MINUTES * 60,
+    };
+    if (env_1.env.NODE_ENV === "development") {
+        response.devOtp = otp;
+    }
+    return response;
+}
+/**
+ * Verify an OTP for email verification or password reset.
+ */
+async function verifyOtp(input) {
+    const { email, otp, type } = input;
+    // Find a valid, unused OTP
+    const otpRecord = await database_1.prisma.otp.findFirst({
+        where: {
+            email,
+            otp,
+            type,
+            used: false,
+            expiresAt: { gte: new Date() },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+    if (!otpRecord) {
+        throw new errorHandler_1.AppError("Invalid or expired OTP", 400);
+    }
+    // Mark OTP as used
+    await database_1.prisma.otp.update({
+        where: { id: otpRecord.id },
+        data: { used: true },
+    });
+    // If this is for email verification, update the user
+    if (type === "VERIFY_EMAIL") {
+        const user = await database_1.prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            throw new errorHandler_1.AppError("User not found with this email", 404);
+        }
+        // Check if user is already verified
+        if (user.emailVerified) {
+            return { message: "Email already verified", emailVerified: true };
+        }
+        // Mark email as verified
+        await database_1.prisma.user.update({
+            where: { email },
+            data: { emailVerified: true },
+        });
+    }
+    return { message: "OTP verified successfully", verified: true };
+}
+/**
+ * Forgot password - sends OTP to email.
+ */
+async function forgotPassword(email) {
+    return sendOtp({ email, type: "FORGOT_PASSWORD" });
+}
+/**
+ * Reset password using OTP verification.
+ */
+async function resetPassword(input) {
+    const { email, otp, newPassword } = input;
+    // Verify OTP first
+    await verifyOtp({ email, otp, type: "FORGOT_PASSWORD" });
+    // Hash new password
+    const passwordHash = await bcrypt_1.default.hash(newPassword, SALT_ROUNDS);
+    // Update user password
+    await database_1.prisma.user.update({
+        where: { email },
+        data: { passwordHash },
+    });
+    // Revoke all refresh tokens for this user (force re-login)
+    const user = await database_1.prisma.user.findUnique({ where: { email } });
+    if (user) {
+        await database_1.prisma.refreshToken.deleteMany({
+            where: { userId: user.id },
+        });
+    }
+    return { message: "Password reset successfully. Please login with your new password." };
+}
+/**
+ * Resend OTP (same as sendOtp but with a cooldown check).
+ */
+async function resendOtp(input) {
+    const { email, type } = input;
+    // Check if there's a recent OTP that hasn't expired (cooldown)
+    const recentOtp = await database_1.prisma.otp.findFirst({
+        where: {
+            email,
+            type,
+            used: false,
+            expiresAt: { gte: new Date() },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+    if (recentOtp) {
+        // If OTP was sent less than 30 seconds ago, reject
+        const timeSinceLastOtp = Date.now() - recentOtp.createdAt.getTime();
+        if (timeSinceLastOtp < 30000) {
+            throw new errorHandler_1.AppError("Please wait 30 seconds before requesting a new OTP", 429);
+        }
+    }
+    return sendOtp(input);
 }
 //# sourceMappingURL=auth.service.js.map

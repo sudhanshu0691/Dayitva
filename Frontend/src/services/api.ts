@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
 
+let refreshPromise: Promise<string> | null = null;
+
 // Create Axios instance
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -38,26 +40,49 @@ api.interceptors.response.use(
   async (error: AxiosError<any>) => {
     const originalRequest = error.config as any;
 
+    if (originalRequest?.url?.includes("/auth/refresh")) {
+      return Promise.reject(error);
+    }
+
     // Handle 401 Unauthorized - Token expired
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
         if (typeof window !== "undefined") {
-          const refreshToken = localStorage.getItem("refreshToken");
-          if (!refreshToken) {
-            throw new Error("No refresh token available");
+          if (!refreshPromise) {
+            const currentRefreshToken = localStorage.getItem("refreshToken");
+            if (!currentRefreshToken) {
+              throw new Error("No refresh token available");
+            }
+
+            refreshPromise = axios
+              .post(`${API_BASE_URL}/auth/refresh`, {
+                refreshToken: currentRefreshToken,
+              })
+              .then((response) => {
+                const { accessToken, token, refreshToken: newRefreshToken } = response.data.data;
+                const refreshedToken = accessToken || token;
+                if (!refreshedToken) {
+                  throw new Error("Refresh response did not include an access token");
+                }
+
+                localStorage.setItem("authToken", refreshedToken);
+                if (newRefreshToken) {
+                  localStorage.setItem("refreshToken", newRefreshToken);
+                }
+
+                return refreshedToken;
+              })
+              .finally(() => {
+                refreshPromise = null;
+              });
           }
 
-          const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-            refreshToken,
-          });
-
-          const { token } = response.data.data;
-          localStorage.setItem("authToken", token);
+          const refreshedToken = await refreshPromise;
 
           // Retry original request
-          originalRequest.headers.Authorization = `Bearer ${token}`;
+          originalRequest.headers.Authorization = `Bearer ${refreshedToken}`;
           return api(originalRequest);
         }
       } catch (refreshError) {

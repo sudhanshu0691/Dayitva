@@ -15,8 +15,9 @@ import {
   TokenPayload,
 } from "../utils/jwt";
 import { AppError } from "../middleware/errorHandler";
-import { RegisterInput, LoginInput } from "../validators/auth.validator";
+import { RegisterInput, LoginInput, SendOtpInput, VerifyOtpInput, ResetPasswordInput } from "../validators/auth.validator";
 import { IUserProfile } from "../types";
+import { generateOtp, sendOtpEmail, sendPasswordResetOtpEmail } from "./email.service";
 
 const SALT_ROUNDS = 12;
 const NONCE_EXPIRY_MINUTES = 5;
@@ -111,26 +112,11 @@ export async function registerUser(input: RegisterInput) {
     });
   }
 
-  // Generate JWT tokens
-  const tokenPayload: TokenPayload = {
-    userId: user.id,
-    role: user.role,
-    walletAddress: user.walletAddress || undefined,
-  };
-  const tokens = generateTokenPair(tokenPayload);
-
-  // Store refresh token
-  await prisma.refreshToken.create({
-    data: {
-      token: tokens.refreshToken,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-    },
-  });
-
+  // Do NOT generate tokens or auto-login - user must verify email first
+  // Registration only creates the user account
   return {
     user: formatUserProfile(user),
-    ...tokens,
+    message: "Registration successful. Please verify your email and then login.",
   };
 }
 
@@ -151,6 +137,11 @@ export async function loginWithCredentials(input: LoginInput) {
   const isValid = await bcrypt.compare(input.password, user.passwordHash);
   if (!isValid) {
     throw new AppError("Invalid email or password", 401);
+  }
+
+  // Check if email is verified
+  if (!user.emailVerified) {
+    throw new AppError("Email not verified. Please verify your email before logging in.", 403);
   }
 
   // Generate tokens
@@ -362,4 +353,173 @@ export async function getCurrentUser(userId: string): Promise<IUserProfile> {
   }
 
   return formatUserProfile(user);
+}
+
+// ============================================================
+// OTP & Email Verification Functions
+// ============================================================
+
+const OTP_EXPIRY_MINUTES = 10;
+
+/**
+ * Send an OTP to the user's email for verification or password reset.
+ */
+export async function sendOtp(input: SendOtpInput) {
+  const { email, type } = input;
+
+  // Check if email exists for forgot password
+  if (type === "FORGOT_PASSWORD") {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new AppError("No account found with this email address", 404);
+    }
+  }
+
+  // Mark any existing unused OTPs as used
+  await prisma.otp.updateMany({
+    where: { email, type, used: false },
+    data: { used: true },
+  });
+
+  // Generate and store new OTP
+  const otp = generateOtp();
+  await prisma.otp.create({
+    data: {
+      email,
+      otp,
+      type,
+      expiresAt: new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000),
+    },
+  });
+
+  // Send OTP via email
+  if (type === "FORGOT_PASSWORD") {
+    await sendPasswordResetOtpEmail(email, otp);
+  } else {
+    await sendOtpEmail(email, otp);
+  }
+
+  // In development, return the OTP for convenience
+  const response: any = {
+    message: `OTP sent to ${email}. Valid for ${OTP_EXPIRY_MINUTES} minutes.`,
+    expiresIn: OTP_EXPIRY_MINUTES * 60,
+  };
+
+  if (env.NODE_ENV === "development") {
+    response.devOtp = otp;
+  }
+
+  return response;
+}
+
+/**
+ * Verify an OTP for email verification or password reset.
+ */
+export async function verifyOtp(input: VerifyOtpInput) {
+  const { email, otp, type } = input;
+
+  // Find a valid, unused OTP
+  const otpRecord = await prisma.otp.findFirst({
+    where: {
+      email,
+      otp,
+      type,
+      used: false,
+      expiresAt: { gte: new Date() },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!otpRecord) {
+    throw new AppError("Invalid or expired OTP", 400);
+  }
+
+  // Mark OTP as used
+  await prisma.otp.update({
+    where: { id: otpRecord.id },
+    data: { used: true },
+  });
+
+  // If this is for email verification, update the user
+  if (type === "VERIFY_EMAIL") {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new AppError("User not found with this email", 404);
+    }
+    // Check if user is already verified
+    if (user.emailVerified) {
+      return { message: "Email already verified", emailVerified: true };
+    }
+    // Mark email as verified
+    await prisma.user.update({
+      where: { email },
+      data: { emailVerified: true },
+    });
+  }
+
+  return { message: "OTP verified successfully", verified: true };
+}
+
+/**
+ * Forgot password - sends OTP to email.
+ */
+export async function forgotPassword(email: string) {
+  return sendOtp({ email, type: "FORGOT_PASSWORD" });
+}
+
+/**
+ * Reset password using OTP verification.
+ */
+export async function resetPassword(input: ResetPasswordInput) {
+  const { email, otp, newPassword } = input;
+
+  // Verify OTP first
+  await verifyOtp({ email, otp, type: "FORGOT_PASSWORD" });
+
+  // Hash new password
+  const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+  // Update user password
+  await prisma.user.update({
+    where: { email },
+    data: { passwordHash },
+  });
+
+  // Revoke all refresh tokens for this user (force re-login)
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user) {
+    await prisma.refreshToken.deleteMany({
+      where: { userId: user.id },
+    });
+  }
+
+  return { message: "Password reset successfully. Please login with your new password." };
+}
+
+/**
+ * Resend OTP (same as sendOtp but with a cooldown check).
+ */
+export async function resendOtp(input: SendOtpInput) {
+  const { email, type } = input;
+
+  // Check if there's a recent OTP that hasn't expired (cooldown)
+  const recentOtp = await prisma.otp.findFirst({
+    where: {
+      email,
+      type,
+      used: false,
+      expiresAt: { gte: new Date() },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (recentOtp) {
+    // If OTP was sent less than 30 seconds ago, reject
+    const timeSinceLastOtp = Date.now() - recentOtp.createdAt.getTime();
+    if (timeSinceLastOtp < 30000) {
+      throw new AppError("Please wait 30 seconds before requesting a new OTP", 429);
+    }
+  }
+
+  return sendOtp(input);
 }

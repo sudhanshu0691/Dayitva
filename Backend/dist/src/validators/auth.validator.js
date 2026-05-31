@@ -4,7 +4,7 @@
 // Validates registration, login, nonce requests
 // ============================================================
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshTokenSchema = exports.metamaskLoginSchema = exports.nonceRequestSchema = exports.loginSchema = exports.registerSchema = void 0;
+exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.verifyOtpSchema = exports.sendOtpSchema = exports.refreshTokenSchema = exports.metamaskLoginSchema = exports.nonceRequestSchema = exports.loginSchema = exports.registerSchema = void 0;
 const zod_1 = require("zod");
 /**
  * Registration schema for vendors and officers.
@@ -54,5 +54,34 @@ exports.metamaskLoginSchema = zod_1.z.object({
  */
 exports.refreshTokenSchema = zod_1.z.object({
     refreshToken: zod_1.z.string().min(1, "Refresh token is required"),
+});
+/**
+ * Send OTP schema.
+ */
+exports.sendOtpSchema = zod_1.z.object({
+    email: zod_1.z.string().email("Invalid email address"),
+    type: zod_1.z.enum(["VERIFY_EMAIL", "FORGOT_PASSWORD"]).default("VERIFY_EMAIL"),
+});
+/**
+ * Verify OTP schema.
+ */
+exports.verifyOtpSchema = zod_1.z.object({
+    email: zod_1.z.string().email("Invalid email address"),
+    otp: zod_1.z.string().length(6, "OTP must be 6 digits"),
+    type: zod_1.z.enum(["VERIFY_EMAIL", "FORGOT_PASSWORD"]).default("VERIFY_EMAIL"),
+});
+/**
+ * Forgot password schema.
+ */
+exports.forgotPasswordSchema = zod_1.z.object({
+    email: zod_1.z.string().email("Invalid email address"),
+});
+/**
+ * Reset password schema.
+ */
+exports.resetPasswordSchema = zod_1.z.object({
+    email: zod_1.z.string().email("Invalid email address"),
+    otp: zod_1.z.string().length(6, "OTP must be 6 digits"),
+    newPassword: zod_1.z.string().min(8, "Password must be at least 8 characters"),
 });
 //# sourceMappingURL=auth.validator.js.map

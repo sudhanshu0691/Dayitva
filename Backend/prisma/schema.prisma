@@ -17,7 +17,6 @@ datasource db {
 enum UserRole {
   officer
   vendor
-  public
 }
 
 enum KYCStatus {
@@ -89,14 +88,14 @@ enum NewsCategory {
 
 // --- Core Tables ---
 
-/// Registered users of the TenderChain system (Officers, Vendors, Public)
+/// Registered users of the TenderChain system (Officers, Vendors)
 model User {
   id             String    @id @default(cuid())
   name           String
   email          String    @unique
   mobile         String?
   passwordHash   String?
-  role           UserRole  @default(public)
+  role           UserRole  @default(vendor)
   walletAddress  String?   @unique
   kycStatus      KYCStatus @default(Pending)
   
@@ -115,6 +114,9 @@ model User {
   ministry       String?
   ministryCode   String?
   permissions    String?   // JSON array stored as string
+
+  // Email verification
+  emailVerified  Boolean  @default(false)
 
   // Metadata
   deviceInfo     String?
@@ -283,6 +285,19 @@ model AuditLog {
   user        User?         @relation(fields: [userId], references: [id])
 
   @@map("audit_logs")
+}
+
+/// Email OTPs for email verification and password reset
+model Otp {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  type      String   // VERIFY_EMAIL or FORGOT_PASSWORD
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("otps")
 }
 
 /// User notifications

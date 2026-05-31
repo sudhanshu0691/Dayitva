@@ -44,10 +44,27 @@ const express_1 = require("express");
 const uploadController = __importStar(require("../controllers/upload.controller"));
 const auth_1 = require("../middleware/auth");
 const multer_1 = __importDefault(require("multer"));
+const path_1 = __importDefault(require("path"));
+const os_1 = __importDefault(require("os"));
+const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
-// Configure multer for file uploads
+// Ensure temp directory exists
+const tempDir = path_1.default.join(os_1.default.tmpdir(), "tenderchain-uploads");
+if (!fs_1.default.existsSync(tempDir)) {
+    fs_1.default.mkdirSync(tempDir, { recursive: true });
+}
+// Configure multer for file uploads - use diskStorage for file.path compatibility
+const storage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, tempDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, uniqueSuffix + path_1.default.extname(file.originalname));
+    },
+});
 const upload = (0, multer_1.default)({
-    storage: multer_1.default.memoryStorage(),
+    storage,
     limits: {
         fileSize: 10 * 1024 * 1024, // 10MB
     },
@@ -67,7 +84,7 @@ const upload = (0, multer_1.default)({
             cb(null, true);
         }
         else {
-            cb(null, false);
+            cb(new Error("File type not allowed. Allowed: PDF, DOC, DOCX, XLS, XLSX, JPEG, PNG, GIF"), false);
         }
     },
 });

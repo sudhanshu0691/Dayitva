@@ -11,11 +11,39 @@ import { env } from "../config/env";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 
+function encodeObjectKeyForUrl(key: string): string {
+  return key
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
+function buildObjectPublicUrl(key: string): string {
+  const encodedKey = encodeObjectKeyForUrl(key);
+
+  if (env.AWS_S3_PUBLIC_URL) {
+    return `${env.AWS_S3_PUBLIC_URL.replace(/\/$/, "")}/${encodedKey}`;
+  }
+
+  if (env.AWS_S3_ENDPOINT) {
+    const endpoint = new URL(env.AWS_S3_ENDPOINT);
+    if (env.AWS_S3_FORCE_PATH_STYLE) {
+      return `${endpoint.origin}/${env.AWS_S3_BUCKET}/${encodedKey}`;
+    }
+    return `${endpoint.protocol}//${env.AWS_S3_BUCKET}.${endpoint.host}/${encodedKey}`;
+  }
+
+  return `https://${env.AWS_S3_BUCKET}.s3.${env.AWS_REGION}.amazonaws.com/${encodedKey}`;
+}
+
 const s3Client = new S3Client({
   region: env.AWS_REGION,
+  endpoint: env.AWS_S3_ENDPOINT || undefined,
+  forcePathStyle: env.AWS_S3_FORCE_PATH_STYLE,
   credentials: {
     accessKeyId: env.AWS_ACCESS_KEY_ID,
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+    sessionToken: env.AWS_SESSION_TOKEN || undefined,
   },
 });
 
@@ -98,7 +126,7 @@ export async function uploadToS3(files: any[], userId?: string) {
 
       await s3Client.send(command);
 
-      const url = `https://${env.AWS_S3_BUCKET}.s3.${env.AWS_REGION}.amazonaws.com/${fileName}`;
+      const url = buildObjectPublicUrl(fileName);
       urls.push(url);
       uploadedFiles.push({
         name: file.originalname,
@@ -112,8 +140,30 @@ export async function uploadToS3(files: any[], userId?: string) {
 
       // Clean up temp file
       fs.unlinkSync(file.path);
-    } catch (error) {
-      logger.error(`S3 upload error for ${file.originalname}`, { error });
+    } catch (error: any) {
+      const details = {
+        name: error?.name,
+        message: error?.message,
+        code: error?.code,
+        awsRequestId: error?.$metadata?.requestId,
+        awsExtendedRequestId: error?.$metadata?.extendedRequestId,
+        httpStatusCode: error?.$metadata?.httpStatusCode,
+        bucket: env.AWS_S3_BUCKET,
+        region: env.AWS_REGION,
+        endpoint: env.AWS_S3_ENDPOINT || "aws-default",
+        forcePathStyle: env.AWS_S3_FORCE_PATH_STYLE,
+        hasSessionToken: Boolean(env.AWS_SESSION_TOKEN),
+      };
+
+      logger.error(`S3 upload error for ${file.originalname}`, details);
+
+      if ((error?.message || "").includes("The request signature we calculated does not match")) {
+        throw new AppError(
+          "S3 signature mismatch. Check AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN (if temporary creds), and AWS_S3_ENDPOINT/path-style settings.",
+          500
+        );
+      }
+
       throw new AppError("Failed to upload file to S3", 500);
     }
   }
@@ -151,8 +201,20 @@ export async function deleteS3File(fileKey: string) {
 
     await s3Client.send(command);
     logger.info(`File deleted from S3: ${fileKey}`);
-  } catch (error) {
-    logger.error(`S3 delete error for ${fileKey}`, { error });
+  } catch (error: any) {
+    logger.error(`S3 delete error for ${fileKey}`, {
+      name: error?.name,
+      message: error?.message,
+      code: error?.code,
+      awsRequestId: error?.$metadata?.requestId,
+      awsExtendedRequestId: error?.$metadata?.extendedRequestId,
+      httpStatusCode: error?.$metadata?.httpStatusCode,
+      bucket: env.AWS_S3_BUCKET,
+      region: env.AWS_REGION,
+      endpoint: env.AWS_S3_ENDPOINT || "aws-default",
+      forcePathStyle: env.AWS_S3_FORCE_PATH_STYLE,
+      hasSessionToken: Boolean(env.AWS_SESSION_TOKEN),
+    });
     throw new AppError("Failed to delete file from S3", 500);
   }
 }

@@ -21,8 +21,4 @@ export declare function isOfficer(req: AuthRequest, _res: Response, next: NextFu
  * Check if the request user is a vendor/bidder.
  */
 export declare function isVendor(req: AuthRequest, _res: Response, next: NextFunction): void;
-/**
- * Check if the request user is a public/citizen/auditor.
- */
-export declare function isPublic(req: AuthRequest, _res: Response, next: NextFunction): void;
 //# sourceMappingURL=roleGuard.d.ts.map

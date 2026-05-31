@@ -1,0 +1,226 @@
+
+Project: Dayitva — Tendering System
+Document: Industry-grade diagram set for inclusion in the report
+Purpose: Provide standardized, production-ready Use Case, DFD (Level 0 & 1), Activity (swimlane) and SDLC diagrams suitable for an engineering report or design appendix.
+
+Assumptions:
+- System handles vendor registration, tender publication, bid submission, evaluation, award recording on blockchain, and notifications.
+- Data stores include relational DB for core entities and a blockchain for auditable awards.
+
+Legend / Notation:
+- External Actor: rectangle with actor name.
+- Process: numbered box (P1, P2, ...).
+- Data Store: cylinder / rounded node (DB, Archive).
+- Data Flow: arrows numbered (DF1, DF2, ...). Use the same numbers in diagram and description.
+
+----
+
+1) Use Cases — concise catalogue
+
+- UC1: Register / Login — Primary actor: Vendor / Admin. Secure authentication, email verification, role assignment.
+- UC2: Publish Tender — Primary actor: Admin. Create tender metadata, attach documents, set evaluation criteria and deadlines.
+- UC3: Search & View Tenders — Primary actor: Vendor. Browse, filter, and view tender details.
+- UC4: Submit Bid — Primary actor: Vendor. Fill bid form, upload supporting documents, sign bid, submit before deadline.
+- UC5: Evaluate Bids & Score — Primary actor: Evaluator. Retrieve bids, apply scoring model, write evaluation report.
+- UC6: Award & Record — Primary actor: Admin. Select winning bid, record award on blockchain, notify stakeholders.
+- UC7: Dispute / Appeals — Primary actor: Vendor. Raise dispute; Admin reviews and resolves.
+
+Use Case: UC4 — Submit Bid (summary)
+- Preconditions: Vendor authenticated; tender open for bids.
+- Main flow: Vendor prepares bid → uploads docs → signs → submits → system validates and stores → confirmation.
+- Postconditions: Bid stored, timestamped, and available for evaluation; immutable proof written to blockchain if required.
+
+Use Case Diagram (high-level)
+
+```mermaid
+flowchart LR
+  actor_V[Vendor]
+  actor_A[Admin]
+  actor_E[Evaluator]
+  System[(Tender System)]
+
+  actor_V -->|UC1 Register/Login| System
+  actor_V -->|UC3 View Tenders| System
+  actor_V -->|UC4 Submit Bid| System
+  actor_E -->|UC5 Evaluate Bids| System
+  actor_A -->|UC2 Publish Tender| System
+  actor_A -->|UC6 Award & Record| System
+
+  System --> DB[(Relational DB)]
+  System --> BC[(Blockchain Ledger)]
+```
+
+----
+
+2) DFD Level 0 — Context (numbered data flows)
+
+Description: single-process context diagram showing external entities and primary data stores.
+
+Data flow numbers (examples):
+- DF1: Vendor -> Tender System: Bid submission, documents
+- DF2: Admin -> Tender System: Tender definitions
+- DF3: System -> DB: CRUD operations for Users/Tenders/Bids
+- DF4: System -> Blockchain: Award transaction
+
+```mermaid
+flowchart LR
+  Vendor([Vendor])
+  Admin([Admin])
+  Evaluator([Evaluator])
+  System[(Tender System)]
+  DB[(Database)]
+  BC[(Blockchain)]
+
+  Vendor -- DF1: Bids & Docs --> System
+  Admin  -- DF2: Tender Data   --> System
+  Evaluator -- DF5: Evaluation Requests --> System
+  System -- DF3: Persist/Query --> DB
+  System -- DF4: Award Tx       --> BC
+```
+
+----
+
+3) DFD Level 1 — Decomposition of `Tender System`
+
+Process breakdown and primary data flows. Numbered processes and flows help map responsibilities to components/services.
+
+Processes:
+- P1: User & Authentication Service
+- P2: Tender Management Service
+- P3: Bidding Service (upload, validation)
+- P4: Evaluation & Scoring Engine
+- P5: Notification & Reporting Service
+- P6: Blockchain Integration Service
+
+Key data stores:
+- DS1: Users
+- DS2: Tenders
+- DS3: Bids & Attachments
+- DS4: Audit / Logs
+
+DF mapping (Level 1 samples):
+- DF10: Vendor -> P1 (login/register)
+- DF11: P2 -> DS2 (create/update tender)
+- DF12: Vendor -> P3 (submit bid + files)
+- DF13: P3 -> DS3 (store bid)
+- DF14: P4 -> DS3 (read bids for evaluation)
+- DF15: P4 -> P6 (award payload)
+- DF16: P6 -> BC (commit award)
+- DF17: Any -> P5 (notification requests)
+
+```mermaid
+flowchart TD
+  subgraph External
+    V[Vendor]
+    A[Admin]
+    E[Evaluator]
+  end
+
+  subgraph System
+    P1[ P1: Auth & User Service ]
+    P2[ P2: Tender Management ]
+    P3[ P3: Bidding Service ]
+    P4[ P4: Evaluation & Scoring ]
+    P5[ P5: Notification Service ]
+    P6[ P6: Blockchain Integration ]
+    DS1[(DS1: Users)]
+    DS2[(DS2: Tenders)]
+    DS3[(DS3: Bids & Files)]
+    DS4[(DS4: Audit / Logs)]
+  end
+
+  V -- DF10 --> P1
+  A -- DF11 --> P2
+  V -- DF12 --> P3
+  P3 -- DF13 --> DS3
+  P2 -- DF11 --> DS2
+  P4 -- DF14 --> DS3
+  P4 -- DF15 --> P6
+  P6 -- DF16 --> BC[(Blockchain)]
+  P1 -- DF3  --> DS1
+  P3 -- DF4  --> DS4
+  P5 -- DF17 --> V
+  P5 -- DF17 --> A
+```
+
+Notes:
+- Keep file storage for attachments on a secure object store (S3-compatible) and store references in DS3.
+- DS4 must be append-only for auditability.
+
+----
+
+4) Activity Diagram (Swimlane) — Submit Bid (detailed)
+
+```mermaid
+flowchart TD
+  subgraph VendorLane[Vendor]
+    V_Start((Start)) --> V_Login[Login / Authenticate]
+    V_Select[Select Tender]
+    V_Prepare[Prepare Bid & Attach Documents]
+    V_Sign[Sign Bid]
+    V_Submit[Submit Bid]
+  end
+
+  subgraph SystemLane[Tender System]
+    S_Validate[Validate Bid & Files]
+    S_Store[Store Bid Record]
+    S_Confirm[Send Confirmation]
+    S_Error[Return Validation Errors]
+  end
+
+  V_Start --> V_Login --> V_Select --> V_Prepare --> V_Sign --> V_Submit
+  V_Submit --> S_Validate
+  S_Validate -->|valid| S_Store --> S_Confirm --> V_Submit
+  S_Validate -->|invalid| S_Error --> V_Prepare
+  S_Confirm --> V_Submit
+```
+
+Alternate flows:
+- If authentication fails, redirect to registration flow (UC1).
+- If file validation fails, return error with supported formats and size limits.
+
+----
+
+5) SDLC Recommendation (industry-level)
+
+Preferred model: Agile (Scrum) with CI/CD and automated testing. Rationale: iterative delivery, frequent stakeholder feedback, and faster time-to-value.
+
+Minimal process & artifacts:
+- Product Backlog (epics, features)
+- Sprint Planning, Daily Standups, Sprint Review, Retrospective
+- Definition of Done (unit tests, integration tests, linting, security scan, deployment manifest)
+- CI pipeline: lint -> unit tests -> build -> integration tests -> security checks -> deploy to staging
+- CD pipeline: gated release to production with canary rollout and monitoring
+
+High-level Agile iteration flow:
+
+```mermaid
+flowchart LR
+  Backlog[Product Backlog] --> SprintPlan[Sprint Planning]
+  SprintPlan --> Dev[Development (CI builds)]
+  Dev --> QA[Automated + Manual QA]
+  QA --> Staging[Staging Deploy]
+  Staging --> Review[Stakeholder Review]
+  Review --> ProdDeploy[Production Deploy (Canary)]
+  ProdDeploy --> Monitor[Monitoring & Alerts]
+  Monitor --> Backlog
+```
+
+Quality & governance recommendations:
+- Use code review + PR templates.
+- Require automated tests coverage thresholds and static analysis tools (ESLint, TypeScript strict mode, Snyk/Dependabot for deps).
+- Maintain infra-as-code (Terraform/ARM/Bicep) for deployments.
+- Maintain deployment runbooks and incident response playbooks.
+
+----
+
+How to include these diagrams in the report:
+- Option A: Paste the Mermaid blocks into the Markdown report and render (GitLab/GitHub Pages / MkDocs with Mermaid extension).
+- Option B: Use a Mermaid live editor (or CLI tool `mmdc`) to export PNG/SVG and embed images in the final PDF/Word report.
+
+If you want, I can:
+- export PNG/SVG files for each diagram and add them under `Frontend/public/assets/diagrams/` or project `docs/` folder, or
+- embed the rendered images into an existing report file (tell me which one).
+
+End of professional diagram set.
+

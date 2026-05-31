@@ -22,7 +22,7 @@ export const PortalSidebar: React.FC = () => {
   const pathname = usePathname();
   const { currentUser, walletConnected, walletBalance } = useApp();
 
-  if (!currentUser || currentUser.role === "public") {
+  if (!currentUser) {
     return null;
   }
 

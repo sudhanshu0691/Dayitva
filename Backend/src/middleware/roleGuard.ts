@@ -54,9 +54,3 @@ export function isVendor(req: AuthRequest, _res: Response, next: NextFunction): 
   authorize("vendor")(req, _res, next);
 }
 
-/**
- * Check if the request user is a public/citizen/auditor.
- */
-export function isPublic(req: AuthRequest, _res: Response, next: NextFunction): void {
-  authorize("public")(req, _res, next);
-}

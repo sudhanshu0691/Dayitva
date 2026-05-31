@@ -76,5 +76,43 @@ router.get("/unread-count", auth_1.authenticate, async (req, res, next) => {
         next(error);
     }
 });
+/**
+ * DELETE /api/notifications/:id
+ * Delete a single notification by ID.
+ */
+router.delete("/:id", auth_1.authenticate, async (req, res, next) => {
+    try {
+        const notificationId = req.params.id;
+        const notification = await database_1.prisma.notification.findUnique({
+            where: { id: notificationId },
+        });
+        if (!notification) {
+            return res.status(404).json({ success: false, message: "Notification not found" });
+        }
+        if (notification.userId !== req.user.userId) {
+            return res.status(403).json({ success: false, message: "Not authorized to delete this notification" });
+        }
+        await database_1.prisma.notification.delete({ where: { id: notificationId } });
+        res.json({ success: true, message: "Notification deleted" });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+/**
+ * DELETE /api/notifications
+ * Delete all notifications for current user.
+ */
+router.delete("/", auth_1.authenticate, async (req, res, next) => {
+    try {
+        await database_1.prisma.notification.deleteMany({
+            where: { userId: req.user.userId },
+        });
+        res.json({ success: true, message: "All notifications deleted" });
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.default = router;
 //# sourceMappingURL=notifications.routes.js.map

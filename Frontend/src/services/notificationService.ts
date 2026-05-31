@@ -4,16 +4,7 @@
 // ============================================================
 
 import api from "./api";
-
-export interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  category: string;
-  read: boolean;
-  timestamp: string;
-  actionUrl?: string;
-}
+import { Notification } from "../types";
 
 class NotificationService {
   async getNotifications(): Promise<Notification[]> {

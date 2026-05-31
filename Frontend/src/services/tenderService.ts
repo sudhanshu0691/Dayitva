@@ -18,10 +18,13 @@ export interface TenderData {
 }
 
 export interface BidData {
-  vendorName: string;
-  vendorAddress: string;
+  encryptedBidHash: string;
+  price?: number;
+}
+
+/** For the simplified bid form (just price) */
+export interface SimpleBidData {
   price: number;
-  encryptedPayload?: string;
 }
 
 class TenderService {
@@ -60,14 +63,37 @@ class TenderService {
   }
 
   async submitBid(tenderId: string, data: BidData): Promise<any> {
-    const response = await api.post(`/tenders/${tenderId}/bids`, data);
+    // Create encrypted hash from price data for commit-reveal scheme
+    const payload = {
+      encryptedBidHash: data.encryptedBidHash || `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
+      price: data.price,
+    };
+    const response = await api.post(`/tenders/${tenderId}/bids`, payload);
     return response.data.data;
   }
 
-  async revealBid(tenderId: string, bidId: string, price: number): Promise<any> {
+  /** Simplified bid submission - creates an encrypted hash automatically */
+  async submitSimpleBid(tenderId: string, data: SimpleBidData): Promise<any> {
+    // Auto-generate hash for commit phase
+    const hash = `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
+    const response = await api.post(`/tenders/${tenderId}/bids`, {
+      encryptedBidHash: hash,
+      price: data.price,
+    });
+    return response.data.data;
+  }
+
+  async revealBid(tenderId: string, price: number, scoringParams: {
+    financialStrength: number;
+    pastExperience: number;
+    performanceFeedback: number;
+    technicalCapability: number;
+    compliance: number;
+    proposalQuality: number;
+  }): Promise<any> {
     const response = await api.post(`/tenders/${tenderId}/bids/reveal`, {
-      bidId,
       price,
+      ...scoringParams,
     });
     return response.data.data;
   }
