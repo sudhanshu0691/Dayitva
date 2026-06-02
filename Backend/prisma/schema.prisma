@@ -29,6 +29,7 @@ enum TenderStatus {
   UnderEvaluation
   Awarded
   Cancelled
+  Expired
 }
 
 enum BidStatus {

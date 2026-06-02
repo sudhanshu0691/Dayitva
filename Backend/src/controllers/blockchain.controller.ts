@@ -6,6 +6,7 @@
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "../types";
 import * as blockchainService from "../services/blockchain.service";
+import { env } from "../config/env";
 
 /**
  * Store a blockchain transaction after MetaMask confirmation
@@ -86,12 +87,11 @@ export async function getTenderTransactions(req: AuthRequest, res: Response, nex
  * Get contract info for frontend
  */
 export async function getContractInfo(req: AuthRequest, res: Response) {
-  const { env } = await import("../config/env");
   res.json({
     contractAddress: env.CONTRACT_ADDRESS,
-    chainId: env.SEPOLIA_CHAIN_ID,
-    rpcUrl: env.SEPOLIA_RPC_URL,
-    etherscanBaseUrl: env.ETHERSCAN_BASE_URL,
+    chainId: env.BLOCKCHAIN_CHAIN_ID,
+    rpcUrl: env.BLOCKCHAIN_RPC_URL,
     abi: blockchainService.getContractABI(),
   });
 }
+

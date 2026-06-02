@@ -14,6 +14,7 @@ import { logger } from "./utils/logger";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { generalLimiter } from "./middleware/rateLimiter";
 import { setIO } from "./services/socket.service";
+import { checkAndUpdateDeadlines } from "./cron/deadlineChecker";
 import routes from "./routes/index";
 
 // Validate required environment variables
@@ -100,6 +101,33 @@ app.use("/api", routes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
+// --- Periodic Deadline Checker (every 5 minutes) ---
+async function startDeadlineChecker() {
+  const DEADLINE_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+  // Run immediately on startup
+  try {
+    const result = await checkAndUpdateDeadlines();
+    logger.info(`⏰ Initial deadline check: ${result.updated} tenders updated`);
+  } catch (error) {
+    logger.error("❌ Initial deadline check failed", { error });
+  }
+
+  // Then run periodically
+  setInterval(async () => {
+    try {
+      const result = await checkAndUpdateDeadlines();
+      if (result.updated > 0) {
+        logger.info(`⏰ Deadline check: ${result.updated} tenders auto-updated`);
+      }
+    } catch (error) {
+      logger.error("❌ Periodic deadline check failed", { error });
+    }
+  }, DEADLINE_CHECK_INTERVAL);
+
+  logger.info(`⏰ Deadline checker scheduled every 5 minutes`);
+}
+
 // --- Database Connection & Server Start ---
 async function startServer() {
   try {
@@ -107,13 +135,16 @@ async function startServer() {
     await prisma.$connect();
     logger.info("✅ Database connected successfully");
 
+    // Start deadline checker
+    startDeadlineChecker();
+
     // Start server
     server.listen(env.PORT, () => {
       logger.info(`🚀 Decentralized TenderChain API Server`);
       logger.info(`   Port: ${env.PORT}`);
       logger.info(`   Environment: ${env.NODE_ENV}`);
       logger.info(`   Frontend URL: ${env.FRONTEND_URL}`);
-      logger.info(`   Blockchain: 🔗 Sepolia Testnet (Real Transactions)`);
+      logger.info(`   Blockchain: 🔗 Ganache Local (Real Transactions via MetaMask)`);
       logger.info(`   API: http://localhost:${env.PORT}/api`);
       logger.info(`   Health: http://localhost:${env.PORT}/api/health`);
     });

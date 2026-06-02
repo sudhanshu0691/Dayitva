@@ -12,17 +12,19 @@ declare global {
 const CONTRACT_ABI = [
   "function createTender(string _title, string _ipfsHash, uint256 _budget, uint256 _deadline, uint256 _minScore, bool _msmeQuota) external returns (uint256 tenderId)",
   "function submitBid(uint256 _tenderId, bytes32 _encryptedBidHash) external",
-  "function revealBid(uint256 _tenderId, uint256 _price, uint256[6] calldata _scoreHashes, bytes32 _nonce) external",
-  "function evaluateWithWinner(uint256 _tenderId, address _winner, uint256 _winnerScore) external",
+  "function revealBid(uint256 _tenderId, uint256 _price, uint256[6] calldata _scores) external",
+  "function declareWinner(uint256 _tenderId, address _winner, uint256 _winnerScore) external",
+  "function closeTender(uint256 _tenderId) external",
 ];
+
+const GANACHE_CHAIN_ID = 1337;
+const GANACHE_CHAIN_ID_HEX = "0x539";
 
 export function useMetaMask() {
   const [account, setAccount] = useState<string>("");
   const [chainId, setChainId] = useState<number>(0);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string>("");
-
-  const SEPOLIA_CHAIN_ID = 11155111;
 
   const checkConnection = useCallback(async () => {
     if (typeof window.ethereum !== "undefined") {
@@ -89,28 +91,29 @@ export function useMetaMask() {
       const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
       setChainId(parseInt(currentChainId, 16));
 
-      if (parseInt(currentChainId, 16) !== SEPOLIA_CHAIN_ID) {
+      if (parseInt(currentChainId, 16) !== GANACHE_CHAIN_ID) {
         try {
           await window.ethereum.request({
             method: "wallet_switchEthereumChain",
-            params: [{ chainId: "0xaa36a7" }], // Sepolia chainId in hex
+            params: [{ chainId: GANACHE_CHAIN_ID_HEX }],
           });
         } catch (switchError: any) {
           if (switchError.code === 4902) {
-            await window.ethereum.request({
-              method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: "0xaa36a7",
-                  chainName: "Sepolia Testnet",
+            try {
+              await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                  chainId: GANACHE_CHAIN_ID_HEX,
+                  chainName: "Ganache Local",
                   nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-                  rpcUrls: ["https://sepolia.infura.io/v3/"],
-                  blockExplorerUrls: ["https://sepolia.etherscan.io"],
-                },
-              ],
-            });
+                  rpcUrls: ["http://127.0.0.1:7545"],
+                }],
+              });
+            } catch {
+              throw new Error("Failed to add Ganache network");
+            }
           }
-          throw new Error("Please switch to Sepolia Testnet");
+          throw new Error("Please switch to Ganache network");
         }
       }
 
@@ -130,7 +133,7 @@ export function useMetaMask() {
     params: any[]
   ): Promise<{ txHash: string; receipt: any }> => {
     if (!account) throw new Error("Wallet not connected");
-    if (chainId !== SEPOLIA_CHAIN_ID) throw new Error("Please switch to Sepolia network");
+    if (chainId !== GANACHE_CHAIN_ID) throw new Error("Please switch to Ganache network");
 
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
@@ -142,19 +145,14 @@ export function useMetaMask() {
     return { txHash: receipt.hash, receipt };
   };
 
-  const getEtherscanLink = (txHash: string): string => {
-    return `https://sepolia.etherscan.io/tx/${txHash}`;
-  };
-
   return {
     account,
     chainId,
     isConnecting,
     error,
     isConnected: !!account,
-    isCorrectNetwork: chainId === SEPOLIA_CHAIN_ID,
+    isCorrectNetwork: chainId === GANACHE_CHAIN_ID,
     connectWallet,
     signTransaction,
-    getEtherscanLink,
   };
 }

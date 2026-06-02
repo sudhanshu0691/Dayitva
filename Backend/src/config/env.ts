@@ -40,13 +40,16 @@ export const env = {
   AWS_S3_FORCE_PATH_STYLE: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
 
   // ===========================================
-  // Ethereum Sepolia Testnet (Real Blockchain)
+  // Ganache Local Blockchain (via MetaMask)
   // ===========================================
-  SEPOLIA_RPC_URL: process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID",
-  SEPOLIA_CHAIN_ID: parseInt(process.env.SEPOLIA_CHAIN_ID || "11155111", 10),
+  // Ganache default: http://127.0.0.1:7545 or http://127.0.0.1:8545
+  // Chain ID: 1337 (Ganache default) or 5777
+  BLOCKCHAIN_RPC_URL: process.env.BLOCKCHAIN_RPC_URL || "http://127.0.0.1:7545",
+  BLOCKCHAIN_CHAIN_ID: parseInt(process.env.BLOCKCHAIN_CHAIN_ID || "1337", 10),
   CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || "",
-  ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY || "",
-  ETHERSCAN_BASE_URL: process.env.ETHERSCAN_BASE_URL || "https://sepolia.etherscan.io",
+  
+  // Optional block explorer (Ganache has no explorer by default)
+  BLOCKCHAIN_EXPLORER_URL: process.env.BLOCKCHAIN_EXPLORER_URL || "",
 
   // Socket.io
   SOCKET_CORS_ORIGIN: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3000",
@@ -69,7 +72,7 @@ export function validateEnv(): void {
   const requiredVars = ["DATABASE_URL", "JWT_SECRET", "JWT_REFRESH_SECRET"];
   for (const varName of requiredVars) {
     if (!process.env[varName]) {
-      console.error(`❌ Missing required environment variable: ${varName}`);
+      console.error(`Missing required environment variable: ${varName}`);
       console.error("   Copy .env.example to .env and fill in the values");
       process.exit(1);
     }

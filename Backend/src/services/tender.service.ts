@@ -7,42 +7,6 @@ import { prisma } from "../config/database";
 import { AppError } from "../middleware/errorHandler";
 import { CreateTenderInput, UpdateTenderInput, TenderQueryInput } from "../validators/tender.validator";
 import { ITender, IBid, IAuditStep, IPFSFile } from "../types";
-import { createTenderOnChain, isBlockchainReachable, getGasPrice } from "./blockchain.service";
-
-const BLOCKCHAIN_SIMULATION_MODE = process.env.BLOCKCHAIN_SIMULATION_MODE !== "false";
-
-/**
- * Generate transaction data from the real blockchain or simulation.
- */
-async function generateTxData(tenderInput?: { title: string; ipfsHash: string; budget: number; deadline: Date; minScore: number; msmeQuota: boolean }) {
-  if (!BLOCKCHAIN_SIMULATION_MODE && tenderInput) {
-    try {
-      const isReachable = await isBlockchainReachable();
-      if (isReachable) {
-        const result = await createTenderOnChain(
-          tenderInput.title,
-          tenderInput.ipfsHash,
-          tenderInput.budget,
-          tenderInput.deadline,
-          tenderInput.minScore,
-          tenderInput.msmeQuota
-        );
-        return {
-          txHash: result.txHash,
-          blockNumber: result.blockNumber,
-        };
-      }
-    } catch (error: any) {
-      console.error("Blockchain transaction failed, falling back to simulation:", error.message);
-    }
-  }
-  // Fallback to simulation
-  return {
-    txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-    blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-  };
-}
-
 /**
  * Format a Prisma tender with bids and audit logs into ITender shape.
  */
@@ -116,18 +80,9 @@ function formatAuditLog(log: any): IAuditStep {
 
 /**
  * Create a new tender (Officer only).
+ * txHash is provided from MetaMask - the frontend handles the real blockchain transaction
  */
-export async function createTender(input: CreateTenderInput, officerId: string) {
-  const chainInput = {
-    title: input.title,
-    ipfsHash: input.ipfsHash || "",
-    budget: input.budget,
-    deadline: new Date(input.deadline),
-    minScore: input.minScore || 0,
-    msmeQuota: input.msmeQuota,
-  };
-  const txData = await generateTxData(chainInput);
-
+export async function createTender(input: CreateTenderInput & { txHash?: string; blockNumber?: number }, officerId: string) {
   const tender = await prisma.tender.create({
     data: {
       title: input.title,
@@ -140,8 +95,8 @@ export async function createTender(input: CreateTenderInput, officerId: string) 
       criteria: JSON.stringify(input.criteria),
       ipfsHash: input.ipfsHash || null,
       minScore: input.minScore || 0,
-      txHash: txData.txHash,
-      blockNumber: txData.blockNumber,
+      txHash: input.txHash || null,
+      blockNumber: input.blockNumber || null,
       officerId,
       // Create tender files if provided
       tenderFiles: input.ipfsFiles
@@ -164,8 +119,8 @@ export async function createTender(input: CreateTenderInput, officerId: string) 
           },
           {
             title: "Tender Published",
-            description: `Tender published on-chain with IPFS reference`,
-            txHash: txData.txHash,
+            description: `Tender published on-chain via MetaMask`,
+            txHash: input.txHash || null,
             iconType: "published",
           },
         ],

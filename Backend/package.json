@@ -12,10 +12,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node prisma/seed.ts",
     "prisma:studio": "prisma studio",
-    "contract:compile": "hardhat compile",
-    "contract:deploy": "hardhat run scripts/deploy.ts --network ganache",
-    "contract:verify": "echo \"Verification not required for local Ganache\"",
-    "contract:test": "hardhat test",
+    "cron:check-deadlines": "ts-node src/cron/deadlineChecker.ts",
     "lint": "eslint src/**/*.ts",
     "test": "jest --passWithNoTests"
   },

@@ -1,170 +1,18 @@
-/*
- * =============================================================================
- * TENDERCHAIN DESIGN SYSTEM — intentionally human-crafted, not AI-generated
- * =============================================================================
- *
- * DESIGN PHILOSOPHY:
- * This is NOT a Tailwind starter template. Every color, font pairing, spacing
- * decision, and quirky inconsistency is a deliberate choice — made by a
- * developer who has opinions about what government blockchain infrastructure
- * SHOULD look like.
- *
- * — The palette is inspired by terminal emulators, Indian government documents,
- *   and mid-century Indian modernist design (think Charles Correa buildings,
- *   old PWD signboards, and dot-matrix printouts).
- *
- * — The typography pairs DM Sans (for readability with character) against
- *   IBM Plex Mono (for the terminal/hacker/ledger feel). Monospace headings
- *   are a power move — they say "this was built by people who write code."
- *
- * — Rough edges are intentional. Not every shadow is the same. Not every
- *   border radius is equal. The UI should feel like it was assembled by
- *   humans, not extruded from a design system factory.
- *
- * — The amber accent (#d97706 / hsl(38 92% 44%)) nods to the Ashoka Chakra
- *   and old-government-stamp wax seals. The deep #0d0d12 background mimics
- *   actual terminal dark modes (not the sanitized "dark gray" of frameworks).
- * =============================================================================
- */
-
-/* === TYPEFACES ===
- *
- * Why these fonts (and NOT Inter or Merriweather):
- *
- * • IBM Plex Mono — Real developers use monospace for structure. Plex Mono
- *   has warmth and humanity that JetBrains Mono and Fira Code lack. It's
- *   professional without being cold. We use it for ALL headings and code
- *   elements. This is deliberate: blockchain data should LOOK like code.
- *
- * • DM Sans — A "grotesque" sans-serif with actual personality. Unlike Inter
- *   (the default "I have no opinions" font), DM Sans has slightly squared
- *   curves and a distinct lowercase 'a'. At body sizes it's invisible —
- *   which is exactly what body text should be — but up close it has character.
- *   Weight 400 for body, weight 500 for emphasis.
- *
- * No system font fallbacks for headings — we want the monospace to be
- * unapologetic. Body text gets a system stack for performance.
- */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /*
-     * LIGHT THEME — "Warm Government Issue"
-     *
-     * Background: hsl(38 29% 95%) — Not #ffffff. Not even close. This is
-     * the color of old government bond paper, or the back of a railway
-     * reservation chart. It has warmth and history.
-     *
-     * Foreground: hsl(24 10% 10%) — Warm charcoal, not #000. Pure black
-     * text feels digital and cheap. This brown-black feels like ink on paper.
-     *
-     * Primary: hsl(38 92% 44%) — Burnt amber. This is the color of sealing
-     * wax, of the Ashoka Chakra on official letterhead, of old brass
-     * nameplates on government buildings. It's NOT a "brand color" — it's
-     * an intentional cultural reference.
-     *
-     * Secondary: hsl(35 12% 88%) — Warm stone. The color of Delhi sandstone.
-     *
-     * Borders: hsl(35 12% 81%) — Visible but not aggressive. Like pencil
-     * lines on a blueprint.
-     *
-     * The sapphire/accent-blue is a deliberate obnoxious choice — it
-     * clashes beautifully with the warmth, like a "TOP SECRET" stamp
-     * on a beige folder.
-     */
-    --background: 38 29% 95%;
-    --foreground: 24 10% 10%;
-    --card: 38 20% 97%;
-    --card-foreground: 24 10% 10%;
-    --popover: 38 20% 97%;
-    --popover-foreground: 24 10% 10%;
-    --primary: 38 92% 44%;
-    --primary-foreground: 38 20% 97%;
-    --secondary: 35 12% 88%;
-    --secondary-foreground: 24 10% 14%;
-    --muted: 35 12% 90%;
-    --muted-foreground: 35 6% 45%;
-    --accent: 224 76% 48%;
-    --accent-foreground: 38 20% 97%;
-    --destructive: 0 63% 48%;
-    --destructive-foreground: 38 20% 97%;
-    --border: 35 12% 81%;
-    --input: 35 12% 81%;
-    --ring: 38 92% 44%;
-
-    /*
-     * RADIUS — deliberately NOT uniform.
-     *
-     * Cards: 6px — a slightly odd value (not 8px, not 4px). It looks
-     * intentional because it IS intentional.
-     * Modals/popovers: 10px — more rounded, creates hierarchy.
-     * Buttons: 4px — sharper, more utilitarian.
-     * We override in different contexts to avoid the "every corner is
-     * equally round" disease that plagues Tailwind templates.
-     */
-    --radius: 6px;
-    --radius-lg: 10px;
-    --radius-sm: 4px;
-
-    /* Font scale for accessibility — preserved from original */
-    --app-font-scale: 100;
-  }
-
-  .dark {
-    /*
-     * DARK THEME — "Terminal Deep"
-     *
-     * Background: hsl(240 24% 6%) — #0d0d12. This is not a framework dark.
-     * This is the color of an actual terminal emulator (kitty, alacritty,
-     * or a 1980s VT220 with the brightness turned down). It has a barely-
-     * perceptible blue undertone that makes it feel deeper than #111.
-     *
-     * Foreground: hsl(240 6% 90%) — #e4e4e7. Warm off-white. Pure #fff
-     * on dark hurts the eyes after 5 minutes. This is easier to read.
-     *
-     * Primary: Same burnt amber as light mode — hsl(38 92% 44%). On dark
-     * it glows like a warning light on a server rack. It's aggressive
-     * and intentional.
-     *
-     * Card surfaces use progressive levels: 9%, 11%, 13% lightness.
-     * This creates a subtle 3D stacking effect without shadows.
-     *
-     * Borders: hsl(240 16% 15%) — #1e1e2e. Just barely lighter than
-     * the background. Enough to define space, not enough to compete.
-     *
-     * The muted foreground (#6b6b7a) is deliberately LOW contrast.
-     * Not everything needs to be readable. Some things should
-     * recede into the background. This gives the UI depth.
-     *
-     * Why teal for accent in dark mode instead of sapphire?
-     * Because on a dark background, teal (#0d9488) reads like a
-     * terminal success message. It's a subtle inside-joke for
-     * developers who recognize "make green text go brrr."
-     */
-    --background: 240 24% 6%;
-    --foreground: 240 6% 90%;
-    --card: 240 20% 9%;
-    --card-foreground: 240 6% 90%;
-    --popover: 240 20% 11%;
-    --popover-foreground: 240 6% 90%;
-    --primary: 38 92% 44%;
-    --primary-foreground: 240 24% 6%;
-    --secondary: 240 16% 11%;
-    --secondary-foreground: 240 6% 88%;
-    --muted: 240 16% 9%;
-    --muted-foreground: 240 4% 52%;
-    --accent: 173 80% 32%;
-    --accent-foreground: 240 6% 90%;
-    --destructive: 0 63% 48%;
-    --destructive-foreground: 240 6% 90%;
-    --border: 240 16% 15%;
-    --input: 240 16% 15%;
-    --ring: 38 92% 44%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 5.9%;
+    --card-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --border: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.75rem;
   }
 }
 
@@ -172,249 +20,86 @@
   * {
     @apply border-border;
   }
-
-  html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: calc(16px * var(--app-font-scale, 100) / 100);
-  }
-
-  /*
-   * BODY — DM Sans for readability
-   * Letter-spacing: 0.01em (slightly loose) — makes long-form text
-   * easier to scan. Tight letter-spacing on body is an AI-template tell.
-   * Line-height: 1.6 — more generous than the default 1.45, giving
-   * text room to breathe.
-   *
-   * font-feature-settings: "calt" enables contextual alternates in DM Sans,
-   * giving subtle shape variations to letters like "a" and "g".
-   */
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1, "kern" 1;
-    -webkit-font-variant-ligatures: contextual;
-    font-variant-ligatures: contextual;
-    line-height: 1.6;
-    letter-spacing: 0.01em;
+    font-family: 'Inter', sans-serif;
   }
+}
 
-  /*
-   * HEADING SCALE — IBM Plex Mono for all headings
-   *
-   * Why monospace headings? Because this is a BLOCKCHAIN app. Every
-   * heading should feel like it's displaying ledger data, hash values,
-   * or terminal output. The tight letter-spacing (-0.04em on h1)
-   * compensates for monospace's natural width and creates density.
-   *
-   * We use STRETCHED weight-to-size ratios:
-   *   h1: 2.5rem @ 700 — commanding, dense
-   *   h2: 1.75rem @ 600 — confident, clear
-   *   h3: 1.25rem @ 600 — structured
-   *   h4: 1rem @ 500 — subtle
-   *
-   * No font-bold / font-black / tracking-tight utility classes here —
-   * we define the exact value because "font-extrabold" is the same
-   * for every heading in a Tailwind template. Our weights vary.
-   */
-  h1 {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-  }
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-  h2 {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 1.75rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 0.75rem;
-  }
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
 
-  h3 {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-    margin-bottom: 0.5rem;
-  }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
 
-  h4 {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.35;
-    margin-bottom: 0.375rem;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
 
-  h5 {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.4;
-    margin-bottom: 0.25rem;
+/* Skeleton Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
+  100% {
+    background-position: 200% 0;
+  }
+}
 
-  h6 {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    color: hsl(var(--muted-foreground));
-    text-transform: uppercase;
-    margin-bottom: 0.25rem;
-  }
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
 
-  /*
-   * PARAGRAPH STYLING — optional utility for long text blocks.
-   * Not everything needs this, but when used it adds readability
-   * with max-width and generous spacing.
-   */
-  p {
-    max-width: 70ch;
-  }
+/* Transaction status animation */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
 
-  /*
-   * INLINE CODE — small monospace bits that appear in text.
-   * Deliberately BOLD to stand out, with a subtle background
-   * that looks like a terminal selection highlight.
-   */
-  code {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 0.8125em;
-    font-weight: 600;
-    background: hsl(var(--muted));
-    padding: 0.15em 0.4em;
-    border-radius: 3px;
-    letter-spacing: -0.01em;
-  }
+.tx-pending {
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
 
-  /*
-   * LABEL / META TEXT — the "small print" of the UI.
-   * Monospace, uppercase, wide tracking, lighter weight.
-   * This creates a consistent pattern for metadata across the app.
-   * Deliberately smaller (10px-11px) — not everything needs to be
-   * perfectly legible. Let the hierarchy do its job.
-   */
-  .label-meta {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6875rem; /* 11px */
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
+/* Toast animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 
-  .label-meta-sm {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.625rem; /* 10px */
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
   }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
 
-  /*
-   * CODE BLOCK — for terminal/blockchain output areas.
-   * Full monospace, slightly smaller, with a background that
-   * matches the terminal aesthetic.
-   * No border-radius on the code block itself — let containers do that.
-   */
-  .code-block {
-    font-family: 'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-    font-size: 0.8125rem;
-    line-height: 1.6;
-    letter-spacing: -0.01em;
-    background: hsl(var(--background));
-    border: 1px solid hsl(var(--border));
-    padding: 1rem;
-  }
+.toast-enter {
+  animation: slideInRight 0.3s ease-out;
+}
 
-  /*
-   * GLASSMORPHISM UTILITY — preserved but with the new palette.
-   * The background uses the card color at 60% opacity + blur.
-   * This creates a frosted-glass effect that works with the new
-   * warmer/deeper background.
-   */
-  .glass {
-    background-color: hsl(var(--card) / 0.55);
-    backdrop-filter: blur(10px) saturate(110%);
-    -webkit-backdrop-filter: blur(10px) saturate(110%);
-    border: 1px solid hsl(var(--border) / 0.4);
-  }
-
-  /*
-   * CARD BASE — replaced the old @apply-based card with
-   * explicit properties. The shadow is intentionally uneven:
-   * a standard "shadow-md" would be too uniform. We add a
-   * subtle bottom-weighted shadow that feels more grounded.
-   */
-  .card {
-    border-radius: var(--radius);
-    background-color: hsl(var(--card));
-    color: hsl(var(--card-foreground));
-    box-shadow:
-      0 1px 2px hsl(0 0% 0% / 0.04),
-      0 2px 4px hsl(0 0% 0% / 0.04),
-      0 4px 8px hsl(0 0% 0% / 0.02);
-    padding: 1rem;
-  }
-
-  /*
-   * Scrollbar — kept from original but tinted to match amber
-   * instead of teal. This is a tiny detail but it matters.
-   * The amber track on dark mode is a subtle callback to the
-   * primary color.
-   */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary) / 0.4);
-    border-radius: 999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary) / 0.6);
-  }
-
-  /*
-   * SELECTION COLORS — matches the amber theme.
-   * Subtle, warm selection highlight.
-   */
-  ::selection {
-    background: hsl(var(--primary) / 0.25);
-    color: hsl(var(--foreground));
-  }
-
-  /*
-   * FOCUS RING — a slightly inset amber glow.
-   * Not all outlines need to be blue. Our ring color matches
-   * the accent, creating a cohesive focus experience.
-   */
-
-  /*
-   * FONT SIZE HELPERS — preserved from original for compatibility.
-   */
-  .text-sz-sm { font-size: 0.875rem; }
-  .text-sz-base { font-size: 1rem; }
-  .text-sz-lg { font-size: 1.125rem; }
-
-  /*
-   * BLOCKCHAIN TERMINAL OVERRIDE — preserved for the monitor component.
-   * Explicit monospace stack with developer favorites first.
-   */
-  .blockchain-terminal {
-    font-family: 'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-  }
+.toast-exit {
+  animation: slideOutRight 0.3s ease-in forwards;
 }

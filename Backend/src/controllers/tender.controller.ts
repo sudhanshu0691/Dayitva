@@ -14,7 +14,8 @@ import { AuthRequest } from "../types";
  */
 export async function createTender(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    const tender = await tenderService.createTender(req.body, req.user!.userId);
+    const { txHash, blockNumber } = req.body;
+    const tender = await tenderService.createTender({ ...req.body, txHash, blockNumber }, req.user!.userId);
     res.status(201).json({ success: true, message: "Tender created successfully", data: tender });
   } catch (error) {
     next(error);

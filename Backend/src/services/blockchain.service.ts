@@ -1,8 +1,8 @@
 // ============================================================
 // Blockchain Service
-// Real Ethereum Sepolia transactions via MetaMask
-// Backend stores transaction data from MetaMask and generates
-// Etherscan links - no private keys on server
+// Real Ganache local blockchain via MetaMask ONLY
+// Backend stores transaction metadata from MetaMask confirms
+// No simulated/fallback transactions - all real on-chain
 // ============================================================
 
 import { ethers } from "ethers";
@@ -12,17 +12,23 @@ import { prisma } from "../config/database";
 import { TxType, TxStatus } from "@prisma/client";
 
 /**
- * Generate an Etherscan URL for a transaction
+ * Generate an explorer URL for a transaction (Ganache has no native explorer)
  */
-export function getEtherscanTxUrl(txHash: string): string {
-  return `${env.ETHERSCAN_BASE_URL}/tx/${txHash}`;
+export function getExplorerTxUrl(txHash: string): string {
+  if (env.BLOCKCHAIN_EXPLORER_URL) {
+    return `${env.BLOCKCHAIN_EXPLORER_URL}/tx/${txHash}`;
+  }
+  return `#tx-${txHash}`; // local fallback
 }
 
 /**
- * Generate an Etherscan URL for an address
+ * Generate an explorer URL for an address
  */
-export function getEtherscanAddressUrl(address: string): string {
-  return `${env.ETHERSCAN_BASE_URL}/address/${address}`;
+export function getExplorerAddressUrl(address: string): string {
+  if (env.BLOCKCHAIN_EXPLORER_URL) {
+    return `${env.BLOCKCHAIN_EXPLORER_URL}/address/${address}`;
+  }
+  return `#address-${address}`;
 }
 
 /**
@@ -38,8 +44,6 @@ export async function storeTransaction(params: {
   userId?: string;
   chainId?: number;
 }): Promise<any> {
-  const etherscanUrl = getEtherscanTxUrl(params.txHash);
-
   const tx = await prisma.blockchainTx.create({
     data: {
       txHash: params.txHash,
@@ -50,82 +54,27 @@ export async function storeTransaction(params: {
       tenderId: params.tenderId || null,
       entityId: params.userId || null,
       entityType: params.userId ? "user" : null,
-      chainId: params.chainId || env.SEPOLIA_CHAIN_ID,
-      etherscanUrl,
+      chainId: params.chainId || env.BLOCKCHAIN_CHAIN_ID,
     },
   });
 
-  logger.info(`✅ Blockchain tx stored: ${params.txHash} (${params.type})`);
-  return { ...tx, etherscanUrl };
+  logger.info(`✅ Blockchain tx stored: ${params.txHash} (${params.type}) on Ganache`);
+  return tx;
 }
 
 /**
- * Submit a bid on-chain (simulated fallback)
+ * Update transaction status after MetaMask confirmation
  */
-export async function submitBidOnChain(
-  tenderId: number,
-  encryptedBidHash: string,
-  vendorWalletKey?: string
-): Promise<{ txHash: string; blockNumber: number }> {
-  logger.info(`Simulating bid submission on-chain for tender ${tenderId}`);
-  return {
-    txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-    blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-  };
+export async function updateTransactionStatus(txHash: string, status: string): Promise<void> {
+  await prisma.blockchainTx.update({
+    where: { txHash },
+    data: { status: status as TxStatus },
+  });
+  logger.info(`✅ Tx ${txHash} status updated to ${status}`);
 }
 
 /**
- * Reveal a bid on-chain (simulated fallback)
- */
-export async function revealBidOnChain(
-  tenderId: number,
-  price: number,
-  scoreHashes: number[],
-  nonce: string,
-  vendorWalletKey?: string
-): Promise<{ txHash: string; blockNumber: number }> {
-  logger.info(`Simulating bid reveal on-chain for tender ${tenderId}`);
-  return {
-    txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-    blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-  };
-}
-
-/**
- * Evaluate tender and declare winner on-chain (simulated fallback)
- */
-export async function evaluateTenderOnChain(
-  tenderId: number,
-  winnerAddress: string,
-  winnerScore: number
-): Promise<{ txHash: string; blockNumber: number }> {
-  logger.info(`Simulating tender evaluation on-chain for tender ${tenderId}`);
-  return {
-    txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-    blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-  };
-}
-
-/**
- * Create a tender on-chain (simulated fallback)
- */
-export async function createTenderOnChain(
-  title: string,
-  ipfsHash: string,
-  budget: number,
-  deadline: Date,
-  minScore: number,
-  msmeQuota: boolean
-): Promise<{ txHash: string; blockNumber: number }> {
-  logger.info(`Simulating tender creation on-chain: ${title}`);
-  return {
-    txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-    blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-  };
-}
-
-/**
- * Verify a transaction exists on Sepolia
+ * Verify a transaction exists on Ganache
  */
 export async function verifyTransactionOnChain(txHash: string): Promise<{
   verified: boolean;
@@ -134,7 +83,7 @@ export async function verifyTransactionOnChain(txHash: string): Promise<{
   to?: string;
 }> {
   try {
-    const provider = new ethers.JsonRpcProvider(env.SEPOLIA_RPC_URL);
+    const provider = new ethers.JsonRpcProvider(env.BLOCKCHAIN_RPC_URL);
     const receipt = await provider.getTransactionReceipt(txHash);
 
     if (receipt) {
@@ -154,11 +103,11 @@ export async function verifyTransactionOnChain(txHash: string): Promise<{
 }
 
 /**
- * Get the current gas price on Sepolia
+ * Get the current gas price on Ganache
  */
 export async function getGasPrice(): Promise<string> {
   try {
-    const provider = new ethers.JsonRpcProvider(env.SEPOLIA_RPC_URL);
+    const provider = new ethers.JsonRpcProvider(env.BLOCKCHAIN_RPC_URL);
     const feeData = await provider.getFeeData();
     return feeData.gasPrice?.toString() || "0";
   } catch (error: any) {
@@ -168,16 +117,16 @@ export async function getGasPrice(): Promise<string> {
 }
 
 /**
- * Check if the Sepolia network is reachable
+ * Check if the Ganache network is reachable
  */
 export async function isBlockchainReachable(): Promise<boolean> {
   try {
-    const provider = new ethers.JsonRpcProvider(env.SEPOLIA_RPC_URL);
+    const provider = new ethers.JsonRpcProvider(env.BLOCKCHAIN_RPC_URL);
     const blockNumber = await provider.getBlockNumber();
-    logger.info(`⛓️ Sepolia reachable at block ${blockNumber}`);
+    logger.info(`⛓️ Ganache reachable at block ${blockNumber}`);
     return true;
   } catch (error) {
-    logger.error("❌ Sepolia not reachable:", { error });
+    logger.error("❌ Ganache not reachable:", { error });
     return false;
   }
 }
@@ -189,8 +138,9 @@ export function getContractABI(): string[] {
   return [
     "function createTender(string _title, string _ipfsHash, uint256 _budget, uint256 _deadline, uint256 _minScore, bool _msmeQuota) external returns (uint256 tenderId)",
     "function submitBid(uint256 _tenderId, bytes32 _encryptedBidHash) external",
-    "function revealBid(uint256 _tenderId, uint256 _price, uint256[6] calldata _scoreHashes, bytes32 _nonce) external",
-    "function evaluateWithWinner(uint256 _tenderId, address _winner, uint256 _winnerScore) external",
+    "function revealBid(uint256 _tenderId, uint256 _price, uint256[6] calldata _scores) external",
+    "function declareWinner(uint256 _tenderId, address _winner, uint256 _winnerScore) external",
+    "function closeTender(uint256 _tenderId) external",
     "event TenderCreated(uint256 indexed tenderId, address indexed officer, string title, string ipfsHash, uint256 budget, uint256 deadline, uint256 timestamp)",
     "event BidSubmitted(uint256 indexed tenderId, address indexed bidder, bytes32 encryptedBidHash, uint256 timestamp)",
     "event WinnerDeclared(uint256 indexed tenderId, address indexed winner, uint256 price, uint256 totalScore, uint256 timestamp)",
@@ -198,13 +148,10 @@ export function getContractABI(): string[] {
 }
 
 export default {
-  getEtherscanTxUrl,
-  getEtherscanAddressUrl,
+  getExplorerTxUrl,
+  getExplorerAddressUrl,
   storeTransaction,
-  submitBidOnChain,
-  revealBidOnChain,
-  evaluateTenderOnChain,
-  createTenderOnChain,
+  updateTransactionStatus,
   verifyTransactionOnChain,
   getGasPrice,
   isBlockchainReachable,
