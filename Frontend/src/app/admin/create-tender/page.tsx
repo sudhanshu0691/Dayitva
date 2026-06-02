@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { 
   Plus, Trash, ShieldCheck, Landmark, AlertCircle, 
-  ChevronRight, ChevronLeft, UploadCloud, FileText 
+  ChevronRight, ChevronLeft, UploadCloud, FileText, Lock
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "../../../context/AppContext";
 import tenderService from "@/services/tenderService";
 import uploadService from "@/services/uploadService";
+import api from "@/services/api";
 
 const ministries = [
   "Ministry of Road Transport and Highways (MoRTH)",
@@ -41,42 +42,44 @@ export default function CreateTenderPage() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [checkingKyc, setCheckingKyc] = useState(true);
+  const [kycApproved, setKycApproved] = useState(false);
+
+  // Check KYC status on mount
+  useEffect(() => {
+    const checkKYC = async () => {
+      try {
+        const response = await api.get("/users/kyc/status");
+        const status = response.data.data?.kycStatus;
+        if (status === "Approved") {
+          setKycApproved(true);
+        } else {
+          setKycApproved(false);
+          setError("KYC not approved. Please complete KYC verification first.");
+        }
+      } catch (err) {
+        setKycApproved(false);
+        setError("Unable to verify KYC status. Please complete KYC first.");
+      } finally {
+        setCheckingKyc(false);
+      }
+    };
+    checkKYC();
+  }, []);
 
   const validateBasicInfo = () => {
     const trimmedTitle = formData.title.trim();
     const trimmedDescription = formData.description.trim();
-
-    if (trimmedTitle.length < 5) {
-      setError("Title must be at least 5 characters.");
-      return false;
-    }
-
-    if (trimmedDescription.length < 20) {
-      setError("Description must be at least 20 characters.");
-      return false;
-    }
-
+    if (trimmedTitle.length < 5) { setError("Title must be at least 5 characters."); return false; }
+    if (trimmedDescription.length < 20) { setError("Description must be at least 20 characters."); return false; }
     return true;
   };
 
   const validateBeforeSubmit = () => {
     if (!validateBasicInfo()) return false;
-
-    if (!formData.budget || Number.isNaN(Number(formData.budget))) {
-      setError("Please specify a valid budget.");
-      return false;
-    }
-
-    if (!formData.deadline) {
-      setError("Please set a valid deadline.");
-      return false;
-    }
-
-    if (formData.criteria.length === 0) {
-      setError("At least one eligibility criterion is required.");
-      return false;
-    }
-
+    if (!formData.budget || Number.isNaN(Number(formData.budget))) { setError("Please specify a valid budget."); return false; }
+    if (!formData.deadline) { setError("Please set a valid deadline."); return false; }
+    if (formData.criteria.length === 0) { setError("At least one eligibility criterion is required."); return false; }
     return true;
   };
 
@@ -84,7 +87,39 @@ export default function CreateTenderPage() {
     return (
       <div className="max-w-xl mx-auto px-6 py-20 text-center">
         <h2 className="text-xl font-bold text-foreground">Access Denied</h2>
+        <p className="text-xs text-muted-foreground mt-2">Government Officer credentials required.</p>
         <button onClick={() => router.push("/login")} className="mt-6 px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold">Go to Login</button>
+      </div>
+    );
+  }
+
+  if (checkingKyc) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (!kycApproved) {
+    return (
+      <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+        <Lock className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+        <h2 className="text-xl font-bold text-foreground">KYC Verification Required</h2>
+        <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
+          Your KYC must be approved by an Auditor before you can create tenders. 
+          Please complete your KYC verification first.
+        </p>
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <button onClick={() => router.push("/admin/profile")} 
+            className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-xs font-bold">
+            Go to KYC Profile
+          </button>
+          <button onClick={() => router.push("/admin")} 
+            className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold">
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     );
   }
@@ -92,12 +127,9 @@ export default function CreateTenderPage() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
-
     setUploading(true);
     setUploadProgress(0);
-
     try {
-      // Real upload to backend
       const result = await uploadService.uploadToS3([file]);
       setUploadedFiles(prev => [...prev, {
         name: file.name,
@@ -129,13 +161,9 @@ export default function CreateTenderPage() {
   };
 
   const handleSubmit = async () => {
-    if (!validateBeforeSubmit()) {
-      return;
-    }
-
+    if (!validateBeforeSubmit()) return;
     setSubmitting(true);
     setError(null);
-
     try {
       await tenderService.createTender({
         title: formData.title,
@@ -146,7 +174,6 @@ export default function CreateTenderPage() {
         msmeQuota: formData.msmeQuota,
         criteria: formData.criteria,
       });
-
       router.push("/admin");
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || "Failed to create tender");
@@ -156,17 +183,9 @@ export default function CreateTenderPage() {
   };
 
   const handleNext = () => {
-    if (currentStep === 1 && !validateBasicInfo()) {
-      return;
-    }
-    if (currentStep === 4 && !formData.budget) {
-      setError("Please specify the estimated budget.");
-      return;
-    }
-    if (currentStep === 5 && !formData.deadline) {
-      setError("Please set a valid deadline.");
-      return;
-    }
+    if (currentStep === 1 && !validateBasicInfo()) return;
+    if (currentStep === 3 && !formData.budget) { setError("Please specify the estimated budget."); return; }
+    if (currentStep === 4 && !formData.deadline) { setError("Please set a valid deadline."); return; }
     setError(null);
     setCurrentStep(prev => Math.min(prev + 1, 7));
   };

@@ -6,7 +6,7 @@
 import { Router } from "express";
 import * as tenderController from "../controllers/tender.controller";
 import { authenticate } from "../middleware/auth";
-import { authorize } from "../middleware/roleGuard";
+import { authorize, requireOfficerKYC, requireKYC } from "../middleware/roleGuard";
 import { validate } from "../middleware/validate";
 import { tenderLimiter } from "../middleware/rateLimiter";
 import {
@@ -40,6 +40,7 @@ router.post(
   "/",
   authenticate,
   authorize("officer"),
+  requireOfficerKYC,
   tenderLimiter,
   validate(createTenderSchema),
   tenderController.createTender
@@ -88,6 +89,7 @@ router.post(
   "/:id/bids",
   authenticate,
   authorize("vendor"),
+  requireKYC,
   validate(submitBidSchema),
   tenderController.submitBid
 );

@@ -1,6 +1,7 @@
 // ============================================================
 // Authentication Service
 // Handles registration, login, MetaMask nonce/signature, JWT
+// Updated: Uses independent Vendor and Officer models
 // ============================================================
 
 import bcrypt from "bcrypt";
@@ -23,7 +24,7 @@ const SALT_ROUNDS = 12;
 const NONCE_EXPIRY_MINUTES = 5;
 
 /**
- * Format a Prisma User object into the API response shape.
+ * Format a Vendor or Officer object into the API response shape.
  */
 function formatUserProfile(user: any): IUserProfile {
   return {
@@ -53,23 +54,101 @@ function formatUserProfile(user: any): IUserProfile {
 }
 
 /**
+ * Check if email exists in either Vendor or Officer table
+ */
+async function findUserByEmail(email: string) {
+  const vendor = await prisma.vendor.findUnique({ where: { email } });
+  if (vendor) return { ...vendor, __model: "vendor" };
+  const officer = await prisma.officer.findUnique({ where: { email } });
+  if (officer) return { ...officer, __model: "officer" };
+  return null;
+}
+
+/**
+ * Find user by ID in either Vendor or Officer table
+ */
+async function findUserById(userId: string) {
+  const vendor = await prisma.vendor.findUnique({ where: { id: userId } });
+  if (vendor) return { ...vendor, __model: "vendor" };
+  const officer = await prisma.officer.findUnique({ where: { id: userId } });
+  if (officer) return { ...officer, __model: "officer" };
+  return null;
+}
+
+/**
+ * Find user by wallet address in either Vendor or Officer table
+ */
+async function findUserByWallet(walletAddress: string) {
+  const vendor = await prisma.vendor.findUnique({ where: { walletAddress } });
+  if (vendor) return { ...vendor, __model: "vendor" };
+  const officer = await prisma.officer.findUnique({ where: { walletAddress } });
+  if (officer) return { ...officer, __model: "officer" };
+  return null;
+}
+
+/**
+ * Check if wallet address exists in either table
+ */
+async function findWalletAnywhere(walletAddress: string) {
+  const vendor = await prisma.vendor.findUnique({ where: { walletAddress } });
+  if (vendor) return true;
+  const officer = await prisma.officer.findUnique({ where: { walletAddress } });
+  return !!officer;
+}
+
+/**
+ * Store refresh token for appropriate model
+ */
+async function storeRefreshToken(userId: string, token: string, model: string, expiresAt: Date) {
+  if (model === "vendor") {
+    return prisma.vendorRefreshToken.create({
+      data: { token, vendorId: userId, expiresAt },
+    });
+  }
+  return prisma.officerRefreshToken.create({
+    data: { token, officerId: userId, expiresAt },
+  });
+}
+
+/**
+ * Delete refresh tokens for a user
+ */
+async function deleteRefreshTokens(userId: string, model?: string) {
+  if (model === "vendor") {
+    await prisma.vendorRefreshToken.deleteMany({ where: { vendorId: userId } });
+  } else if (model === "officer") {
+    await prisma.officerRefreshToken.deleteMany({ where: { officerId: userId } });
+  } else {
+    // Try both
+    await prisma.vendorRefreshToken.deleteMany({ where: { vendorId: userId } });
+    await prisma.officerRefreshToken.deleteMany({ where: { officerId: userId } });
+  }
+}
+
+/**
+ * Check email existence in Vendor or Officer table
+ */
+async function emailExists(email: string): Promise<boolean> {
+  const vendor = await prisma.vendor.findUnique({ where: { email } });
+  if (vendor) return true;
+  const officer = await prisma.officer.findUnique({ where: { email } });
+  return !!officer;
+}
+
+/**
  * Register a new user (officer or vendor).
  */
 export async function registerUser(input: RegisterInput) {
-  // Check if email already exists
-  const existingEmail = await prisma.user.findUnique({
-    where: { email: input.email },
-  });
-  if (existingEmail) {
+  // Check if email already exists in either table
+  const existing = await emailExists(input.email);
+  if (existing) {
     throw new AppError("Email already registered", 409);
   }
 
   // Check if wallet address already exists (if provided)
   if (input.walletAddress) {
-    const existingWallet = await prisma.user.findUnique({
-      where: { walletAddress: input.walletAddress },
-    });
-    if (existingWallet) {
+    const walletExists = await findWalletAnywhere(input.walletAddress);
+    if (walletExists) {
       throw new AppError("Wallet address already registered", 409);
     }
   }
@@ -77,43 +156,50 @@ export async function registerUser(input: RegisterInput) {
   // Hash password
   const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
 
-  // Create user
-  const user = await prisma.user.create({
-    data: {
-      name: input.name,
-      email: input.email,
-      mobile: input.mobile || null,
-      passwordHash,
-      role: input.role,
-      walletAddress: input.walletAddress || null,
-      // Vendor-specific fields
-      companyName: input.companyName || null,
-      regNumber: input.regNumber || null,
-      pan: input.pan || null,
-      gst: input.gst || null,
-      turnover: input.turnover || null,
-      itrYears: input.itrYears ? JSON.stringify(input.itrYears) : null,
-      // Officer-specific fields
-      designation: input.designation || null,
-      ministry: input.ministry || null,
-      ministryCode: input.ministryCode || null,
-      permissions: input.permissions ? JSON.stringify(input.permissions) : null,
-      // KYC status defaults to Pending for vendors
-      kycStatus: input.role === "vendor" ? "Pending" : "Approved",
-    },
-  });
+  const commonData = {
+    name: input.name,
+    email: input.email,
+    mobile: input.mobile || null,
+    passwordHash,
+    walletAddress: input.walletAddress || null,
+    // KYC status defaults to Pending for ALL users
+    kycStatus: "Pending" as any,
+    emailVerified: false,
+  };
 
-  // Create vendor profile if vendor
+  let user: any;
+
   if (input.role === "vendor") {
-    await prisma.vendorProfile.create({
+    user = await prisma.vendor.create({
       data: {
-        vendorId: user.id,
+        ...commonData,
+        role: "vendor",
+        // Vendor-specific fields
+        companyName: input.companyName || null,
+        regNumber: input.regNumber || null,
+        pan: input.pan || null,
+        gst: input.gst || null,
+        turnover: input.turnover || null,
+        itrYears: input.itrYears ? JSON.stringify(input.itrYears) : null,
       },
     });
+  } else if (input.role === "officer") {
+    user = await prisma.officer.create({
+      data: {
+        ...commonData,
+        role: "officer",
+        // Officer-specific fields
+        designation: input.designation || null,
+        ministry: input.ministry || null,
+        ministryCode: input.ministryCode || null,
+        permissions: input.permissions ? JSON.stringify(input.permissions) : null,
+      },
+    });
+  } else {
+    throw new AppError("Invalid role. Must be 'vendor' or 'officer'", 400);
   }
 
   // Do NOT generate tokens or auto-login - user must verify email first
-  // Registration only creates the user account
   return {
     user: formatUserProfile(user),
     message: "Registration successful. Please verify your email and then login.",
@@ -124,11 +210,8 @@ export async function registerUser(input: RegisterInput) {
  * Login with email and password.
  */
 export async function loginWithCredentials(input: LoginInput) {
-  // Find user by email
-  const user = await prisma.user.findUnique({
-    where: { email: input.email },
-  });
-
+  // Find user by email in either table
+  const user = await findUserByEmail(input.email);
   if (!user || !user.passwordHash) {
     throw new AppError("Invalid email or password", 401);
   }
@@ -152,14 +235,8 @@ export async function loginWithCredentials(input: LoginInput) {
   };
   const tokens = generateTokenPair(tokenPayload);
 
-  // Store refresh token
-  await prisma.refreshToken.create({
-    data: {
-      token: tokens.refreshToken,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    },
-  });
+  // Store refresh token in the correct table
+  await storeRefreshToken(user.id, tokens.refreshToken, user.__model, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
 
   return {
     user: formatUserProfile(user),
@@ -169,7 +246,6 @@ export async function loginWithCredentials(input: LoginInput) {
 
 /**
  * Generate a nonce for MetaMask wallet signature verification.
- * Nonce is a random string that expires after 5 minutes.
  */
 export async function generateNonce(walletAddress: string) {
   const nonce = uuidv4();
@@ -191,7 +267,6 @@ export async function generateNonce(walletAddress: string) {
 
 /**
  * Login with MetaMask wallet signature.
- * Verifies that the user signed the nonce with their private key.
  */
 export async function loginWithMetaMask(walletAddress: string, signature: string) {
   const address = walletAddress.toLowerCase();
@@ -236,11 +311,8 @@ export async function loginWithMetaMask(walletAddress: string, signature: string
     data: { used: true },
   });
 
-  // Find or create user by wallet address
-  let user = await prisma.user.findUnique({
-    where: { walletAddress: address },
-  });
-
+  // Find user by wallet address in either Vendor or Officer table
+  const user = await findUserByWallet(address);
   if (!user) {
     throw new AppError(
       "No user registered with this wallet address. Please register first.",
@@ -257,13 +329,7 @@ export async function loginWithMetaMask(walletAddress: string, signature: string
   const tokens = generateTokenPair(tokenPayload);
 
   // Store refresh token
-  await prisma.refreshToken.create({
-    data: {
-      token: tokens.refreshToken,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    },
-  });
+  await storeRefreshToken(user.id, tokens.refreshToken, user.__model, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
 
   return {
     user: formatUserProfile(user),
@@ -283,10 +349,19 @@ export async function refreshAccessToken(refreshToken: string) {
     throw new AppError("Invalid or expired refresh token", 401);
   }
 
-  // Check if token exists in database
-  const storedToken = await prisma.refreshToken.findUnique({
+  // Check if token exists in either vendor or officer refresh token table
+  let storedToken: any = await prisma.vendorRefreshToken.findUnique({
     where: { token: refreshToken },
   });
+
+  let model = "vendor";
+
+  if (!storedToken) {
+    storedToken = await prisma.officerRefreshToken.findUnique({
+      where: { token: refreshToken },
+    });
+    model = "officer";
+  }
 
   if (!storedToken) {
     throw new AppError("Refresh token has been revoked", 401);
@@ -294,15 +369,17 @@ export async function refreshAccessToken(refreshToken: string) {
 
   // Check expiry
   if (storedToken.expiresAt < new Date()) {
-    await prisma.refreshToken.delete({ where: { id: storedToken.id } });
+    // Delete expired token
+    if (model === "vendor") {
+      await prisma.vendorRefreshToken.delete({ where: { id: storedToken.id } });
+    } else {
+      await prisma.officerRefreshToken.delete({ where: { id: storedToken.id } });
+    }
     throw new AppError("Refresh token has expired", 401);
   }
 
   // Get user
-  const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
-  });
-
+  const user = await findUserById(payload.userId);
   if (!user) {
     throw new AppError("User not found", 404);
   }
@@ -317,16 +394,14 @@ export async function refreshAccessToken(refreshToken: string) {
   const tokens = generateTokenPair(tokenPayload);
 
   // Delete old refresh token
-  await prisma.refreshToken.delete({ where: { id: storedToken.id } });
+  if (model === "vendor") {
+    await prisma.vendorRefreshToken.delete({ where: { id: storedToken.id } });
+  } else {
+    await prisma.officerRefreshToken.delete({ where: { id: storedToken.id } });
+  }
 
   // Store new refresh token
-  await prisma.refreshToken.create({
-    data: {
-      token: tokens.refreshToken,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    },
-  });
+  await storeRefreshToken(user.id, tokens.refreshToken, user.__model, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
 
   return tokens;
 }
@@ -335,19 +410,14 @@ export async function refreshAccessToken(refreshToken: string) {
  * Logout by revoking all refresh tokens for a user.
  */
 export async function logoutUser(userId: string) {
-  await prisma.refreshToken.deleteMany({
-    where: { userId },
-  });
+  await deleteRefreshTokens(userId);
 }
 
 /**
  * Get current user profile.
  */
 export async function getCurrentUser(userId: string): Promise<IUserProfile> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
-
+  const user = await findUserById(userId);
   if (!user) {
     throw new AppError("User not found", 404);
   }
@@ -369,7 +439,7 @@ export async function sendOtp(input: SendOtpInput) {
 
   // Check if email exists for forgot password
   if (type === "FORGOT_PASSWORD") {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await findUserByEmail(email);
     if (!user) {
       throw new AppError("No account found with this email address", 404);
     }
@@ -388,6 +458,7 @@ export async function sendOtp(input: SendOtpInput) {
       email,
       otp,
       type,
+      entityType: type === "VERIFY_EMAIL" ? "email_verification" : "password_reset",
       expiresAt: new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000),
     },
   });
@@ -442,7 +513,7 @@ export async function verifyOtp(input: VerifyOtpInput) {
 
   // If this is for email verification, update the user
   if (type === "VERIFY_EMAIL") {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await findUserByEmail(email);
     if (!user) {
       throw new AppError("User not found with this email", 404);
     }
@@ -450,11 +521,18 @@ export async function verifyOtp(input: VerifyOtpInput) {
     if (user.emailVerified) {
       return { message: "Email already verified", emailVerified: true };
     }
-    // Mark email as verified
-    await prisma.user.update({
-      where: { email },
-      data: { emailVerified: true },
-    });
+    // Mark email as verified in the correct table
+    if (user.__model === "vendor") {
+      await prisma.vendor.update({
+        where: { email },
+        data: { emailVerified: true },
+      });
+    } else {
+      await prisma.officer.update({
+        where: { email },
+        data: { emailVerified: true },
+      });
+    }
   }
 
   return { message: "OTP verified successfully", verified: true };
@@ -479,18 +557,23 @@ export async function resetPassword(input: ResetPasswordInput) {
   // Hash new password
   const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
 
-  // Update user password
-  await prisma.user.update({
-    where: { email },
-    data: { passwordHash },
-  });
-
-  // Revoke all refresh tokens for this user (force re-login)
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Update user password in the correct table
+  const user = await findUserByEmail(email);
   if (user) {
-    await prisma.refreshToken.deleteMany({
-      where: { userId: user.id },
-    });
+    if (user.__model === "vendor") {
+      await prisma.vendor.update({
+        where: { email },
+        data: { passwordHash },
+      });
+    } else {
+      await prisma.officer.update({
+        where: { email },
+        data: { passwordHash },
+      });
+    }
+
+    // Revoke all refresh tokens for this user (force re-login)
+    await deleteRefreshTokens(user.id, user.__model);
   }
 
   return { message: "Password reset successfully. Please login with your new password." };

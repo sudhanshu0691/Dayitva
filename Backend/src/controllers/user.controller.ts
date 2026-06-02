@@ -55,9 +55,9 @@ export async function getKYCStatus(req: AuthRequest, res: Response, next: NextFu
         id: user.id,
         kycStatus: user.kycStatus,
         documentStatus: {
-          pan: !!user.pan,
-          gst: !!user.gst,
-          solvencyCertificate: !!user.solvencyCertificate,
+          pan: !!(user as any).pan,
+          gst: !!(user as any).gst,
+          solvencyCertificate: !!(user as any).solvencyCertificate,
         },
       },
     });
@@ -100,30 +100,6 @@ export async function getPendingKYC(req: AuthRequest, res: Response, next: NextF
   }
 }
 
-/**
- * PUT /api/users/kyc/:vendorId/verify
- * Verify vendor KYC (Officer only)
- */
-export async function verifyKYC(req: AuthRequest, res: Response, next: NextFunction) {
-  try {
-    const user = await userService.verifyKYC(
-      req.params.vendorId as string,
-      {
-        status: (req.body.status as "Approved" | "Rejected" | "UnderReview") || "UnderReview",
-        feedback: req.body.feedback as string | undefined,
-      },
-      req.user!.userId
-    );
-    logger.info(`KYC ${req.body.status} by officer: ${req.user!.userId} for vendor: ${req.params.vendorId}`);
-    res.status(200).json({
-      success: true,
-      message: `KYC ${req.body.status} successfully`,
-      data: user,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
 
 /**
  * GET /api/users

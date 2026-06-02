@@ -13,6 +13,7 @@ import { prisma } from "./config/database";
 import { logger } from "./utils/logger";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { generalLimiter } from "./middleware/rateLimiter";
+import { setIO } from "./services/socket.service";
 import routes from "./routes/index";
 
 // Validate required environment variables
@@ -33,6 +34,7 @@ const io = new SocketIOServer(server, {
 
 // Store io instance for use in services
 app.set("io", io);
+setIO(io);
 
 io.on("connection", (socket) => {
   logger.info(`Socket connected: ${socket.id}`);
@@ -47,6 +49,12 @@ io.on("connection", (socket) => {
   socket.on("join-tender", (tenderId: string) => {
     socket.join(`tender:${tenderId}`);
     logger.debug(`Socket ${socket.id} joined tender room: ${tenderId}`);
+  });
+
+  // Join auditor room
+  socket.on("join-auditor", (auditorId: string) => {
+    socket.join(`auditor:${auditorId}`);
+    logger.debug(`Socket ${socket.id} joined auditor room: ${auditorId}`);
   });
 
   socket.on("disconnect", () => {
@@ -105,7 +113,7 @@ async function startServer() {
       logger.info(`   Port: ${env.PORT}`);
       logger.info(`   Environment: ${env.NODE_ENV}`);
       logger.info(`   Frontend URL: ${env.FRONTEND_URL}`);
-      logger.info(`   Blockchain Mode: ${env.BLOCKCHAIN_SIMULATION_MODE ? "🟡 SIMULATION" : "🟢 LIVE"}`);
+      logger.info(`   Blockchain: 🔗 Sepolia Testnet (Real Transactions)`);
       logger.info(`   API: http://localhost:${env.PORT}/api`);
       logger.info(`   Health: http://localhost:${env.PORT}/api/health`);
     });

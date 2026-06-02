@@ -5,7 +5,7 @@ import { useApp } from "../context/AppContext";
 import { 
   Search, Bell, HelpCircle, Wallet, Globe, Sun, Moon, 
   ChevronDown, BookOpen, MessageSquare, Phone, Check, 
-  ExternalLink, User, Building, Landmark, LogOut, CheckCircle2 
+  ExternalLink, User, Building, Landmark, LogOut, CheckCircle2, ShieldCheck
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -537,6 +537,16 @@ export const Header: React.FC = () => {
                           <div>
                             <div className="font-bold">For Vendor</div>
                             <div className="text-[10px] text-muted-foreground">Udyam KYC Bidding Zone</div>
+                          </div>
+                        </button>
+                        <button 
+                          onClick={() => { setShowAuth(false); router.push("/auditor/login"); }}
+                          className="w-full text-left flex items-center space-x-2.5 px-3 py-2.5 text-xs hover:bg-muted text-slate-800 dark:text-slate-200"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-red-500 shrink-0" />
+                          <div>
+                            <div className="font-bold">For Auditor</div>
+                            <div className="text-[10px] text-muted-foreground">Verification Authority Portal</div>
                           </div>
                         </button>
                         <button 

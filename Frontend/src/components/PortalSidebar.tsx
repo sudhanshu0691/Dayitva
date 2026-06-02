@@ -27,20 +27,37 @@ export const PortalSidebar: React.FC = () => {
   }
 
   const officerNav = [
-    { href: "/admin", label: "Officer Desk", icon: Landmark },
-    { href: "/admin/create-tender", label: "Create Tender", icon: ClipboardList },
-    { href: "/admin/profile", label: "Officer Profile", icon: UserCircle2 },
-    { href: "/verify", label: "Verification Center", icon: ShieldCheck },
+    { href: "/officer", label: "Officer Desk", icon: Landmark },
+    { href: "/officer/create-tender", label: "Create Tender", icon: ClipboardList },
+    { href: "/officer/profile", label: "Officer Profile", icon: UserCircle2 },
   ];
 
   const vendorNav = [
     { href: "/vendor", label: "Vendor Workspace", icon: Building2 },
+    { href: "/vendor/dashboard", label: "Vendor Dashboard", icon: LayoutDashboard },
     { href: "/vendor/profile", label: "Company Profile", icon: UserCircle2 },
-    { href: "/dashboard", label: "Public Market", icon: LayoutDashboard },
-    { href: "/verify", label: "Audit Verification", icon: ShieldCheck },
   ];
 
-  const navItems = currentUser.role === "officer" ? officerNav : vendorNav;
+  const auditorNav = [
+    { href: "/auditor/dashboard", label: "Auditor Dashboard", icon: ShieldCheck },
+    { href: "/auditor/vendors", label: "Vendors", icon: Building2 },
+    { href: "/auditor/officers", label: "Officers", icon: Landmark },
+    { href: "/auditor/blacklist", label: "Blacklist", icon: ShieldCheck },
+    { href: "/auditor/fraud", label: "Fraud Monitor", icon: ShieldCheck },
+    { href: "/auditor/logs", label: "Activity Logs", icon: ClipboardList },
+  ];
+
+  type NavItem = { href: string; label: string; icon: React.ComponentType<{ className?: string }> };
+  let navItems: NavItem[];
+  if (currentUser.role === "officer") {
+    navItems = officerNav;
+  } else if (currentUser.role === "vendor") {
+    navItems = vendorNav;
+  } else if (currentUser.role === "auditor") {
+    navItems = auditorNav;
+  } else {
+    navItems = [];
+  }
 
   return (
     <aside className="hidden lg:flex w-72 shrink-0 flex-col gap-4 border-r border-border/80 bg-card/40 backdrop-blur-md px-4 py-5 min-h-[calc(100vh-4.5rem)] sticky top-[4.5rem]">

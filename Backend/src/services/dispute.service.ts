@@ -1,11 +1,28 @@
 // ============================================================
 // Dispute Service
 // Business logic for dispute management
+// Updated: Uses Vendor/Officer models and entityId/entityType on Dispute
 // ============================================================
 
 import { prisma } from "../config/database";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
+
+/**
+ * Find user in Vendor or Officer table and return enriched dispute info
+ */
+async function findUserById(userId: string) {
+  const vendor = await prisma.vendor.findUnique({
+    where: { id: userId },
+    select: { id: true, name: true, email: true, role: true },
+  });
+  if (vendor) return vendor;
+  const officer = await prisma.officer.findUnique({
+    where: { id: userId },
+    select: { id: true, name: true, email: true, role: true },
+  });
+  return officer;
+}
 
 /**
  * Create a new dispute
@@ -23,7 +40,7 @@ export async function createDispute(
   }
 
   // Verify user exists
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await findUserById(userId);
   if (!user) {
     throw new AppError("User not found", 404);
   }
@@ -31,7 +48,8 @@ export async function createDispute(
   const dispute = await prisma.dispute.create({
     data: {
       tenderId,
-      userId,
+      entityId: userId,
+      entityType: user.role,
       text,
     },
     include: {
@@ -41,26 +59,21 @@ export async function createDispute(
           ministry: true,
         },
       },
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
     },
   });
 
+  // Enrich response with user data
+  const result = { ...dispute, user };
+
   // Notify officers about the dispute
-  const officers = await prisma.user.findMany({
-    where: { role: "officer" },
+  const officers = await prisma.officer.findMany({
     select: { id: true },
   });
 
   for (const officer of officers) {
     await prisma.notification.create({
       data: {
-        userId: officer.id,
+        officerId: officer.id,
         title: "New Dispute Raised",
         message: `A dispute has been raised for tender: ${tender.title}`,
         category: "system",
@@ -71,7 +84,7 @@ export async function createDispute(
 
   logger.info(`Dispute created: ${dispute.id} for tender: ${tenderId}`);
 
-  return dispute;
+  return result;
 }
 
 /**
@@ -88,14 +101,6 @@ export async function getDisputeById(disputeId: string) {
           ministry: true,
         },
       },
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-        },
-      },
     },
   });
 
@@ -103,7 +108,13 @@ export async function getDisputeById(disputeId: string) {
     throw new AppError("Dispute not found", 404);
   }
 
-  return dispute;
+  // Enrich with user data
+  let user: any = null;
+  if (dispute.entityId) {
+    user = await findUserById(dispute.entityId);
+  }
+
+  return { ...dispute, user };
 }
 
 /**
@@ -118,19 +129,21 @@ export async function getDisputesByTender(tenderId: string) {
 
   const disputes = await prisma.dispute.findMany({
     where: { tenderId },
-    include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
-    },
     orderBy: { createdAt: "desc" },
   });
 
-  return disputes;
+  // Enrich with user data
+  const enriched = await Promise.all(
+    disputes.map(async (d) => {
+      let user: any = null;
+      if (d.entityId) {
+        user = await findUserById(d.entityId);
+      }
+      return { ...d, user };
+    })
+  );
+
+  return enriched;
 }
 
 /**
@@ -143,7 +156,6 @@ export async function updateDisputeStatus(
 ) {
   const dispute = await prisma.dispute.findUnique({
     where: { id: disputeId },
-    include: { user: true },
   });
 
   if (!dispute) {
@@ -166,30 +178,38 @@ export async function updateDisputeStatus(
           title: true,
         },
       },
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
     },
   });
 
   // Notify the user about dispute status update
-  await prisma.notification.create({
-    data: {
-      userId: dispute.userId,
+  if (dispute.entityId) {
+    const notificationData: any = {
       title: `Dispute ${status}`,
       message: `Your dispute has been ${status.toLowerCase()}. ${resolution ? `Resolution: ${resolution}` : ""}`,
       category: "system",
       actionUrl: `/disputes/${disputeId}`,
-    },
-  });
+    };
+
+    // Try to determine if vendor or officer
+    const vendor = await prisma.vendor.findUnique({ where: { id: dispute.entityId } });
+    if (vendor) {
+      notificationData.vendorId = dispute.entityId;
+    } else {
+      notificationData.officerId = dispute.entityId;
+    }
+
+    await prisma.notification.create({ data: notificationData });
+  }
+
+  // Enrich with user data
+  let user: any = null;
+  if (dispute.entityId) {
+    user = await findUserById(dispute.entityId);
+  }
 
   logger.info(`Dispute ${disputeId} status updated to: ${status}`);
 
-  return updatedDispute;
+  return { ...updatedDispute, user };
 }
 
 /**
@@ -216,13 +236,6 @@ export async function listDisputes(query: any) {
             title: true,
           },
         },
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
       },
       skip,
       take: limit,
@@ -231,8 +244,19 @@ export async function listDisputes(query: any) {
     prisma.dispute.count({ where: whereClause }),
   ]);
 
+  // Enrich with user data
+  const enriched = await Promise.all(
+    disputes.map(async (d) => {
+      let user: any = null;
+      if (d.entityId) {
+        user = await findUserById(d.entityId);
+      }
+      return { ...d, user };
+    })
+  );
+
   return {
-    data: disputes,
+    data: enriched,
     pagination: {
       page,
       limit,

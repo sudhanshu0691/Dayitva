@@ -69,48 +69,24 @@ router.get("/kyc/status", authenticate, userController.getKYCStatus);
 
 /**
  * POST /api/users/kyc/submit
- * Submit KYC documents
+ * Submit KYC documents (for both vendors and officers)
  */
 router.post(
   "/kyc/submit",
   authenticate,
-  authorize("vendor"),
   validate(submitKYCSchema),
   userController.submitKYC
 );
 
 /**
  * GET /api/users/kyc/pending
- * Get pending KYC applications (Officer only)
+ * Get pending KYC applications (Auditor only)
  */
 router.get(
   "/kyc/pending",
   authenticate,
-  authorize("officer"),
+  authorize("auditor"),
   userController.getPendingKYC
-);
-
-/**
- * PUT /api/users/kyc/:vendorId/verify
- * Verify vendor KYC (Officer only).
- */
-router.put(
-  "/kyc/:vendorId/verify",
-  authenticate,
-  authorize("officer"),
-  validate(kycVerificationSchema),
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
-    try {
-      const user = await userService.verifyKYC(
-        req.params.vendorId as string,
-        req.body,
-        req.user!.userId
-      );
-      res.json({ success: true, message: `KYC ${req.body.status}`, data: user });
-    } catch (error) {
-      next(error);
-    }
-  }
 );
 
 /**

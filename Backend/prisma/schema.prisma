@@ -1,6 +1,7 @@
 // ============================================================
 // Decentralized TenderChain - Prisma Schema (PostgreSQL)
-// Blockchain-Based Transparent E-Procurement & Tender Management
+// Each role (Vendor, Officer, Auditor) has its own independent
+// registration table with full auth capabilities
 // ============================================================
 
 generator client {
@@ -13,11 +14,6 @@ datasource db {
 }
 
 // --- Enums ---
-
-enum UserRole {
-  officer
-  vendor
-}
 
 enum KYCStatus {
   Pending
@@ -52,10 +48,11 @@ enum NotificationCategory {
 enum TxType {
   TENDER_PUBLISHED
   BID_SUBMITTED
-  SMART_CONTRACT_EXECUTED
+  BID_REVEALED
   WINNER_DECLARED
   WALLET_CONNECTED
   KYC_APPROVED
+  KYC_REJECTED
 }
 
 enum TxStatus {
@@ -79,131 +76,306 @@ enum DisputeStatus {
   Dismissed
 }
 
-enum NewsCategory {
-  Announcement
-  Reform
-  Ministry
-  Blockchain
+enum VerificationStatus {
+  Pending
+  Approved
+  Rejected
+  Blacklisted
+  Suspicious
+  ReVerificationRequired
 }
 
-// --- Core Tables ---
+enum FraudSeverity {
+  Low
+  Medium
+  High
+  Critical
+}
 
-/// Registered users of the TenderChain system (Officers, Vendors)
-model User {
-  id             String    @id @default(cuid())
-  name           String
-  email          String    @unique
-  mobile         String?
-  passwordHash   String?
-  role           UserRole  @default(vendor)
-  walletAddress  String?   @unique
-  kycStatus      KYCStatus @default(Pending)
-  
-  // Vendor-specific fields
-  companyName    String?
-  regNumber      String?
-  pan            String?
-  gst            String?
-  turnover       String?
-  itrYears       String?   // JSON array stored as string
+enum FraudStatus {
+  Open
+  Investigating
+  Confirmed
+  Dismissed
+}
+
+model Vendor {
+  id                  String    @id @default(cuid())
+  name                String
+  email               String    @unique
+  mobile              String?
+  passwordHash        String?
+  role                String    @default("vendor")
+  walletAddress       String?   @unique
+  kycStatus           KYCStatus @default(Pending)
+  kycDocuments        String?
+  kycRemarks          String?
+  kycReviewedBy       String?
+  kycReviewedAt       DateTime?
+  kycSubmittedAt      DateTime?
+  companyName         String?
+  regNumber           String?
+  pan                 String?
+  gst                 String?
+  turnover            String?
+  itrYears            String?
   solvencyCertificate String?
-  experienceScore Float?
-  
-  // Officer-specific fields
-  designation    String?
-  ministry       String?
-  ministryCode   String?
-  permissions    String?   // JSON array stored as string
-
-  // Email verification
-  emailVerified  Boolean  @default(false)
-
-  // Metadata
-  deviceInfo     String?
-  ipAddress      String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-
-  // Relations
-  tenders        Tender[]
-  bids           Bid[]
-  notifications  Notification[]
-  disputes       Dispute[]
-  refreshTokens  RefreshToken[]
-  nonces         Nonce[]
-  auditLogs      AuditLog[]
-  transactions   BlockchainTx[]
-  vendorProfiles VendorProfile[]
-
-  @@map("users")
+  experienceScore     Float?
+  documentsIpfs       String?
+  emailVerified       Boolean   @default(false)
+  deviceInfo          String?
+  ipAddress           String?
+  profileImage        String?
+  isActive            Boolean   @default(true)
+  lastLogin           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  bids                Bid[]
+  refreshTokens       VendorRefreshToken[]
+  kycRequests         VendorKYCRequest[]
+  notifications       Notification[]
+  @@map("vendors")
 }
 
-/// Refresh tokens for JWT token rotation
-model RefreshToken {
+model VendorRefreshToken {
   id        String   @id @default(cuid())
   token     String   @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
-
-  @@map("refresh_tokens")
+  @@map("vendor_refresh_tokens")
 }
 
-/// Nonces for MetaMask wallet signature verification
+model Officer {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  mobile          String?
+  passwordHash    String?
+  role            String    @default("officer")
+  walletAddress   String?   @unique
+  kycStatus       KYCStatus @default(Pending)
+  kycDocuments    String?
+  kycRemarks      String?
+  kycReviewedBy   String?
+  kycReviewedAt   DateTime?
+  kycSubmittedAt  DateTime?
+  designation     String?
+  ministry        String?
+  ministryCode    String?
+  permissions     String?
+  emailVerified   Boolean   @default(false)
+  deviceInfo      String?
+  ipAddress       String?
+  profileImage    String?
+  isActive        Boolean   @default(true)
+  lastLogin       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  tenders         Tender[]
+  refreshTokens   OfficerRefreshToken[]
+  kycRequests     OfficerKYCRequest[]
+  notifications   Notification[]
+  @@map("officers")
+}
+
+model OfficerRefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  officerId String
+  officer   Officer  @relation(fields: [officerId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@map("officer_refresh_tokens")
+}
+
+model Auditor {
+  id             String   @id @default(cuid())
+  fullName       String
+  officialEmail  String   @unique
+  employeeId     String   @unique
+  department     String
+  phoneNumber    String?
+  passwordHash   String
+  role           String   @default("auditor")
+  profileImage   String?
+  isActive       Boolean  @default(true)
+  lastLogin      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  refreshTokens      AuditorRefreshToken[]
+  verifications      Verification[]
+  blacklistActions   BlacklistEntry[]
+  activityLogs       AuditorActivityLog[]
+  notifications      AuditorNotification[]
+  reviewedVendorKYC  VendorKYCRequest[]
+  reviewedOfficerKYC OfficerKYCRequest[]
+  fraudResolutions   FraudFlag[]
+  @@map("auditors")
+}
+
+model AuditorRefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  auditorId String
+  auditor   Auditor  @relation(fields: [auditorId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@map("auditor_refresh_tokens")
+}
+
 model Nonce {
   id            String   @id @default(cuid())
   walletAddress String
   nonce         String
-  expiresAt     DateTime
   used          Boolean  @default(false)
+  expiresAt     DateTime
   createdAt     DateTime @default(now())
-
-  userId        String?
-  user          User?    @relation(fields: [userId], references: [id])
-
   @@map("nonces")
 }
 
-/// Tenders created by government officers
+model VendorKYCRequest {
+  id              String             @id @default(cuid())
+  vendorId        String
+  vendor          Vendor             @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  documents       String
+  documentTypes   String
+  status          VerificationStatus @default(Pending)
+  remarks         String?
+  reviewedById    String?
+  reviewedBy      Auditor?           @relation(fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  submissionCount Int                @default(1)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  @@map("vendor_kyc_requests")
+}
+
+model OfficerKYCRequest {
+  id              String             @id @default(cuid())
+  officerId       String
+  officer         Officer            @relation(fields: [officerId], references: [id], onDelete: Cascade)
+  documents       String
+  documentTypes   String
+  status          VerificationStatus @default(Pending)
+  remarks         String?
+  reviewedById    String?
+  reviewedBy      Auditor?           @relation(fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  submissionCount Int                @default(1)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  @@map("officer_kyc_requests")
+}
+
+model Verification {
+  id                  String             @id @default(cuid())
+  entityId            String
+  entityType          String
+  documentType        String?
+  status              VerificationStatus @default(Pending)
+  remarks             String?
+  isFraudFlagged      Boolean            @default(false)
+  fraudReason         String?
+  blacklistStatus     Boolean            @default(false)
+  reVerificationCount Int                @default(0)
+  reviewedById        String?
+  reviewedBy          Auditor?           @relation(fields: [reviewedById], references: [id])
+  verificationDate    DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  @@map("verifications")
+}
+
+model BlacklistEntry {
+  id          String   @id @default(cuid())
+  entityId    String
+  entityType  String
+  reason      String
+  addedById   String
+  addedBy     Auditor  @relation(fields: [addedById], references: [id])
+  isPermanent Boolean  @default(false)
+  removedAt   DateTime?
+  createdAt   DateTime @default(now())
+  @@map("blacklist_entries")
+}
+
+model FraudFlag {
+  id           String        @id @default(cuid())
+  entityId     String
+  entityType   String
+  flagType     String
+  severity     FraudSeverity @default(Medium)
+  status       FraudStatus   @default(Open)
+  description  String
+  evidence     String?
+  detectedBy   String?
+  detectedAt   DateTime      @default(now())
+  resolvedAt   DateTime?
+  resolvedById String?
+  resolvedBy   Auditor?      @relation(fields: [resolvedById], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  @@map("fraud_flags")
+}
+
+model AuditorActivityLog {
+  id          String   @id @default(cuid())
+  auditorId   String
+  auditor     Auditor  @relation(fields: [auditorId], references: [id], onDelete: Cascade)
+  actionType  String
+  description String?
+  targetId    String?
+  targetType  String?
+  ipAddress   String?
+  metadata    String?
+  createdAt   DateTime @default(now())
+  @@map("auditor_activity_logs")
+}
+
+model AuditorNotification {
+  id        String   @id @default(cuid())
+  auditorId String
+  auditor   Auditor  @relation(fields: [auditorId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  actionUrl String?
+  type      String?
+  createdAt DateTime @default(now())
+  @@map("auditor_notifications")
+}
+
 model Tender {
-  id          String       @id @default(cuid())
-  title       String
-  description String
-  ipfsHash    String?
-  budget      Float
-  deadline    DateTime
-  status      TenderStatus @default(Draft)
-  ministry    String?
-  msmeQuota   Boolean      @default(false)
-  criteria    String?      // JSON array
-  minScore    Float?       @default(0)
-
-  // Blockchain
-  txHash      String?
-  blockNumber Int?
-
-  // Winner info
+  id            String       @id @default(cuid())
+  title         String
+  description   String
+  ipfsHash      String?
+  budget        Float
+  deadline      DateTime
+  status        TenderStatus @default(Draft)
+  ministry      String?
+  msmeQuota     Boolean      @default(false)
+  criteria      String?
+  minScore      Float?       @default(0)
+  txHash        String?
+  blockNumber   Int?
   winnerAddress String?
   winnerPrice   Float?
   winnerName    String?
-
-  // Relations
-  officerId     String
-  officer       User      @relation(fields: [officerId], references: [id])
-  bids          Bid[]
-  tenderFiles   TenderFile[]
-  auditLogs     AuditLog[]
-  disputes      Dispute[]
-  transactions  BlockchainTx[]
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
+  officerId    String
+  officer      Officer      @relation(fields: [officerId], references: [id])
+  bids         Bid[]
+  tenderFiles  TenderFile[]
+  auditLogs    AuditLog[]
+  disputes     Dispute[]
+  transactions BlockchainTx[]
+  createdAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
   @@map("tenders")
 }
 
-/// IPFS file attachments for tenders
 model TenderFile {
   id         String   @id @default(cuid())
   name       String
@@ -212,65 +384,34 @@ model TenderFile {
   uploadedAt DateTime @default(now())
   tenderId   String
   tender     Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
-
   @@map("tender_files")
 }
 
-/// Bids submitted by vendors for tenders
 model Bid {
-  id         String    @id @default(cuid())
-  price      Float?
-  
-  // Encrypted bid data (commit-reveal scheme)
-  encryptedBidHash String?
-  bidHash     String?   // SHA3-256 hash of bid parameters
-  
-  // Revealed scoring parameters (0-100 each)
-  priceScore         Float?
-  financialStrength  Float?
-  pastExperience     Float?
+  id                  String    @id @default(cuid())
+  price               Float?
+  encryptedBidHash    String?
+  bidHash             String?
+  priceScore          Float?
+  financialStrength   Float?
+  pastExperience      Float?
   performanceFeedback Float?
   technicalCapability Float?
-  compliance         Float?
-  proposalQuality    Float?
-  totalScore         Float?   // Weighted total score
-  
-  status     BidStatus @default(Submitted)
-
-  // Blockchain
-  txHash     String?
-  blockNumber Int?
-
-  // Relations
-  tenderId   String
-  tender     Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
-  vendorId   String
-  vendor     User     @relation(fields: [vendorId], references: [id])
-
+  compliance          Float?
+  proposalQuality     Float?
+  totalScore          Float?
+  status              BidStatus @default(Submitted)
+  txHash              String?
+  blockNumber         Int?
+  tenderId  String
+  tender    Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id])
   submittedAt DateTime @default(now())
   revealedAt  DateTime?
-  
   @@map("bids")
 }
 
-/// Vendor profile documents and credentials
-model VendorProfile {
-  id          String   @id @default(cuid())
-  documentsIpfs String? // Comma-separated IPFS hashes
-  turnover    Float?
-  experienceScore Float?
-  feedback    String?
-  
-  vendorId    String   @unique
-  vendor      User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("vendor_profiles")
-}
-
-/// Immutable audit trail for tender lifecycle
 model AuditLog {
   id          String        @id @default(cuid())
   title       String
@@ -278,29 +419,12 @@ model AuditLog {
   timestamp   DateTime      @default(now())
   txHash      String?
   iconType    AuditIconType @default(created)
-  
   tenderId    String
   tender      Tender        @relation(fields: [tenderId], references: [id], onDelete: Cascade)
-  userId      String?
-  user        User?         @relation(fields: [userId], references: [id])
-
+  officerId   String?
   @@map("audit_logs")
 }
 
-/// Email OTPs for email verification and password reset
-model Otp {
-  id        String   @id @default(cuid())
-  email     String
-  otp       String
-  type      String   // VERIFY_EMAIL or FORGOT_PASSWORD
-  expiresAt DateTime
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  @@map("otps")
-}
-
-/// User notifications
 model Notification {
   id         String             @id @default(cuid())
   title      String
@@ -308,60 +432,69 @@ model Notification {
   category   NotificationCategory @default(system)
   read       Boolean            @default(false)
   actionUrl  String?
-  
-  userId     String
-  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  entityId   String?
+  entityType String?
+  userId     String?
+  vendorId   String?
+  vendor     Vendor?            @relation(fields: [vendorId], references: [id])
+  officerId  String?
+  officer    Officer?           @relation(fields: [officerId], references: [id])
   createdAt  DateTime           @default(now())
-
   @@map("notifications")
 }
 
-/// On-chain blockchain transactions
+model Otp {
+  id         String   @id @default(cuid())
+  email      String
+  otp        String
+  type       String
+  entityType String
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  @@map("otps")
+}
+
 model BlockchainTx {
   id            String   @id @default(cuid())
   txHash        String   @unique
   blockNumber   Int?
-  gasFee        Float?
+  gasFee        String?
   timestamp     DateTime @default(now())
   walletAddress String
   type          TxType
   status        TxStatus @default(pending)
-  metadata      String?  // JSON string for flexible metadata storage
-
+  metadata      String?
+  chainId       Int?
+  etherscanUrl  String?
   tenderId      String?
   tender        Tender?  @relation(fields: [tenderId], references: [id])
-  userId        String?
-  user          User?    @relation(fields: [userId], references: [id])
-
+  entityId      String?
+  entityType    String?
   @@map("blockchain_txs")
 }
 
-/// Disputes raised by vendors or public
-model Dispute {
-  id        String        @id @default(cuid())
-  text      String
-  status    DisputeStatus @default(Open)
-  
-  tenderId  String
-  tender    Tender        @relation(fields: [tenderId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User          @relation(fields: [userId], references: [id])
-  
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-
-  @@map("disputes")
+model ActivityLog {
+  id          String   @id @default(cuid())
+  entityId    String?
+  entityType  String
+  actionType  String
+  description String
+  metadata    String?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+  @@map("activity_logs")
 }
 
-/// Live news feed items
-model NewsFeed {
-  id        String       @id @default(cuid())
-  title     String
-  source    String
-  timestamp DateTime     @default(now())
-  category  NewsCategory @default(Announcement)
-  url       String?
-
-  @@map("news_feed")
+model Dispute {
+  id         String        @id @default(cuid())
+  text       String
+  status     DisputeStatus @default(Open)
+  tenderId   String
+  tender     Tender        @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  entityId   String?
+  entityType String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  @@map("disputes")
 }

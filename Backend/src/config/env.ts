@@ -40,14 +40,13 @@ export const env = {
   AWS_S3_FORCE_PATH_STYLE: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
 
   // ===========================================
-  // Local Ganache Blockchain
+  // Ethereum Sepolia Testnet (Real Blockchain)
   // ===========================================
-  ETH_RPC_URL: process.env.ETH_RPC_URL || "http://127.0.0.1:7545",
-  ETH_CHAIN_ID: parseInt(process.env.ETH_CHAIN_ID || "1337", 10),
+  SEPOLIA_RPC_URL: process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID",
+  SEPOLIA_CHAIN_ID: parseInt(process.env.SEPOLIA_CHAIN_ID || "11155111", 10),
   CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || "",
-  OFFICER_PRIVATE_KEY: process.env.OFFICER_PRIVATE_KEY || "",
-  VENDOR_PRIVATE_KEY: process.env.VENDOR_PRIVATE_KEY || "",
-  BLOCKCHAIN_SIMULATION_MODE: process.env.BLOCKCHAIN_SIMULATION_MODE === "true",
+  ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY || "",
+  ETHERSCAN_BASE_URL: process.env.ETHERSCAN_BASE_URL || "https://sepolia.etherscan.io",
 
   // Socket.io
   SOCKET_CORS_ORIGIN: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3000",

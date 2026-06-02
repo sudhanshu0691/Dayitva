@@ -11,6 +11,9 @@ import notificationRoutes from "./notifications.routes";
 import disputeRoutes from "./disputes.routes";
 import dashboardRoutes from "./dashboard.routes";
 import uploadRoutes from "./uploads.routes";
+import auditorRoutes from "./auditor.routes";
+import kycRoutes from "./kyc.routes";
+import blockchainRoutes from "./blockchain.routes";
 
 const router = Router();
 
@@ -25,6 +28,9 @@ router.use("/notifications", notificationRoutes);
 router.use("/disputes", disputeRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/uploads", uploadRoutes);
+router.use("/auditor", auditorRoutes);
+router.use("/kyc", kycRoutes);
+router.use("/blockchain", blockchainRoutes);
 
 // Health check
 router.get("/health", (_req, res) => {

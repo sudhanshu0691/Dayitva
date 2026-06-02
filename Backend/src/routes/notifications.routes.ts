@@ -17,8 +17,9 @@ const router = Router();
  */
 router.get("/", authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    const myId = req.user!.userId;
     const notifications = await prisma.notification.findMany({
-      where: { userId: req.user!.userId },
+      where: { userId: myId },
       orderBy: { createdAt: "desc" },
       take: 50,
     });
@@ -47,10 +48,11 @@ router.get("/", authenticate, async (req: AuthRequest, res: Response, next: Next
 router.post("/mark-read", authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id, all } = req.body;
+    const myId = req.user!.userId;
 
     if (all) {
       await prisma.notification.updateMany({
-        where: { userId: req.user!.userId },
+        where: { userId: myId },
         data: { read: true },
       });
     } else if (id) {
@@ -72,8 +74,9 @@ router.post("/mark-read", authenticate, async (req: AuthRequest, res: Response, 
  */
 router.get("/unread-count", authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    const myId = req.user!.userId;
     const count = await prisma.notification.count({
-      where: { userId: req.user!.userId, read: false },
+      where: { userId: myId, read: false },
     });
 
     res.json({ success: true, data: { unreadCount: count } });

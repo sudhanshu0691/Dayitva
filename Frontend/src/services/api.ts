@@ -18,11 +18,18 @@ const api: AxiosInstance = axios.create({
   },
 });
 
+// Helper to detect if this is an auditor API call
+function isAuditorRequest(config: any): boolean {
+  return config?.url?.startsWith("/auditor/") || false;
+}
+
 // Request interceptor to add token to headers
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
+      const isAuditor = isAuditorRequest(config);
+      const tokenKey = isAuditor ? "auditorToken" : "authToken";
+      const token = localStorage.getItem(tokenKey);
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -39,8 +46,9 @@ api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<any>) => {
     const originalRequest = error.config as any;
+    const isAuditor = isAuditorRequest(originalRequest);
 
-    if (originalRequest?.url?.includes("/auth/refresh")) {
+    if (originalRequest?.url?.includes("/refresh")) {
       return Promise.reject(error);
     }
 
@@ -51,13 +59,18 @@ api.interceptors.response.use(
       try {
         if (typeof window !== "undefined") {
           if (!refreshPromise) {
-            const currentRefreshToken = localStorage.getItem("refreshToken");
+            const refreshTokenKey = isAuditor ? "auditorRefreshToken" : "refreshToken";
+            const authTokenKey = isAuditor ? "auditorToken" : "authToken";
+            const refreshEndpoint = isAuditor ? "/auditor/refresh" : "/auth/refresh";
+            const redirectUrl = isAuditor ? "/auditor/login" : "/login";
+
+            const currentRefreshToken = localStorage.getItem(refreshTokenKey);
             if (!currentRefreshToken) {
               throw new Error("No refresh token available");
             }
 
             refreshPromise = axios
-              .post(`${API_BASE_URL}/auth/refresh`, {
+              .post(`${API_BASE_URL}${refreshEndpoint}`, {
                 refreshToken: currentRefreshToken,
               })
               .then((response) => {
@@ -67,9 +80,9 @@ api.interceptors.response.use(
                   throw new Error("Refresh response did not include an access token");
                 }
 
-                localStorage.setItem("authToken", refreshedToken);
+                localStorage.setItem(authTokenKey, refreshedToken);
                 if (newRefreshToken) {
-                  localStorage.setItem("refreshToken", newRefreshToken);
+                  localStorage.setItem(refreshTokenKey, newRefreshToken);
                 }
 
                 return refreshedToken;
@@ -88,10 +101,15 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed, logout user
         if (typeof window !== "undefined") {
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("refreshToken");
+          const refreshTokenKey = isAuditor ? "auditorRefreshToken" : "refreshToken";
+          const authTokenKey = isAuditor ? "auditorToken" : "authToken";
+          const redirectUrl = isAuditor ? "/auditor/login" : "/login";
+
+          localStorage.removeItem(authTokenKey);
+          localStorage.removeItem(refreshTokenKey);
           localStorage.removeItem("user");
-          window.location.href = "/login";
+          localStorage.removeItem("auditor");
+          window.location.href = redirectUrl;
         }
         return Promise.reject(refreshError);
       }

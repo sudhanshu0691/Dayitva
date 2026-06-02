@@ -79,6 +79,13 @@ export default function TenderDetailPage() {
   const isDeadlinePassed = new Date(tender.deadline).getTime() < Date.now();
   const canBid = currentUser?.role === "vendor" && !isDeadlinePassed && kycStatus === "Approved";
 
+  // Determine back navigation based on user role
+  const getBackUrl = () => {
+    if (currentUser?.role === "officer") return "/officer/dashboard";
+    if (currentUser?.role === "vendor") return "/vendor";
+    return "/public/tenders";
+  };
+
   const handleCopyHash = (hash: string) => {
     navigator.clipboard.writeText(hash);
     setCopiedHash(hash);
@@ -119,10 +126,10 @@ export default function TenderDetailPage() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-10">
-      <button onClick={() => router.push("/dashboard")}
+      <button onClick={() => router.push(getBackUrl())}
         className="flex items-center space-x-1 text-xs font-bold text-muted-foreground hover:text-teal-400 mb-6 font-mono">
         <ArrowLeft className="w-4 h-4" />
-        <span>Back to Procurement Registry</span>
+        <span>Back to Dashboard</span>
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

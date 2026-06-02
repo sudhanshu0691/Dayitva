@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Building, Landmark, ShieldCheck, UploadCloud, CheckCircle2,
-  Laptop, Clock, Globe, Lock, Mail, Eye, EyeOff, AlertCircle
+  Laptop, Clock, Globe, Lock, Mail, Eye, EyeOff, AlertCircle,
+  UserRound, Phone, KeyRound, IdCard
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BackButton } from "../../components/ui/BackButton";
@@ -13,13 +14,14 @@ import { Input } from "../../components/ui/input";
 import { ErrorBoundary } from "../../components/ui/ErrorBoundary";
 import { Card, CardContent } from "../../components/ui/Card";
 import authService from "@/services/authService";
+import auditorService from "@/services/auditorService";
 import { useApp } from "../../context/AppContext";
 
 function RegisterContent() {
   const router = useRouter();
   const { language } = useApp();
 
-  const [regType, setRegType] = useState<"vendor" | "officer">("vendor");
+  const [regType, setRegType] = useState<"vendor" | "officer" | "auditor">("vendor");
 
   // Auto-captured metadata
   const [metadata, setMetadata] = useState({
@@ -61,6 +63,17 @@ function RegisterContent() {
     designation: "",
     ministryCode: "MORTH-IND",
     ministry: "",
+  });
+
+  // Auditor Registration states
+  const [auditorData, setAuditorData] = useState({
+    fullName: "",
+    officialEmail: "",
+    employeeId: "",
+    department: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -115,7 +128,7 @@ function RegisterContent() {
     setLoading(true);
 
     try {
-      const result = await authService.register({
+      await authService.register({
         name: vendorData.name,
         email: vendorData.email,
         password: vendorData.password,
@@ -129,7 +142,6 @@ function RegisterContent() {
       });
 
       // Do NOT store auth data - user must verify email first before login
-      // Just redirect to email verification page with role
       router.push(`/verify?email=${encodeURIComponent(vendorData.email)}&type=VERIFY_EMAIL&role=vendor`);
     } catch (err: any) {
       const message = err?.response?.data?.message || err?.message || "Registration failed. Please try again.";
@@ -156,7 +168,7 @@ function RegisterContent() {
     setLoading(true);
 
     try {
-      const result = await authService.register({
+      await authService.register({
         name: officerData.name,
         email: officerData.email,
         password: officerData.password,
@@ -167,8 +179,59 @@ function RegisterContent() {
       });
 
       // Do NOT store auth data - user must verify email first before login
-      // Just redirect to email verification page with role
       router.push(`/verify?email=${encodeURIComponent(officerData.email)}&type=VERIFY_EMAIL&role=officer`);
+    } catch (err: any) {
+      const message = err?.response?.data?.message || err?.message || "Registration failed. Please try again.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAuditorSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    // Validation
+    if (!auditorData.fullName.trim()) {
+      setError("Full name is required");
+      return;
+    }
+    if (!auditorData.officialEmail.trim()) {
+      setError("Official email is required");
+      return;
+    }
+    if (!auditorData.employeeId.trim()) {
+      setError("Employee ID is required");
+      return;
+    }
+    if (!auditorData.department.trim()) {
+      setError("Department is required");
+      return;
+    }
+    if (auditorData.password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+    if (auditorData.password !== auditorData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await auditorService.register({
+        fullName: auditorData.fullName,
+        officialEmail: auditorData.officialEmail,
+        employeeId: auditorData.employeeId,
+        department: auditorData.department,
+        phoneNumber: auditorData.phoneNumber || undefined,
+        password: auditorData.password,
+      });
+
+      // Redirect to login after successful registration
+      router.push("/auditor/login");
     } catch (err: any) {
       const message = err?.response?.data?.message || err?.message || "Registration failed. Please try again.";
       setError(message);
@@ -180,9 +243,10 @@ function RegisterContent() {
   const t = {
     en: {
       title: "Consortium Registration Hub",
-      desc: "Enroll as a verified tender issuing officer or register your corporate entity on the blockchain KYC system.",
-      vendorTab: "Corporate Vendor Enrollment",
-      officerTab: "Government Officer Registration",
+      desc: "Enroll as a verified tender issuing officer, register your corporate entity, or create an auditor account on the blockchain KYC system.",
+      vendorTab: "Corporate Vendor",
+      officerTab: "Government Officer",
+      auditorTab: "Auditor",
       metadataTitle: "Security Metadata",
       metadataDesc: "For compliance tracking and auditing:",
       name: "Full Name",
@@ -204,18 +268,26 @@ function RegisterContent() {
       officerID: "Officer ID",
       desig: "Designation",
       ministry: "Ministry Name",
+      auditorName: "Auditor Full Name",
+      auditorEmail: "Official Email / Login ID",
+      auditorID: "Employee ID",
+      department: "Department",
+      auditorPhone: "Phone Number",
+      auditorDesc: "Register as a verification authority. Create your secure auditor account.",
       regCTA: "Submit Registration",
       loadingVendor: "Creating vendor account...",
       loadingOfficer: "Creating officer account...",
+      loadingAuditor: "Creating auditor account...",
       backLabel: "Back to Home",
       haveAccount: "Already have an account?",
       loginLink: "Sign in",
     },
     hi: {
       title: "कंसोर्टियम पंजीकरण हब",
-      desc: "सत्यापित निविदा अधिकारी या ब्लॉकचेन केवाईसी प्रणाली पर कॉर्पोरेट इकाई के रूप में पंजीकरण करें।",
+      desc: "सत्यापित निविदा अधिकारी, कॉर्पोरेट इकाई या ऑडिटर खाते के रूप में पंजीकरण करें।",
       vendorTab: "कॉर्पोरेट विक्रेता",
       officerTab: "सरकारी अधिकारी",
+      auditorTab: "ऑडिटर",
       metadataTitle: "सुरक्षा मेटाडेटा",
       metadataDesc: "अनुपालन ट्रैकिंग और ऑडिटिंग के लिए:",
       name: "पूरा नाम",
@@ -237,9 +309,16 @@ function RegisterContent() {
       officerID: "अधिकारी आईडी",
       desig: "पदनाम",
       ministry: "मंत्रालय का नाम",
+      auditorName: "ऑडिटर का पूरा नाम",
+      auditorEmail: "आधिकारिक ईमेल",
+      auditorID: "कर्मचारी आईडी",
+      department: "विभाग",
+      auditorPhone: "फ़ोन नंबर",
+      auditorDesc: "सत्यापन प्राधिकरण के रूप में पंजीकरण करें।",
       regCTA: "पंजीकरण जमा करें",
       loadingVendor: "विक्रेता खाता बनाया जा रहा है...",
       loadingOfficer: "अधिकारी खाता बनाया जा रहा है...",
+      loadingAuditor: "ऑडिटर खाता बनाया जा रहा है...",
       backLabel: "होम पर वापस जाएं",
       haveAccount: "पहले से खाता है?",
       loginLink: "साइन इन करें",
@@ -286,6 +365,17 @@ function RegisterContent() {
         >
           <Landmark className="w-4 h-4" aria-hidden="true" />
           <span>{t.officerTab}</span>
+        </button>
+        <button
+          onClick={() => setRegType("auditor")}
+          role="tab"
+          aria-selected={regType === "auditor"}
+          className={`flex-1 py-2.5 rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+            regType === "auditor" ? "bg-background text-red-400 shadow-md border border-border" : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+          <span>{t.auditorTab}</span>
         </button>
       </div>
 
@@ -626,6 +716,158 @@ function RegisterContent() {
                   loadingText={t.loadingOfficer}
                 >
                   <Lock className="w-4 h-4" />
+                  {t.regCTA}
+                </Button>
+              </motion.form>
+            )}
+
+            {/* AUDITOR REGISTRATION FORM */}
+            {regType === "auditor" && (
+              <motion.form
+                key="auditor-form"
+                onSubmit={handleAuditorSubmit}
+                initial={{ opacity: 0, x: 5 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -5 }}
+                className="space-y-4"
+                noValidate
+              >
+                {/* Auditor badge */}
+                <div className="flex items-center gap-2 px-3 py-2 bg-red-950/20 border border-red-800/30 rounded-lg">
+                  <ShieldCheck className="w-4 h-4 text-red-400 shrink-0" />
+                  <span className="text-xs text-red-300 font-semibold font-mono">
+                    AUTHORIZED PERSONNEL ONLY — GOVERNMENT VERIFICATION
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Full Name */}
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.auditorName}</label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. Shri Amit Sharma"
+                      value={auditorData.fullName}
+                      onChange={(e) => setAuditorData({...auditorData, fullName: e.target.value})}
+                      leftIcon={<UserRound className="w-4 h-4 text-muted-foreground" />}
+                      required
+                    />
+                  </div>
+
+                  {/* Official Email */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.auditorEmail}</label>
+                    <Input
+                      type="email"
+                      placeholder="e.g. auditor@gov.in"
+                      value={auditorData.officialEmail}
+                      onChange={(e) => setAuditorData({...auditorData, officialEmail: e.target.value})}
+                      leftIcon={<Mail className="w-4 h-4 text-muted-foreground" />}
+                      className="font-mono"
+                      required
+                      autoComplete="email"
+                    />
+                  </div>
+
+                  {/* Employee ID */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.auditorID}</label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. GOV-AUD-7712"
+                      value={auditorData.employeeId}
+                      onChange={(e) => setAuditorData({...auditorData, employeeId: e.target.value})}
+                      leftIcon={<IdCard className="w-4 h-4 text-muted-foreground" />}
+                      className="font-mono uppercase"
+                      required
+                    />
+                  </div>
+
+                  {/* Department */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.department}</label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. Central Bureau of Verification"
+                      value={auditorData.department}
+                      onChange={(e) => setAuditorData({...auditorData, department: e.target.value})}
+                      leftIcon={<Building className="w-4 h-4 text-muted-foreground" />}
+                      required
+                    />
+                  </div>
+
+                  {/* Phone Number (optional) */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">
+                      {t.auditorPhone} <span className="text-muted-foreground/60 normal-case">(optional)</span>
+                    </label>
+                    <Input
+                      type="tel"
+                      placeholder="e.g. +91 98765XXXXX"
+                      value={auditorData.phoneNumber}
+                      onChange={(e) => setAuditorData({...auditorData, phoneNumber: e.target.value})}
+                      leftIcon={<Phone className="w-4 h-4 text-muted-foreground" />}
+                    />
+                  </div>
+
+                  {/* Divider before password */}
+                  <div className="sm:col-span-2 border-t border-border/60 pt-3">
+                    <div className="flex items-center gap-2 mb-3">
+                      <KeyRound className="w-3.5 h-3.5 text-muted-foreground" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono">
+                        Set Password
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Password */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.passLabel}</label>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder={t.passPH}
+                      value={auditorData.password}
+                      onChange={(e) => setAuditorData({...auditorData, password: e.target.value})}
+                      leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
+                      rightIcon={
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-muted-foreground">
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      }
+                      required
+                      minLength={8}
+                    />
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.confirmPass}</label>
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder={t.passPH}
+                      value={auditorData.confirmPassword}
+                      onChange={(e) => setAuditorData({...auditorData, confirmPassword: e.target.value})}
+                      leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
+                      rightIcon={
+                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-muted-foreground">
+                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      }
+                      required
+                      minLength={8}
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="default"
+                  className="w-full gap-2 font-mono"
+                  disabled={loading}
+                  loading={loading}
+                  loadingText={t.loadingAuditor}
+                >
+                  <ShieldCheck className="w-4 h-4" />
                   {t.regCTA}
                 </Button>
               </motion.form>

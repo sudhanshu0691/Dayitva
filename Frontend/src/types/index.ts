@@ -5,12 +5,14 @@ export interface UserProfile {
   name: string;
   email: string;
   role: UserRole;
+  walletAddress?: string;
+  mobile?: string;
   // Vendor specific
   companyName?: string;
   regNumber?: string;
   pan?: string;
   gst?: string;
-  kycStatus?: "Pending" | "Under Review" | "Approved" | "Rejected";
+  kycStatus?: "Pending" | "UnderReview" | "Approved" | "Rejected";
   turnover?: string;
   itrYears?: string[];
   solvencyCertificate?: string;

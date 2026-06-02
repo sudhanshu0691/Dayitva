@@ -3,13 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ShieldCheck, Mail, KeyRound, CheckCircle2, AlertCircle,
-  RefreshCw, ArrowRight, Clock
+  Mail, KeyRound, CheckCircle2, AlertCircle,
+  RefreshCw, Clock
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { BackButton } from "../../components/ui/BackButton";
 import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
 import { ErrorBoundary } from "../../components/ui/ErrorBoundary";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/Card";
 import authService from "@/services/authService";
@@ -59,13 +57,13 @@ function VerifyContent() {
       setMessage(result.message);
       if (result.devOtp) {
         setDevOtp(result.devOtp);
-        // Auto-fill OTP in development mode
         if (result.devOtp.length === 6) {
           setOtp(result.devOtp.split(""));
         }
       }
-    } catch (err: any) {
-      const message = err?.response?.data?.message || err?.message || "Failed to send OTP";
+    } catch (err: unknown) {
+      const errObj = err as { response?: { data?: { message?: string } }; message?: string };
+      const message = errObj?.response?.data?.message || errObj?.message || "Failed to send OTP";
       setError(message);
     } finally {
       setLoading(false);
@@ -87,8 +85,9 @@ function VerifyContent() {
           setOtp(result.devOtp.split(""));
         }
       }
-    } catch (err: any) {
-      const message = err?.response?.data?.message || err?.message || "Failed to resend OTP";
+    } catch (err: unknown) {
+      const errObj = err as { response?: { data?: { message?: string } }; message?: string };
+      const message = errObj?.response?.data?.message || errObj?.message || "Failed to resend OTP";
       setError(message);
     } finally {
       setLoading(false);
@@ -97,14 +96,12 @@ function VerifyContent() {
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) {
-      // Handle paste
       const digits = value.replace(/\D/g, "").slice(0, 6);
       const newOtp = [...otp];
       for (let i = 0; i < 6; i++) {
         newOtp[i] = digits[i] || "";
       }
       setOtp(newOtp);
-      // Focus next empty or last input
       const nextEmpty = newOtp.findIndex(d => !d);
       const focusIndex = nextEmpty === -1 ? 5 : nextEmpty;
       document.getElementById(`otp-${focusIndex}`)?.focus();
@@ -117,7 +114,6 @@ function VerifyContent() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto-focus next input
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`)?.focus();
     }
@@ -145,16 +141,20 @@ function VerifyContent() {
       setSuccess(true);
       setMessage(result.message);
 
-      // If email verified successfully, redirect to login page (user must explicitly login)
       if (type === "VERIFY_EMAIL") {
         const role = searchParams.get("role") || "";
         const loginPath = role === "vendor" ? "/login/vendor" : role === "officer" ? "/login/organizer" : "/login";
         setTimeout(() => {
           router.push(`${loginPath}?verified=1&email=${encodeURIComponent(email)}`);
         }, 1500);
+      } else if (type === "FORGOT_PASSWORD") {
+        setTimeout(() => {
+          router.push(`/reset-password?email=${encodeURIComponent(email)}&otp=${otpString}`);
+        }, 1500);
       }
-    } catch (err: any) {
-      const message = err?.response?.data?.message || err?.message || "Invalid OTP. Please try again.";
+    } catch (err: unknown) {
+      const errObj = err as { response?: { data?: { message?: string } }; message?: string };
+      const message = errObj?.response?.data?.message || errObj?.message || "Invalid OTP. Please try again.";
       setError(message);
     } finally {
       setLoading(false);
@@ -174,8 +174,8 @@ function VerifyContent() {
       resend: "Resend OTP",
       resendCooldown: "Resend in {seconds}s",
       sendOtp: "Send OTP",
-      verified: "Email Verified Successfully!",
-      verifiedDesc: "Redirecting you to your dashboard...",
+      verified: "Verified Successfully!",
+      verifiedDesc: "Redirecting you...",
       backLabel: "Back to Login",
       noEmail: "No email provided",
       noEmailDesc: "Please go back and register or login first.",
@@ -194,8 +194,8 @@ function VerifyContent() {
       resend: "पुनः भेजें",
       resendCooldown: "{seconds} सेकंड में पुनः भेजें",
       sendOtp: "OTP भेजें",
-      verified: "ईमेल सफलतापूर्वक सत्यापित!",
-      verifiedDesc: "आपको आपके डैशबोर्ड पर रीडायरेक्ट किया जा रहा है...",
+      verified: "सफलतापूर्वक सत्यापित!",
+      verifiedDesc: "आपको रीडायरेक्ट किया जा रहा है...",
       backLabel: "लॉगिन पर वापस जाएं",
       noEmail: "कोई ईमेल प्रदान नहीं किया गया",
       noEmailDesc: "कृपया वापस जाएं और पहले पंजीकरण या लॉगिन करें।",
@@ -255,7 +255,6 @@ function VerifyContent() {
         <CardContent className="space-y-4">
           {!success ? (
             <>
-              {/* OTP sent message */}
               {otpSent && message && (
                 <div className="p-2.5 bg-primary/5 border border-primary/20 rounded-lg text-xs text-primary font-mono flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5 shrink-0" />
@@ -264,7 +263,6 @@ function VerifyContent() {
               )}
 
               <form onSubmit={handleVerify} className="space-y-4">
-                {/* OTP Input */}
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">
                     {t.otpLabel}
@@ -289,7 +287,6 @@ function VerifyContent() {
                   </div>
                 </div>
 
-                {/* Error message */}
                 {error && (
                   <div className="p-3 bg-destructive/10 border border-destructive/20 text-xs text-destructive font-mono rounded-lg flex items-center gap-1.5" role="alert">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -310,7 +307,6 @@ function VerifyContent() {
                 </Button>
               </form>
 
-              {/* Resend OTP */}
               <div className="text-center">
                 {countdown > 0 ? (
                   <button
@@ -335,7 +331,6 @@ function VerifyContent() {
               </div>
             </>
           ) : (
-            /* Success State */
             <div className="text-center py-4">
               <div className="w-16 h-16 bg-emerald-950/30 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-8 h-8 text-emerald-400" />

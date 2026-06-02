@@ -1,6 +1,7 @@
 // ============================================================
 // Shared TypeScript Types & Interfaces for Backend
 // Mirrors frontend types for consistent API contract
+// Updated: Vendor/Officer/Auditor independent models
 // ============================================================
 
 import { Request } from "express";
@@ -17,7 +18,7 @@ export interface AuthRequest extends Request {
 
 // --- User ---
 
-export type UserRole = "officer" | "vendor";
+export type UserRole = "officer" | "vendor" | "auditor";
 export type KYCStatus = "Pending" | "UnderReview" | "Approved" | "Rejected";
 
 export interface IUserProfile {
@@ -126,10 +127,12 @@ export interface IAuditStep {
 export type TxType =
   | "TENDER_PUBLISHED"
   | "BID_SUBMITTED"
+  | "BID_REVEALED"
   | "SMART_CONTRACT_EXECUTED"
   | "WINNER_DECLARED"
   | "WALLET_CONNECTED"
-  | "KYC_APPROVED";
+  | "KYC_APPROVED"
+  | "KYC_REJECTED";
 
 export type TxStatus = "success" | "pending" | "failed";
 

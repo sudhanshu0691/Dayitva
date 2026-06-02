@@ -4,47 +4,28 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { 
   Landmark, User, Mail, Cpu, Plus, ChevronRight, 
-  ArrowUpRight, AlertCircle 
+  ArrowUpRight, AlertCircle, ShieldCheck, Lock,
+  CheckCircle2, XCircle, AlertTriangle, Clock
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import tenderService from "@/services/tenderService";
 import userService from "@/services/userService";
-
-interface KYCRequest {
-  id: string;
-  companyName: string;
-  pan: string;
-  gst: string;
-  turnover: string;
-  status: string;
-}
 
 export default function OfficerDashboard() {
   const router = useRouter();
   const { currentUser, hydrated } = useApp();
   
   const [tenders, setTenders] = useState<any[]>([]);
-  const [kycQueue, setKYCQueue] = useState<KYCRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Only fetch data if hydrated and user is authenticated
     if (!hydrated) return;
     
     const fetchData = async () => {
       try {
-        const [tenderRes, kycRes] = await Promise.allSettled([
-          tenderService.listTenders(),
-          userService.getPendingKYC()
-        ]);
-
-        if (tenderRes.status === "fulfilled") {
-          setTenders(tenderRes.value.data || []);
-        }
-        if (kycRes.status === "fulfilled") {
-          setKYCQueue(kycRes.value.data || []);
-        }
+        const tenderRes = await tenderService.listTenders();
+        setTenders(tenderRes.data || []);
       } catch (err: any) {
         setError(err?.message || "Failed to load data");
       } finally {
@@ -54,7 +35,6 @@ export default function OfficerDashboard() {
     fetchData();
   }, [hydrated]);
 
-  // Wait for hydration to complete
   if (!hydrated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -63,7 +43,6 @@ export default function OfficerDashboard() {
     );
   }
 
-  // Check authentication and role
   if (!currentUser || currentUser.role !== "officer") {
     return (
       <div className="max-w-xl mx-auto px-6 py-20 text-center">
@@ -84,6 +63,7 @@ export default function OfficerDashboard() {
     );
   }
 
+  const isKycApproved = currentUser.kycStatus === "Approved";
   const formatCurrency = (amount: number) => {
     if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(2)} Cr`;
     return `₹${(amount / 100000).toFixed(2)} Lakh`;
@@ -104,7 +84,48 @@ export default function OfficerDashboard() {
               <Mail className="w-3.5 h-3.5" />
               {currentUser.email}
             </span>
+            {currentUser.designation && (
+              <span className="text-[10px] text-slate-500 font-mono mt-0.5 block">
+                {currentUser.designation} • {currentUser.ministry || ""}
+              </span>
+            )}
           </div>
+        </div>
+      </div>
+
+      {/* KYC Status Banner */}
+      <div className={`mb-8 p-4 rounded-2xl border ${
+        isKycApproved 
+          ? "bg-emerald-950/10 border-emerald-800/20" 
+          : "bg-amber-950/10 border-amber-800/20"
+      }`}>
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            {isKycApproved ? (
+              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+            ) : (
+              <AlertTriangle className="w-8 h-8 text-amber-400" />
+            )}
+            <div>
+              <p className="font-bold text-sm text-foreground">
+                {isKycApproved ? "KYC Verified ✓" : "KYC Verification Required"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {isKycApproved 
+                  ? "Your identity has been verified. You can create and manage tenders."
+                  : `Current KYC Status: ${currentUser.kycStatus || "Pending"}. Complete KYC to create tenders.`
+                }
+              </p>
+            </div>
+          </div>
+          {!isKycApproved && (
+            <button
+              onClick={() => router.push("/admin/profile")}
+              className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-xs font-bold hover:bg-amber-500/20 transition-all"
+            >
+              Complete KYC Now
+            </button>
+          )}
         </div>
       </div>
 
@@ -135,9 +156,45 @@ export default function OfficerDashboard() {
           </span>
         </div>
         <div className="p-4 bg-slate-950 border border-slate-900 rounded-xl">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">Pending KYC</span>
-          <span className="block text-xl font-black font-mono mt-1 text-saffron">{kycQueue.length}</span>
+          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">KYC</span>
+          <span className={`block text-xl font-black font-mono mt-1 ${isKycApproved ? "text-emerald-400" : "text-amber-400"}`}>
+            {currentUser.kycStatus || "Pending"}
+          </span>
         </div>
+      </div>
+
+      {/* Create Tender Button - Disabled if KYC not approved */}
+      <div className="mb-6">
+        <button
+          onClick={() => isKycApproved && router.push("/admin/create-tender")}
+          disabled={!isKycApproved}
+          className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold font-mono transition-all ${
+            isKycApproved
+              ? "bg-gradient-to-r from-orange-500 to-rose-600 text-white hover:shadow-lg"
+              : "bg-slate-900 text-slate-500 cursor-not-allowed border border-slate-800"
+          }`}
+        >
+          {isKycApproved ? (
+            <>
+              <Plus className="w-4 h-4" />
+              Create New Tender
+            </>
+          ) : (
+            <>
+              <Lock className="w-4 h-4" />
+              KYC Required to Create Tender
+            </>
+          )}
+        </button>
+        {!isKycApproved && (
+          <p className="text-[10px] text-amber-400 font-mono text-center mt-2">
+            <AlertTriangle className="w-3 h-3 inline mr-1" />
+            Your KYC must be approved by an Auditor before you can create tenders.
+            <button onClick={() => router.push("/admin/profile")} className="underline ml-1 hover:text-amber-300">
+              Go to Profile
+            </button>
+          </p>
+        )}
       </div>
 
       {/* Tenders Table */}
@@ -196,11 +253,19 @@ export default function OfficerDashboard() {
         <h3 className="text-xs font-black uppercase tracking-wider font-mono text-orange-400 mb-4 flex items-center gap-1.5">
           <Landmark className="w-4 h-4" /> Quick Actions
         </h3>
-        <button onClick={() => router.push("/admin/create-tender")}
+        <button onClick={() => isKycApproved ? router.push("/admin/create-tender") : router.push("/admin/profile")}
           className="w-full flex items-center justify-between p-3 border border-slate-900 rounded-xl hover:border-orange-500/30 text-xs font-bold font-mono text-slate-200 mb-3">
           <div className="flex items-center gap-2.5">
-            <Plus className="w-4 h-4 text-[#FF9933]" />
-            <span>Create New Tender</span>
+            {isKycApproved ? <Plus className="w-4 h-4 text-[#FF9933]" /> : <ShieldCheck className="w-4 h-4 text-amber-400" />}
+            <span>{isKycApproved ? "Create New Tender" : "Complete KYC Verification"}</span>
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-500" />
+        </button>
+        <button onClick={() => router.push("/admin/profile")}
+          className="w-full flex items-center justify-between p-3 border border-slate-900 rounded-xl hover:border-orange-500/30 text-xs font-bold font-mono text-slate-200">
+          <div className="flex items-center gap-2.5">
+            <User className="w-4 h-4 text-blue-400" />
+            <span>View Profile & Settings</span>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-500" />
         </button>

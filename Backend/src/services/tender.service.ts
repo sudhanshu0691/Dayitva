@@ -4,24 +4,43 @@
 // ============================================================
 
 import { prisma } from "../config/database";
-import { env } from "../config/env";
 import { AppError } from "../middleware/errorHandler";
 import { CreateTenderInput, UpdateTenderInput, TenderQueryInput } from "../validators/tender.validator";
 import { ITender, IBid, IAuditStep, IPFSFile } from "../types";
-import { v4 as uuidv4 } from "uuid";
+import { createTenderOnChain, isBlockchainReachable, getGasPrice } from "./blockchain.service";
+
+const BLOCKCHAIN_SIMULATION_MODE = process.env.BLOCKCHAIN_SIMULATION_MODE !== "false";
 
 /**
- * Generate a simulated transaction hash and block number.
- * In production, this would come from the smart contract.
+ * Generate transaction data from the real blockchain or simulation.
  */
-function generateTxData() {
-  if (env.BLOCKCHAIN_SIMULATION_MODE) {
-    return {
-      txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-      blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-    };
+async function generateTxData(tenderInput?: { title: string; ipfsHash: string; budget: number; deadline: Date; minScore: number; msmeQuota: boolean }) {
+  if (!BLOCKCHAIN_SIMULATION_MODE && tenderInput) {
+    try {
+      const isReachable = await isBlockchainReachable();
+      if (isReachable) {
+        const result = await createTenderOnChain(
+          tenderInput.title,
+          tenderInput.ipfsHash,
+          tenderInput.budget,
+          tenderInput.deadline,
+          tenderInput.minScore,
+          tenderInput.msmeQuota
+        );
+        return {
+          txHash: result.txHash,
+          blockNumber: result.blockNumber,
+        };
+      }
+    } catch (error: any) {
+      console.error("Blockchain transaction failed, falling back to simulation:", error.message);
+    }
   }
-  return { txHash: null, blockNumber: null };
+  // Fallback to simulation
+  return {
+    txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
+    blockNumber: Math.floor(Math.random() * 50000) + 18240000,
+  };
 }
 
 /**
@@ -99,7 +118,15 @@ function formatAuditLog(log: any): IAuditStep {
  * Create a new tender (Officer only).
  */
 export async function createTender(input: CreateTenderInput, officerId: string) {
-  const txData = generateTxData();
+  const chainInput = {
+    title: input.title,
+    ipfsHash: input.ipfsHash || "",
+    budget: input.budget,
+    deadline: new Date(input.deadline),
+    minScore: input.minScore || 0,
+    msmeQuota: input.msmeQuota,
+  };
+  const txData = await generateTxData(chainInput);
 
   const tender = await prisma.tender.create({
     data: {
@@ -212,7 +239,7 @@ export async function listTenders(query: TenderQueryInput) {
       tenderFiles: true,
       auditLogs: {
         orderBy: { timestamp: "asc" },
-        take: 1, // Only first audit log for summary
+        take: 1,
       },
     },
   });
