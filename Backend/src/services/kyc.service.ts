@@ -48,7 +48,7 @@ export async function submitKYC(
   // Create KYC request record in appropriate table
   if (userType === "vendor") {
     const existingRequest = await prisma.vendorKYCRequest.findFirst({
-      where: { vendorId: userId, status: { in: ["Pending", "UnderReview" as any] } },
+      where: { vendorId: userId, status: "Pending" },
       orderBy: { createdAt: "desc" },
     });
 
@@ -77,7 +77,7 @@ export async function submitKYC(
     }
   } else {
     const existingRequest = await prisma.officerKYCRequest.findFirst({
-      where: { officerId: userId, status: { in: ["Pending", "UnderReview" as any] } },
+      where: { officerId: userId, status: "Pending" },
       orderBy: { createdAt: "desc" },
     });
 

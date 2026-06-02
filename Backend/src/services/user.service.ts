@@ -152,16 +152,24 @@ export async function submitKYC(userId: string, kycData: any) {
     kycStatus: "UnderReview",
   };
 
-  if (kycData.pan !== undefined) updateData.pan = kycData.pan;
-  if (kycData.gst !== undefined) updateData.gst = kycData.gst;
-  if (kycData.solvencyCertificate !== undefined) updateData.solvencyCertificate = kycData.solvencyCertificate;
-  if (kycData.regNumber !== undefined) updateData.regNumber = kycData.regNumber;
-  if (kycData.companyName !== undefined) updateData.companyName = kycData.companyName;
-  if (kycData.designation !== undefined) updateData.designation = kycData.designation;
-  if (kycData.ministry !== undefined) updateData.ministry = kycData.ministry;
-  if (kycData.ministryCode !== undefined) updateData.ministryCode = kycData.ministryCode;
-  if (kycData.turnover !== undefined) updateData.turnover = kycData.turnover;
-  if (kycData.itrYears !== undefined) updateData.itrYears = JSON.stringify(kycData.itrYears);
+  // Only include vendor-specific fields if the user is a vendor
+  if (user.__model === "vendor") {
+    if (kycData.pan !== undefined) updateData.pan = kycData.pan;
+    if (kycData.gst !== undefined) updateData.gst = kycData.gst;
+    if (kycData.solvencyCertificate !== undefined) updateData.solvencyCertificate = kycData.solvencyCertificate;
+    if (kycData.regNumber !== undefined) updateData.regNumber = kycData.regNumber;
+    if (kycData.companyName !== undefined) updateData.companyName = kycData.companyName;
+    if (kycData.turnover !== undefined) updateData.turnover = kycData.turnover;
+    if (kycData.itrYears !== undefined) updateData.itrYears = JSON.stringify(kycData.itrYears);
+    if (kycData.experienceScore !== undefined) updateData.experienceScore = kycData.experienceScore;
+  }
+
+  // Only include officer-specific fields if the user is an officer
+  if (user.__model === "officer") {
+    if (kycData.designation !== undefined) updateData.designation = kycData.designation;
+    if (kycData.ministry !== undefined) updateData.ministry = kycData.ministry;
+    if (kycData.ministryCode !== undefined) updateData.ministryCode = kycData.ministryCode;
+  }
 
   const updatedUser = await updateUserById(userId, updateData, user.__model);
 
