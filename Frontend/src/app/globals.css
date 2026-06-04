@@ -2,17 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/metropolis');
+
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 5.9%;
-    --card-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --border: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --radius: 0.75rem;
+    /* Primary — Navy Blue */
+    --primary: #002869;
+    --primary-foreground: #FFFFFF;
+    --primary-container: #0b3d91;
+    --primary-on-container: #8dadff;
+
+    /* Secondary — Emerald Green */
+    --secondary: #056e00;
+    --secondary-foreground: #FFFFFF;
+
+    /* Tertiary — Saffron/Amber */
+    --tertiary: #521a00;
+    --tertiary-container: #762900;
+    --tertiary-on-container: #ff9162;
+
+    /* Error */
+    --destructive: #ba1a1a;
+    --destructive-foreground: #FFFFFF;
+    --destructive-container: #ffdad6;
+
+    /* Neutral */
+    --background: #faf8ff;
+    --foreground: #1a1b21;
+    --card: #ffffff;
+    --card-foreground: #1a1b21;
+    --muted: #eeedf5;
+    --muted-foreground: #4B5563;
+    --border: #E5E7EB;
+    --input: #E5E7EB;
+    --outline: #747783;
+    --outline-variant: #c4c6d3;
+
+    /* Surface layers */
+    --surface: #faf8ff;
+    --surface-dim: #dad9e1;
+    --surface-container-low: #f4f3fb;
+    --surface-container: #eeedf5;
+    --surface-container-high: #e8e7ef;
+    --surface-container-highest: #e2e2e9;
+
+    /* Status colors */
+    --status-open: #002869;
+    --status-open-bg: #e8edf5;
+    --status-approved: #056e00;
+    --status-approved-bg: #e6f7e6;
+    --status-pending: #521a00;
+    --status-pending-bg: #fff3e6;
+    --status-rejected: #ba1a1a;
+    --status-rejected-bg: #ffdad6;
+    --status-closed: #4B5563;
+    --status-closed-bg: #f3f4f6;
+
+    /* Sidebar */
+    --sidebar: #ffffff;
+    --sidebar-border: #E5E7EB;
+    --sidebar-muted: #4B5563;
+
+    /* Topbar */
+    --topbar: #002869;
+    --topbar-text: #FFFFFF;
+  }
+
+  .dark {
+    --background: #1a1b21;
+    --foreground: #f1f0f8;
+    --card: #2f3036;
+    --card-foreground: #f1f0f8;
+    --muted: #3a3b42;
+    --muted-foreground: #a0a0aa;
+    --border: #434652;
+    --input: #434652;
+    --primary: #8dadff;
+    --primary-foreground: #001947;
+    --primary-container: #144296;
+    --destructive: #ffb4ab;
+    --destructive-foreground: #690005;
+    --sidebar: #2f3036;
+    --sidebar-border: #434652;
+    --sidebar-muted: #a0a0aa;
+    --topbar: #1a1b21;
+    --topbar-text: #f1f0f8;
   }
 }
 
@@ -22,84 +97,209 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Metropolis for headings */
+  h1, h2, h3, h4, h5, h6,
+  .heading-font {
+    font-family: 'Metropolis', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  h1 { font-size: 32px; font-weight: 700; line-height: 40px; letter-spacing: -0.01em; color: #002869; }
+  h2 { font-size: 24px; font-weight: 600; line-height: 32px; }
+  h3 { font-size: 20px; font-weight: 600; line-height: 28px; }
+  h4 { font-size: 18px; font-weight: 600; line-height: 28px; }
+  h5 { font-size: 16px; font-weight: 600; line-height: 24px; }
+  h6 { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.01em; }
 }
 
-/* Scrollbar Styles */
+/* Scrollbar Styles - flat design */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: var(--border);
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--muted-foreground);
 }
 
 /* Skeleton Loading Animation */
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .skeleton {
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+  background: linear-gradient(90deg, var(--muted) 25%, var(--card) 50%, var(--muted) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
-  border-radius: 0.5rem;
 }
 
-/* Transaction status animation */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 0.4; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-}
-
-.tx-pending {
-  animation: pulse-dot 1.5s ease-in-out infinite;
-}
-
-/* Toast animation */
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
+/* Status badge pills (pill-shaped) */
+@layer components {
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 text-label-sm font-medium;
+    border-radius: 9999px;
   }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
 
-@keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-    opacity: 1;
+  .status-open {
+    @apply status-badge;
+    background: var(--status-open-bg);
+    color: var(--status-open);
   }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
+
+  .status-approved {
+    @apply status-badge;
+    background: var(--status-approved-bg);
+    color: var(--status-approved);
   }
-}
 
-.toast-enter {
-  animation: slideInRight 0.3s ease-out;
-}
+  .status-pending {
+    @apply status-badge;
+    background: var(--status-pending-bg);
+    color: var(--status-pending);
+  }
 
-.toast-exit {
-  animation: slideOutRight 0.3s ease-in forwards;
+  .status-rejected {
+    @apply status-badge;
+    background: var(--status-rejected-bg);
+    color: var(--status-rejected);
+  }
+
+  .status-closed {
+    @apply status-badge;
+    background: var(--status-closed-bg);
+    color: var(--status-closed);
+  }
+
+  /* Card with left accent border */
+  .stat-card {
+    @apply border-l-4 p-4 border border-border rounded-lg;
+    border-left-color: var(--primary);
+    background: var(--card);
+  }
+
+  /* Data table styles */
+  .data-table {
+    @apply w-full border-collapse;
+  }
+
+  .data-table thead {
+    background: #F3F4F6;
+  }
+
+  .data-table thead th {
+    @apply px-4 py-3 text-left text-label-sm text-muted-foreground font-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .data-table tbody td {
+    @apply px-4 py-3 text-body-sm;
+  }
+
+  .data-table tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table tbody tr:nth-child(even) {
+    background: var(--surface-container-low);
+  }
+
+  /* Section labels */
+  .section-label {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  /* Card component */
+  .tender-card {
+    @apply bg-card border border-border rounded-lg transition-all duration-150;
+  }
+
+  .tender-card:hover {
+    box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1);
+  }
+
+  /* Primary button style */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg;
+    background: #002869;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 44px;
+    transition: background 0.15s ease;
+  }
+
+  .btn-primary:hover {
+    background: #0b3d91;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg;
+    background: #FFFFFF;
+    color: #002869;
+    border: 1px solid #002869;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 44px;
+    transition: background 0.15s ease;
+  }
+
+  .btn-secondary:hover {
+    background: #f4f3fb;
+  }
+
+  .btn-success {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg;
+    background: #056e00;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 44px;
+    transition: background 0.15s ease;
+  }
+
+  .btn-success:hover {
+    background: #045a00;
+  }
+
+  /* Input field style */
+  .input-field {
+    @apply w-full px-3 py-2.5 rounded-lg text-body-sm;
+    border: 1px solid var(--input);
+    background: var(--card);
+    color: var(--foreground);
+    min-height: 44px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: #002869;
+    box-shadow: 0 0 0 2px rgba(0, 40, 105, 0.15);
+  }
+
+  .input-field::placeholder {
+    color: var(--muted-foreground);
+  }
 }

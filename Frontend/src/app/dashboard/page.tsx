@@ -3,10 +3,8 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { 
-  Search, SlidersHorizontal, Eye, Layers, ShieldCheck, 
-  Info, AlertCircle, User
+  Search, Eye, Layers, AlertCircle, User
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "../../context/AppContext";
 import tenderService from "@/services/tenderService";
 
@@ -50,11 +48,11 @@ const DashboardContent: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "Open": return "bg-emerald-950/80 text-emerald-400 border-emerald-500/30";
-      case "UnderEvaluation": return "bg-amber-950/80 text-amber-400 border-amber-500/30 animate-pulse";
-      case "Closed": return "bg-slate-900 text-slate-400 border-slate-700";
-      case "Awarded": return "bg-teal-950/80 text-teal-400 border-teal-500/30";
-      default: return "bg-slate-900 text-slate-400 border-slate-700";
+      case "Open": return "status-open";
+      case "UnderEvaluation": return "status-pending";
+      case "Closed": return "status-closed";
+      case "Awarded": return "status-approved";
+      default: return "status-closed";
     }
   };
 
@@ -66,88 +64,95 @@ const DashboardContent: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="border-2 border-[#002869] border-t-transparent w-6 h-6 animate-spin rounded-full" />
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 py-10">
-      <div className="border-b border-border/80 pb-6 mb-8">
-        <h1 className="text-xl sm:text-2xl font-black text-foreground flex items-center gap-2">
-          <Layers className="w-6 h-6 text-primary" />
-          Public E-Procurement Dashboard
+    <div className="w-full max-w-container mx-auto px-4 md:px-6 py-10">
+      {/* Page Header */}
+      <div className="border-b border-border pb-6 mb-8">
+        <h1 className="text-headline-md text-foreground heading-font font-bold flex items-center gap-2">
+          <Layers className="w-5 h-5 text-[#002869]" />
+          Public e-procurement dashboard
         </h1>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-body-sm text-muted-foreground mt-1">
           Browse active tenders, sealed bidding progress, and procurement milestones.
         </p>
       </div>
 
       {error && (
-        <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 text-xs text-destructive rounded-lg flex items-center gap-1.5">
+        <div className="mb-6 p-3 bg-[#ffdad6] border border-[#ba1a1a]/30 text-[#ba1a1a] text-body-sm flex items-center gap-1.5 rounded-lg">
           <AlertCircle className="w-3.5 h-3.5" />
-          <span>{error}</span>
+          <span className="font-semibold">{error}</span>
         </div>
       )}
 
-      <div className="flex flex-wrap gap-4 mb-6">
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-6">
         <div className="flex-1 min-w-[200px]">
           <div className="relative">
             <input type="text" placeholder="Search by ID, title..." value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-background border border-input pl-8 pr-3 py-2 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-primary" />
-            <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-2.5" />
+              className="w-full bg-white border border-border text-foreground pl-9 pr-3 py-2.5 text-body-sm rounded-lg focus:outline-none focus:border-[#002869] focus:ring-2 focus:ring-[#002869]/15 transition-all min-h-[44px]" />
+            <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-3 top-3.5" />
           </div>
         </div>
         <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}
-          className="bg-background border border-input rounded-lg p-2 text-xs font-bold">
-          <option value="All">All Statuses</option>
+          className="bg-white border border-border text-foreground p-2.5 text-body-sm rounded-lg min-h-[44px]">
+          <option value="All">All statuses</option>
           <option value="Open">Open</option>
-          <option value="UnderEvaluation">Under Evaluation</option>
+          <option value="UnderEvaluation">Under evaluation</option>
           <option value="Closed">Closed</option>
           <option value="Awarded">Awarded</option>
         </select>
         <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}
-          className="bg-background border border-input rounded-lg p-2 text-xs font-bold">
-          <option value="default">Default Order</option>
-          <option value="budget-desc">Budget: High to Low</option>
-          <option value="budget-asc">Budget: Low to High</option>
+          className="bg-white border border-border text-foreground p-2.5 text-body-sm rounded-lg min-h-[44px]">
+          <option value="default">Default order</option>
+          <option value="budget-desc">Budget: High to low</option>
+          <option value="budget-asc">Budget: Low to high</option>
           <option value="deadline">Deadline: Nearest</option>
-          <option value="newest">Newest First</option>
+          <option value="newest">Newest first</option>
         </select>
       </div>
 
-      <div className="text-xs text-muted-foreground font-mono mb-4 p-2 bg-muted/40 rounded-lg">
-        Showing: <strong>{sortedTenders.length}</strong> procurement entries
+      {/* Result count */}
+      <div className="text-body-sm text-muted-foreground mb-4 p-3 bg-surface-container-low border border-border rounded-lg">
+        Showing: <strong className="text-foreground">{sortedTenders.length}</strong> procurement entries
       </div>
 
-      <div className="space-y-4">
+      {/* Tender list */}
+      <div className="space-y-3">
         {sortedTenders.length > 0 ? sortedTenders.map((tender: any) => (
-          <div key={tender.id} className="p-5 rounded-2xl border border-border/80 bg-card hover:border-teal-500/30 transition-all shadow-sm">
+          <div key={tender.id} className="p-5 border border-border bg-white rounded-lg hover:border-[#002869]/30 hover:shadow-hover transition-all">
             <div className="flex items-center justify-between gap-2 mb-3">
-              <span className="text-[10px] font-mono font-bold text-teal-500">{tender.id}</span>
-              <span className={`text-[9px] font-bold font-mono px-2.5 py-0.5 rounded-full border ${getStatusBadge(tender.status)}`}>
-                {tender.status}
+              <span className="text-label-sm text-[#002869] font-semibold">{tender.id}</span>
+              <span className={`text-label-sm font-semibold ${getStatusBadge(tender.status)}`}>
+                {tender.status === "UnderEvaluation" ? "Under Evaluation" : tender.status}
               </span>
             </div>
-            <h3 className="font-extrabold text-sm text-foreground line-clamp-2">{tender.title}</h3>
-            <p className="text-[10px] font-extrabold text-muted-foreground tracking-wider font-mono mt-1 uppercase">{tender.ministry}</p>
-            <p className="text-xs text-muted-foreground mt-3 line-clamp-2">{tender.description}</p>
-            <div className="grid grid-cols-3 gap-2 py-3 border-y border-border/60 my-4 text-[10px] font-mono bg-muted/20 px-3 rounded-lg">
-              <div><span className="block text-muted-foreground">BUDGET</span><strong className="block text-foreground mt-0.5">{formatIndianCurrency(tender.budget)}</strong></div>
-              <div><span className="block text-muted-foreground">DEADLINE</span><strong className="block text-foreground mt-0.5">{new Date(tender.deadline).toLocaleDateString()}</strong></div>
-              <div><span className="block text-muted-foreground">BIDS</span><strong className="block text-teal-400 mt-0.5">{tender.bidsCount || 0}</strong></div>
+            <h3 className="font-semibold text-body-md text-foreground line-clamp-2 heading-font">{tender.title}</h3>
+            <p className="text-label-sm text-muted-foreground mt-1 uppercase tracking-wider font-semibold">{tender.ministry}</p>
+            <p className="text-body-sm text-muted-foreground mt-3 line-clamp-2">{tender.description}</p>
+            <div className="grid grid-cols-3 gap-2 py-3 border-y border-border my-4 text-label-sm bg-surface-container-low px-3 rounded">
+              <div><span className="block text-muted-foreground uppercase tracking-wider font-semibold">Budget</span>
+                <span className="block text-foreground font-bold mt-0.5">{formatIndianCurrency(tender.budget)}</span></div>
+              <div><span className="block text-muted-foreground uppercase tracking-wider font-semibold">Deadline</span>
+                <span className="block text-foreground font-bold mt-0.5">{new Date(tender.deadline).toLocaleDateString()}</span></div>
+              <div><span className="block text-muted-foreground uppercase tracking-wider font-semibold">Bids</span>
+                <span className="block text-[#002869] font-bold mt-0.5">{tender.bidsCount || 0}</span></div>
             </div>
             <button onClick={() => router.push(`/tenders/${tender.id}`)}
-              className="flex items-center space-x-1 text-xs font-bold px-3.5 py-1.5 border border-border rounded-xl hover:bg-muted transition-all">
-              <Eye className="w-4 h-4 text-teal-400" />
-              <span>View Details</span>
+              className="flex items-center gap-1.5 text-body-sm px-3 py-2 border border-border rounded-lg hover:bg-surface-container-low transition-colors font-semibold min-h-[44px]">
+              <Eye className="w-4 h-4 text-[#002869]" />
+              <span>View details</span>
             </button>
           </div>
         )) : (
-          <div className="p-12 text-center bg-card border border-border/80 rounded-2xl">
+          <div className="p-12 text-center bg-white border border-border rounded-lg">
             <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">No tenders found matching your criteria.</p>
+            <p className="text-body-sm text-muted-foreground">No tenders found matching your criteria.</p>
           </div>
         )}
       </div>
@@ -157,7 +162,7 @@ const DashboardContent: React.FC = () => {
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="border-2 border-[#002869] border-t-transparent w-6 h-6 animate-spin rounded-full" /></div>}>
       <DashboardContent />
     </Suspense>
   );

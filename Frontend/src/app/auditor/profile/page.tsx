@@ -43,7 +43,7 @@ function ProfilePageContent() {
       setProfile(data);
       setFullName(data.fullName);
       setPhoneNumber(data.phoneNumber || "");
-    } catch (err) {
+    } catch {
       localStorage.removeItem("auditor");
       router.push("/auditor/login");
     } finally {

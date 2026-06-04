@@ -9,102 +9,141 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
+        // Primary — Navy Blue (Authority)
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#002869",
+          foreground: "#FFFFFF",
+          container: "#0b3d91",
+          "on-container": "#8dadff",
+          inverse: "#b1c5ff",
+          fixed: "#dae2ff",
+          "fixed-dim": "#b1c5ff",
+          "on-fixed": "#001947",
+          "on-fixed-variant": "#144296",
+          tint: "#345baf",
+          light: "#0b3d91",
+          lighter: "#dae2ff",
         },
+        // Secondary — Emerald Green (Success/Verified)
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#056e00",
+          foreground: "#FFFFFF",
+          container: "#8dfc75",
+          "on-container": "#067500",
+          fixed: "#8dfc75",
+          "fixed-dim": "#72de5c",
+          "on-fixed": "#012200",
+          "on-fixed-variant": "#035300",
+        },
+        // Tertiary — Saffron/Amber (Warning/High Priority)
+        tertiary: {
+          DEFAULT: "#521a00",
+          foreground: "#FFFFFF",
+          container: "#762900",
+          "on-container": "#ff9162",
+          fixed: "#ffdbcd",
+          "fixed-dim": "#ffb597",
+          "on-fixed": "#360f00",
+          "on-fixed-variant": "#7c2e04",
+        },
+        // Error
+        destructive: {
+          DEFAULT: "#ba1a1a",
+          foreground: "#FFFFFF",
+          container: "#ffdad6",
+          "on-container": "#93000a",
+        },
+        // Surface / Neutral
+        background: "#faf8ff",
+        foreground: "#1a1b21",
+        surface: {
+          DEFAULT: "#faf8ff",
+          dim: "#dad9e1",
+          bright: "#faf8ff",
+          "container-lowest": "#ffffff",
+          "container-low": "#f4f3fb",
+          container: "#eeedf5",
+          "container-high": "#e8e7ef",
+          "container-highest": "#e2e2e9",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#eeedf5",
+          foreground: "#4B5563",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#b5460f",
+          foreground: "#f7f5f0",
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+        card: {
+          DEFAULT: "#ffffff",
+          foreground: "#1a1b21",
         },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        chart: {
-          1: "hsl(var(--chart-1))",
-          2: "hsl(var(--chart-2))",
-          3: "hsl(var(--chart-3))",
-          4: "hsl(var(--chart-4))",
-          5: "hsl(var(--chart-5))",
+        border: "#E5E7EB",
+        input: "#E5E7EB",
+        outline: "#747783",
+        "outline-variant": "#c4c6d3",
+        // Status chip colors
+        status: {
+          approved: "#056e00",
+          "approved-bg": "#e6f7e6",
+          pending: "#521a00",
+          "pending-bg": "#fff3e6",
+          rejected: "#ba1a1a",
+          "rejected-bg": "#ffdad6",
+          open: "#002869",
+          "open-bg": "#e8edf5",
+          closed: "#4B5563",
+          "closed-bg": "#f3f4f6",
         },
-        // Indian tricolor heritage values — kept for cultural context,
-        // but used sparingly (badges, flags, themed sections only)
-        saffron: {
-          DEFAULT: "#FF9933",
-          light: "#FFB84D",
+        sidebar: {
+          DEFAULT: "#ffffff",
+          border: "#E5E7EB",
+          muted: "#4B5563",
         },
-        indianGreen: {
-          DEFAULT: "#138808",
-          light: "#1BB00B",
+        topbar: {
+          DEFAULT: "#002869",
+          text: "#FFFFFF",
         },
-        chakraBlue: {
-          DEFAULT: "#000080",
-          light: "#0000B3",
-        }
-      },
-      borderRadius: {
-        lg: "var(--radius-lg)",   // 10px — popovers, modals
-        md: "var(--radius)",       // 6px — cards, sections
-        sm: "var(--radius-sm)",    // 4px — buttons, inputs
-      },
-      animation: {
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "blockchain-pulse": "blockchainPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "fade-in-up": "fadeInUp 0.5s ease-out forwards",
-        "spin-slow": "spin 8s linear infinite",
-      },
-      keyframes: {
-        blockchainPulse: {
-          "0%, 100%": { opacity: 1, transform: "scale(1)" },
-          "50%": { opacity: .5, transform: "scale(1.05)", filter: "drop-shadow(0 0 8px hsla(38, 92%, 44%, 0.4))" },
-        },
-        fadeInUp: {
-          "0%": { opacity: 0, transform: "translateY(15px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
-        }
       },
       fontFamily: {
-        /*
-         * FONT STACK — deliberate, opinionated choices:
-         *
-         * sans → DM Sans for body text. It's grotesque, warm, and has
-         *   actual personality unlike Inter. We fall back to Inter for
-         *   performance on slow connections, but DM Sans is the star.
-         *
-         * mono → IBM Plex Mono. Used in ALL headings (via globals.css)
-         *   and as the primary code font. It has warmth and humanity.
-         *   A deliberate choice over JetBrains Mono for its character.
-         *
-         * serif → intentionally same as mono. Merriweather was removed.
-         *   A government blockchain portal does not need Georgia or
-         *   Merriweather. Monospace at large weight = gravitas.
-         */
-        sans: ["DM Sans", "Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto"],
-        mono: ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
-        serif: ["IBM Plex Mono", "ui-monospace", "monospace"], // yes, serif = mono. this is intentional.
-      }
+        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["Metropolis", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+      },
+      fontSize: {
+        // Typography scale based on spec
+        "display-lg": ["48px", { lineHeight: "56px", fontWeight: "700", letterSpacing: "-0.02em" }],
+        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700", letterSpacing: "-0.01em" }],
+        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "title-lg": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        "label-md": ["14px", { lineHeight: "20px", fontWeight: "600", letterSpacing: "0.01em" }],
+        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500", letterSpacing: "0.02em" }],
+        // Legacy compatibility (map to new tokens)
+        label: ["12px", { lineHeight: "1.2", letterSpacing: "0.02em" }],
+        body: ["14px", { lineHeight: "1.5" }],
+        heading: ["24px", { lineHeight: "1.3", fontWeight: "600" }],
+      },
+      borderRadius: {
+        none: "0px",
+        sm: "4px",
+        DEFAULT: "8px",
+        md: "12px",
+        lg: "16px",
+        xl: "24px",
+        full: "9999px",
+      },
+      boxShadow: {
+        card: "0px 1px 2px 0px rgba(0,0,0,0.05)",
+        hover: "0px 4px 6px -1px rgba(0,0,0,0.1)",
+        dropdown: "0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06)",
+      },
+      maxWidth: {
+        container: "1280px",
+      },
     },
   },
   plugins: [],

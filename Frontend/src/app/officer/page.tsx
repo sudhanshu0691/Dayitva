@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import tenderService from "@/services/tenderService";
-import KYCWidget from "../../components/kyc/KYCWidget";
 
 export default function OfficerDashboard() {
   const router = useRouter();
@@ -20,7 +19,6 @@ export default function OfficerDashboard() {
 
   useEffect(() => {
     if (!hydrated) return;
-    
     const fetchData = async () => {
       try {
         const tenderRes = await tenderService.listTenders();
@@ -36,54 +34,60 @@ export default function OfficerDashboard() {
 
   const isKycApproved = currentUser?.kycStatus === "Approved";
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "Open": return "status-approved";
+      case "UnderEvaluation": return "status-pending";
+      case "Closed": return "border border-muted-foreground text-muted-foreground bg-muted";
+      case "Awarded": return "border border-primary text-primary bg-primary/10";
+      default: return "border border-muted-foreground text-muted-foreground bg-muted";
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Landmark className="w-6 h-6 text-teal-400" />
-            Officer Desk
+          <h1 className="text-[18px] font-medium text-foreground flex items-center gap-2">
+            <Landmark className="w-5 h-5 text-primary" />
+            Officer desk
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-[13px] text-muted-foreground mt-1">
             Manage tenders, view bids, and oversee procurement
           </p>
         </div>
       </div>
 
-      {/* KYC Status Banner */}
-      <div className="rounded-2xl border border-border/60 bg-card/40 p-5">
+      {/* KYC Banner */}
+      <div className="border border-border bg-card p-5">
         {!isKycApproved ? (
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
+            <AlertCircle className="w-5 h-5 text-status-pending mt-0.5 shrink-0" />
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-amber-300">KYC Verification Required</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                You must complete KYC verification before you can create tenders. 
-                Please upload your documents in the Officer Profile section.
+              <h3 className="text-[13px] font-medium text-status-pending">KYC verification required</h3>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                You must complete KYC verification before you can create tenders.
               </p>
-              <button
-                onClick={() => router.push("/officer/profile")}
-                className="mt-3 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium transition-colors"
-              >
-                Complete KYC Now
+              <button onClick={() => router.push("/officer/profile")}
+                className="mt-3 px-4 py-2 bg-accent text-primary-foreground text-[11px] border border-accent hover:bg-accent/90 transition-colors">
+                Complete KYC now
               </button>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-medium">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-status-pending bg-status-pending-bg text-status-pending text-[11px]">
               <Clock className="w-3.5 h-3.5" />
               {currentUser?.kycStatus || "Pending"}
             </span>
           </div>
         ) : (
           <div className="flex items-start gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-status-approved mt-0.5 shrink-0" />
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-emerald-300">KYC Verified</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Your KYC is approved. You can now create tenders and manage procurement.
+              <h3 className="text-[13px] font-medium text-status-approved">KYC verified</h3>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Your KYC is approved. You can now create tenders.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-status-approved bg-status-approved-bg text-status-approved text-[11px]">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Approved
             </span>
@@ -93,101 +97,75 @@ export default function OfficerDashboard() {
 
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <button
-          onClick={() => {
-            if (!isKycApproved) {
-              router.push("/officer/profile");
-              return;
-            }
-            router.push("/officer/create-tender");
-          }}
-          disabled={!isKycApproved}
-          className={`relative overflow-hidden rounded-2xl border p-5 text-left transition-all ${
-            isKycApproved 
-              ? "border-teal-500/30 bg-teal-950/20 hover:bg-teal-950/30 hover:border-teal-500/50 cursor-pointer" 
-              : "border-slate-700/50 bg-slate-900/50 opacity-60 cursor-not-allowed"
-          }`}
-        >
-          <Plus className="w-8 h-8 text-teal-400 mb-3" />
-          <h3 className="text-sm font-semibold text-slate-200">Create New Tender</h3>
-          <p className="text-xs text-slate-400 mt-1">Publish a new tender on blockchain</p>
+        <button onClick={() => isKycApproved ? router.push("/officer/create-tender") : router.push("/officer/profile")}
+          className={`border p-5 text-left transition-colors ${
+            isKycApproved ? "border-primary/50 bg-primary/5 hover:bg-primary/10" : "border-border bg-muted/30 opacity-60 cursor-not-allowed"
+          }`}>
+          <Plus className="w-8 h-8 text-primary mb-3" />
+          <h3 className="text-[13px] font-medium text-foreground">Create new tender</h3>
+          <p className="text-[11px] text-muted-foreground mt-1">Publish a new tender on blockchain</p>
           {!isKycApproved && (
-            <div className="mt-2 flex items-center gap-1 text-xs text-amber-400">
+            <div className="mt-2 flex items-center gap-1 text-[11px] text-status-pending">
               <AlertCircle className="w-3 h-3" />
               KYC required
             </div>
           )}
         </button>
 
-        <button
-          onClick={() => router.push("/officer/profile")}
-          className="rounded-2xl border border-border/60 bg-card/40 p-5 text-left hover:bg-card/60 transition-all"
-        >
-          <ShieldCheck className="w-8 h-8 text-purple-400 mb-3" />
-          <h3 className="text-sm font-semibold text-slate-200">KYC & Profile</h3>
-          <p className="text-xs text-slate-400 mt-1">Manage your KYC documents and profile</p>
+        <button onClick={() => router.push("/officer/profile")}
+          className="border border-border bg-card p-5 text-left hover:bg-muted transition-colors">
+          <ShieldCheck className="w-8 h-8 text-primary mb-3" />
+          <h3 className="text-[13px] font-medium text-foreground">KYC and profile</h3>
+          <p className="text-[11px] text-muted-foreground mt-1">Manage your KYC documents and profile</p>
         </button>
 
-        <button
-          onClick={() => router.push("/tenders")}
-          className="rounded-2xl border border-border/60 bg-card/40 p-5 text-left hover:bg-card/60 transition-all"
-        >
-          <FileText className="w-8 h-8 text-blue-400 mb-3" />
-          <h3 className="text-sm font-semibold text-slate-200">All Tenders</h3>
-          <p className="text-xs text-slate-400 mt-1">View and manage all tenders</p>
+        <button onClick={() => router.push("/tenders")}
+          className="border border-border bg-card p-5 text-left hover:bg-muted transition-colors">
+          <FileText className="w-8 h-8 text-primary mb-3" />
+          <h3 className="text-[13px] font-medium text-foreground">All tenders</h3>
+          <p className="text-[11px] text-muted-foreground mt-1">View and manage all tenders</p>
         </button>
       </div>
 
       {/* Tenders List */}
       <div>
-        <h2 className="text-lg font-bold text-foreground mb-4">Your Tenders</h2>
+        <h2 className="text-[18px] font-medium text-foreground mb-4">Your tenders</h2>
         {loading ? (
           <div className="space-y-3">
             {[1,2,3].map(i => (
-              <div key={i} className="animate-pulse rounded-2xl border border-border/60 bg-card/30 p-5">
-                <div className="h-4 bg-slate-700/50 rounded w-48 mb-2"></div>
-                <div className="h-3 bg-slate-700/50 rounded w-32"></div>
+              <div key={i} className="animate-pulse border border-border bg-card/30 p-5">
+                <div className="h-4 bg-muted rounded w-48 mb-2"></div>
+                <div className="h-3 bg-muted rounded w-32"></div>
               </div>
             ))}
           </div>
         ) : tenders.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border/40 bg-card/20 p-10 text-center">
-            <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <p className="text-sm text-slate-400">No tenders created yet. Create your first tender to get started.</p>
+          <div className="border border-dashed border-border/40 bg-card/20 p-10 text-center">
+            <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+            <p className="text-[13px] text-muted-foreground">No tenders created yet.</p>
           </div>
         ) : (
           <div className="space-y-3">
             {tenders.map((tender) => (
-              <div
-                key={tender.id}
-                onClick={() => router.push(`/tenders/${tender.id}`)}
-                className="rounded-2xl border border-border/60 bg-card/40 p-5 hover:bg-card/60 transition-all cursor-pointer"
-              >
+              <div key={tender.id} onClick={() => router.push(`/tenders/${tender.id}`)}
+                className="border border-border bg-card p-5 hover:bg-muted transition-colors cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-200">{tender.title}</h3>
-                    <p className="text-xs text-slate-400 mt-1">Budget: ₹{tender.budget?.toLocaleString()}</p>
+                    <h3 className="text-[13px] font-medium text-foreground">{tender.title}</h3>
+                    <p className="text-[11px] text-muted-foreground mt-1">Budget: ₹{tender.budget?.toLocaleString()}</p>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    tender.status === "Open" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" :
-                    tender.status === "Closed" ? "bg-slate-500/10 text-slate-400 border border-slate-500/30" :
-                    tender.status === "Awarded" ? "bg-blue-500/10 text-blue-400 border border-blue-500/30" :
-                    "bg-amber-500/10 text-amber-400 border border-amber-500/30"
-                  }`}>
+                  <span className={`px-2.5 py-1 text-[11px] ${getStatusBadge(tender.status)}`}>
                     {tender.status}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 mt-3 text-xs text-slate-500">
+                <div className="flex items-center gap-4 mt-3 text-[11px] text-muted-foreground">
                   <span>Bids: {tender.bidsCount || 0}</span>
                   <span>Deadline: {new Date(tender.deadline).toLocaleDateString()}</span>
                   {tender.txHash && (
-                    <a
-                      href={`https://sepolia.etherscan.io/tx/${tender.txHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-teal-400 hover:text-teal-300"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <a href={`https://sepolia.etherscan.io/tx/${tender.txHash}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-primary hover:text-primary/80"
+                      onClick={(e) => e.stopPropagation()}>
                       <ExternalLink className="w-3 h-3" />
                       View on Etherscan
                     </a>

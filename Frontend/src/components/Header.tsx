@@ -7,7 +7,6 @@ import {
   ChevronDown, BookOpen, MessageSquare, Phone, Check, 
   ExternalLink, User, Building, Landmark, LogOut, CheckCircle2, ShieldCheck
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -57,31 +56,19 @@ export const Header: React.FC = () => {
   const bidsRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdowns on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      if (searchRef.current && !searchRef.current.contains(target)) {
-        setShowSearchDropdown(false);
-      }
-      if (notifRef.current && !notifRef.current.contains(target)) {
-        setShowNotifications(false);
-      }
-      if (helpRef.current && !helpRef.current.contains(target)) {
-        setShowHelp(false);
-      }
-      if (bidsRef.current && !bidsRef.current.contains(target)) {
-        setShowBids(false);
-      }
-      if (authRef.current && !authRef.current.contains(target)) {
-        setShowAuth(false);
-      }
+      if (searchRef.current && !searchRef.current.contains(target)) setShowSearchDropdown(false);
+      if (notifRef.current && !notifRef.current.contains(target)) setShowNotifications(false);
+      if (helpRef.current && !helpRef.current.contains(target)) setShowHelp(false);
+      if (bidsRef.current && !bidsRef.current.contains(target)) setShowBids(false);
+      if (authRef.current && !authRef.current.contains(target)) setShowAuth(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter tenders for live search suggestions
   const suggestions = searchQuery
     ? tenders.filter(t => 
         t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -106,39 +93,36 @@ export const Header: React.FC = () => {
     router.push(`/tenders/${id}`);
   };
 
-  // Translations
   const t = {
     en: {
-      brand: "Decentralized TenderChain",
-      subBrand: "Blockchain e-Procurement Portal",
-      skip: "Skip to main content",
-      searchPlaceholder: "Search tenders, departments, ministries, vendors, keywords...",
-      needHelp: "Need Help",
+      brand: "Dayitva",
+      subBrand: "Government e-Procurement Portal",
+      searchPlaceholder: "Search tenders, departments, ministries...",
+      needHelp: "Need help",
       faqs: "FAQs",
-      support: "Support Hub",
-      contact: "Contact Directory",
+      support: "Support hub",
+      contact: "Contact directory",
       bids: "Bids",
-      allBids: "All Public Bids",
-      deptBids: "Departmental Bids",
-      industryBids: "Industry Bids",
-        signupLogin: "Sign In",
-        forOrg: "For Government Admin",
-        forVendor: "For Corporate Vendor",
-        forPublic: "For Public View",
-      walletConnect: "Connect Wallet",
-      walletConnected: "Wallet Active",
-      disconnect: "Disconnect Session",
-      notifications: "Notification Hub",
+      allBids: "All public bids",
+      deptBids: "Departmental bids",
+      industryBids: "Industry bids",
+      signupLogin: "Sign in",
+      forOrg: "For government admin",
+      forVendor: "For corporate vendor",
+      forPublic: "For public view",
+      walletConnect: "Connect wallet",
+      walletConnected: "Wallet active",
+      disconnect: "Disconnect session",
+      notifications: "Notifications",
       markRead: "Mark all read",
-      recent: "Recent Searches",
-      suggestions: "Live Recommendations",
+      recent: "Recent searches",
+      suggestions: "Live recommendations",
       noSuggestions: "No tenders match search query"
     },
     hi: {
-      brand: "विकेंद्रीकृत टेंडरचैन",
-      subBrand: "ब्लॉकचेन ई-प्रोक्योरमेंट पोर्टल",
-      skip: "मुख्य विषय पर जाएं",
-      searchPlaceholder: "टेंडर, विभाग, मंत्रालय, विक्रेता, कीवर्ड खोजें...",
+      brand: "दायित्व",
+      subBrand: "सरकारी ई-प्रोक्योरमेंट पोर्टल",
+      searchPlaceholder: "टेंडर, विभाग, मंत्रालय खोजें...",
       needHelp: "सहायता चाहिए",
       faqs: "पूछे जाने वाले प्रश्न",
       support: "सहायता केंद्र",
@@ -147,14 +131,14 @@ export const Header: React.FC = () => {
       allBids: "सभी सार्वजनिक बोलियां",
       deptBids: "विभागीय बोलियां",
       industryBids: "उद्योग बोलियां",
-        signupLogin: "लॉगिन",
-        forOrg: "सरकारी व्यवस्थापक के लिए",
-        forVendor: "कॉरपोरेट विक्रेता के लिए",
-        forPublic: "सार्वजनिक दृश्य",
+      signupLogin: "लॉगिन",
+      forOrg: "सरकारी व्यवस्थापक के लिए",
+      forVendor: "कॉरपोरेट विक्रेता के लिए",
+      forPublic: "सार्वजनिक दृश्य",
       walletConnect: "वॉलेट कनेक्ट करें",
       walletConnected: "वॉलेट सक्रिय",
       disconnect: "सत्र डिस्कनेक्ट करें",
-      notifications: "अधिसूचना हब",
+      notifications: "अधिसूचनाएं",
       markRead: "सभी पढ़े गए चिह्नित करें",
       recent: "हालिया खोजें",
       suggestions: "लाइव सुझाव",
@@ -163,124 +147,82 @@ export const Header: React.FC = () => {
   }[language];
 
   return (
-    <header className="w-full z-50 sticky top-0 bg-background border-b border-border/80 shadow-md">
-      {/* 1. TOP UTILITY BAR */}
-      <div className="w-full bg-slate-900 text-slate-100 text-xs py-1.5 px-4 flex items-center justify-between border-b border-slate-800">
-        <div className="flex items-center space-x-4">
-          <a 
-            href="#main-content" 
-            className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-primary focus:text-white focus:p-2 focus:rounded-md transition-all outline-none"
-          >
-            {t.skip}
-          </a>
-          
+    <header className="w-full z-50 sticky top-0 bg-white border-b border-border shadow-sm">
+      {/* 1. TOP UTILITY BAR — Navy #002869 */}
+      <div className="w-full bg-[#002869] text-white text-label-sm py-1.5 px-4 md:px-6 flex items-center justify-between">
+        <div className="flex items-center gap-4">
           {/* Multilingual Selector */}
-          <div className="flex items-center space-x-1 border-r border-slate-700 pr-4">
-            <Globe className="w-3.5 h-3.5 text-teal-400" />
+          <div className="flex items-center gap-1.5 border-r border-white/20 pr-4">
+            <Globe className="w-3.5 h-3.5 opacity-70" />
             <button 
               onClick={() => setLanguage("en")} 
-              className={`hover:text-teal-400 font-semibold transition-colors ${language === "en" ? "text-teal-400" : ""}`}
-              aria-label="Change language to English"
+              className={`hover:underline transition-colors ${language === "en" ? "font-semibold" : "opacity-70"}`}
             >
               English
             </button>
-            <span className="text-slate-500">|</span>
+            <span className="opacity-40">|</span>
             <button 
               onClick={() => setLanguage("hi")} 
-              className={`hover:text-teal-400 font-semibold transition-colors ${language === "hi" ? "text-teal-400" : ""}`}
-              aria-label="भाषा हिंदी में बदलें"
+              className={`hover:underline transition-colors ${language === "hi" ? "font-semibold" : "opacity-70"}`}
             >
               हिन्दी
             </button>
           </div>
 
           {/* Font Size controls */}
-          <div className="flex items-center space-x-2 border-r border-slate-700 pr-4">
-            <span className="text-slate-400">Font:</span>
-            <button 
-              onClick={() => decreaseFontScale()} 
-              className={`hover:text-teal-400 font-mono font-bold px-1 rounded ${fontScalePercent < 100 ? "bg-slate-700 text-teal-400" : ""}`}
-              title="Decrease Font Size by 2%"
-            >
-              A-
-            </button>
-            <button 
-              onClick={() => resetFontScale()} 
-              className={`hover:text-teal-400 font-mono font-bold px-1 rounded ${fontScalePercent === 100 ? "bg-slate-700 text-teal-400" : ""}`}
-              title="Reset Font Size to Normal"
-            >
-              A
-            </button>
-            <button 
-              onClick={() => increaseFontScale()} 
-              className={`hover:text-teal-400 font-mono font-bold px-1 rounded ${fontScalePercent > 100 ? "bg-slate-700 text-teal-400" : ""}`}
-              title="Increase Font Size by 2%"
-            >
-              A+
-            </button>
+          <div className="hidden sm:flex items-center gap-2 border-r border-white/20 pr-4">
+            <span className="opacity-70">Font:</span>
+            <button onClick={decreaseFontScale} className="hover:underline px-1 text-xs">A-</button>
+            <button onClick={resetFontScale} className="hover:underline px-1 font-semibold text-xs">A</button>
+            <button onClick={increaseFontScale} className="hover:underline px-1 text-xs">A+</button>
           </div>
 
-          <div className="hidden md:flex items-center space-x-1">
-            <span className="inline-block w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-            <span className="text-[10px] text-slate-400 tracking-wider uppercase font-mono">TenderChain Network Active: 100% Tamper-Proof</span>
+          <div className="hidden md:flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full" />
+            <span className="text-[11px] opacity-60">Blockchain network active</span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           {/* Dark / Light Toggle */}
           <button 
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-            className="flex items-center space-x-1 hover:text-teal-400 transition-colors p-1 rounded hover:bg-slate-800"
-            aria-label="Toggle theme mode"
+            className="flex items-center gap-1 hover:underline transition-colors p-1 text-label-sm"
           >
             {theme === "dark" ? (
-              <>
-                <Sun className="w-3.5 h-3.5 text-amber-500" />
-                <span className="hidden sm:inline">Light Mode</span>
-              </>
+              <><Sun className="w-3.5 h-3.5" /><span className="hidden sm:inline">Light mode</span></>
             ) : (
-              <>
-                <Moon className="w-3.5 h-3.5 text-blue-400" />
-                <span className="hidden sm:inline">Dark Mode</span>
-              </>
+              <><Moon className="w-3.5 h-3.5" /><span className="hidden sm:inline">Dark mode</span></>
             )}
           </button>
 
           {walletConnected && currentUser && (currentUser.role === "officer" || currentUser.role === "vendor") && (
-            <div className="flex items-center space-x-2 bg-teal-950/60 border border-teal-500/30 px-2 py-0.5 rounded text-teal-400 font-mono text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+            <div className="flex items-center gap-2 bg-white/10 border border-white/20 px-2.5 py-1 text-[11px] rounded">
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
               <span>{walletBalance}</span>
-              <span className="px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Chain Verified</span>
+              <span className="px-1.5 py-0.5 bg-white/15 border border-white/20 rounded text-[10px]">Chain verified</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* 2. MAIN HEADER */}
-      <div className="w-full max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row items-center justify-between gap-4">
+      {/* 2. MAIN HEADER — White surface */}
+      <div className="w-full max-w-container mx-auto px-4 md:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-4">
         {/* Left Section: Logo & Branding */}
         <div className="flex items-center justify-between w-full lg:w-auto">
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="relative w-10 h-10 flex items-center justify-center rounded-lg bg-gradient-to-tr from-teal-600 to-indigo-800 shadow-lg text-white font-bold text-xl group-hover:scale-105 transition-transform duration-200">
-              {/* Ashoka Chakra node SVG visual */}
-              <svg viewBox="0 0 100 100" className="w-8 h-8 text-slate-100 absolute animate-spin-slow opacity-20">
-                <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="5,5" />
-                <line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" strokeWidth="2" />
-                <line x1="10" y1="50" x2="90" y2="50" stroke="currentColor" strokeWidth="2" />
-              </svg>
-              <Landmark className="w-5.5 h-5.5 text-teal-100 relative z-10" />
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 flex items-center justify-center bg-[#002869] text-white rounded-lg">
+              <Landmark className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-lg lg:text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight leading-none">
+              <h1 className="text-heading-md text-[#002869] leading-none heading-font font-bold">
                 {t.brand}
               </h1>
-              <span className="text-[10px] text-teal-600 dark:text-teal-400 tracking-wider uppercase font-bold font-mono">
+              <span className="text-[11px] text-[#002869] tracking-wider opacity-70">
                 {t.subBrand}
               </span>
             </div>
           </Link>
-
-          {/* Mobile Actions Hamburger/Utility toggle can go here */}
         </div>
 
         {/* Center Section: Global Search Bar */}
@@ -290,387 +232,241 @@ export const Header: React.FC = () => {
               type="text"
               placeholder={t.searchPlaceholder}
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setShowSearchDropdown(true);
-              }}
+              onChange={(e) => { setSearchQuery(e.target.value); setShowSearchDropdown(true); }}
               onFocus={() => setShowSearchDropdown(true)}
-              className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-100 pl-10 pr-10 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/80 transition-all font-medium"
+              className="w-full bg-surface-container-low border border-border text-foreground pl-9 pr-9 py-2.5 text-body-sm rounded-lg focus:outline-none focus:border-[#002869] focus:ring-2 focus:ring-[#002869]/15 transition-all min-h-[44px]"
             />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-3.5" />
             {searchQuery && (
-              <button 
-                type="button" 
-                onClick={() => setSearchQuery("")} 
-                className="text-slate-400 hover:text-slate-100 absolute right-3 top-2.5 text-xs font-bold font-mono px-1 rounded hover:bg-slate-800"
-              >
+              <button type="button" onClick={() => setSearchQuery("")} className="text-muted-foreground hover:text-foreground absolute right-3 top-3 text-label-sm">
                 Clear
               </button>
             )}
           </form>
 
-          {/* Live Search suggestions & recent searches dropdown */}
-          <AnimatePresence>
-            {showSearchDropdown && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="absolute w-full mt-2 bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden"
-              >
-                {/* Suggestions List */}
-                {searchQuery && (
-                  <div className="p-3 border-b border-border">
-                    <h3 className="text-[10px] font-bold text-teal-500 uppercase tracking-widest mb-2 font-mono">
-                      {t.suggestions}
-                    </h3>
-                    {suggestions.length > 0 ? (
-                      <div className="space-y-1.5">
-                        {suggestions.map(tender => (
-                          <button
-                            key={tender.id}
-                            onClick={() => handleSuggestionClick(tender.title, tender.id)}
-                            className="w-full text-left flex items-start space-x-2.5 p-2 rounded-lg hover:bg-muted transition-all"
-                          >
-                            <span className="bg-primary/20 text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-mono font-bold shrink-0 mt-0.5">
-                              {tender.id}
-                            </span>
-                            <div>
-                              <div className="text-xs font-semibold text-slate-800 dark:text-slate-100 line-clamp-1">
-                                {tender.title}
-                              </div>
-                              <div className="text-[10px] text-muted-foreground line-clamp-1">
-                                {tender.ministry}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-xs text-muted-foreground py-1 px-2 font-mono">
-                        {t.noSuggestions}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Recent Searches */}
-                <div className="p-3 bg-muted/40">
-                  <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 font-mono">
-                    {t.recent}
-                  </h3>
-                  <div className="flex flex-wrap gap-1.5">
-                    {recentSearches.map((search, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => {
-                          setSearchQuery(search);
-                          addRecentSearch(search);
-                          setShowSearchDropdown(false);
-                          router.push(`/dashboard?search=${encodeURIComponent(search)}`);
-                        }}
-                        className="text-[11px] font-medium px-2 py-1 bg-muted dark:bg-slate-800 hover:bg-slate-700 hover:text-white rounded-md text-slate-600 dark:text-slate-300 transition-colors"
-                      >
-                        {search}
-                      </button>
-                    ))}
-                  </div>
+          {/* Search dropdown */}
+          {showSearchDropdown && (
+            <div className="absolute w-full mt-1.5 bg-white border border-border rounded-lg shadow-dropdown z-50 overflow-hidden">
+              {searchQuery && (
+                <div className="p-3 border-b border-border">
+                  <p className="text-label-sm text-muted-foreground mb-2 uppercase tracking-wider font-semibold">{t.suggestions}</p>
+                  {suggestions.length > 0 ? (
+                    <div className="space-y-1">
+                      {suggestions.map(tender => (
+                        <button key={tender.id} onClick={() => handleSuggestionClick(tender.title, tender.id)}
+                          className="w-full text-left flex items-start gap-2 p-2 hover:bg-surface-container-low rounded transition-colors">
+                          <span className="bg-[#002869]/10 text-[#002869] text-[10px] font-semibold px-1.5 py-0.5 shrink-0 mt-0.5 rounded">{tender.id}</span>
+                          <div>
+                            <div className="text-body-sm text-foreground line-clamp-1">{tender.title}</div>
+                            <div className="text-label-sm text-muted-foreground line-clamp-1">{tender.ministry}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-body-sm text-muted-foreground py-1">{t.noSuggestions}</div>
+                  )}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              )}
+
+              <div className="p-3 bg-surface-container-low">
+                <p className="text-label-sm text-muted-foreground mb-1.5 uppercase tracking-wider font-semibold">{t.recent}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {recentSearches.map((search, idx) => (
+                    <button key={idx} onClick={() => { setSearchQuery(search); addRecentSearch(search); setShowSearchDropdown(false); router.push(`/dashboard?search=${encodeURIComponent(search)}`); }}
+                      className="text-label-sm px-2.5 py-1 bg-white border border-border hover:bg-surface-container-low text-muted-foreground hover:text-foreground rounded transition-colors">
+                      {search}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Right Section: Multi-tiered Utility Dropdowns & Connect Wallet */}
-        <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-auto">
+        {/* Right Section */}
+        <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2 w-full lg:w-auto">
           
-          {/* 1. Need Help Dropdown */}
+          {/* Help Dropdown */}
           <div ref={helpRef} className="relative">
-            <button 
-              onClick={() => setShowHelp(!showHelp)}
-              className="flex items-center space-x-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-border dark:border-slate-800 hover:bg-muted text-slate-700 dark:text-slate-300 transition-all"
-            >
-              <HelpCircle className="w-3.5 h-3.5 text-teal-400" />
-              <span>{t.needHelp}</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
+            <button onClick={() => setShowHelp(!showHelp)}
+              className="flex items-center gap-1.5 text-body-sm px-3 py-2.5 border border-border rounded-lg hover:bg-surface-container-low text-foreground transition-colors min-h-[44px]">
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">{t.needHelp}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
-            <AnimatePresence>
-              {showHelp && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-xl z-50 py-1.5"
-                >
-                  <Link href="/faq" className="flex items-center space-x-2 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-muted">
-                    <BookOpen className="w-3.5 h-3.5 text-teal-500" />
-                    <span>{t.faqs}</span>
-                  </Link>
-                  <Link href="/dispute" className="flex items-center space-x-2 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-muted">
-                    <MessageSquare className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Submit Dispute</span>
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {showHelp && (
+              <div className="absolute right-0 mt-1.5 w-44 bg-white border border-border rounded-lg shadow-dropdown z-50 py-1 overflow-hidden">
+                <Link href="/faq" className="flex items-center gap-2 px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
+                  <BookOpen className="w-3.5 h-3.5 text-[#002869]" />
+                  <span>{t.faqs}</span>
+                </Link>
+                <Link href="/dispute" className="flex items-center gap-2 px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
+                  <MessageSquare className="w-3.5 h-3.5 text-[#521a00]" />
+                  <span>Submit dispute</span>
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* 2. Bids Dropdown */}
+          {/* Bids Dropdown */}
           <div ref={bidsRef} className="relative">
-            <button 
-              onClick={() => setShowBids(!showBids)}
-              className="flex items-center space-x-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-border dark:border-slate-800 hover:bg-muted text-slate-700 dark:text-slate-300 transition-all"
-            >
+            <button onClick={() => setShowBids(!showBids)}
+              className="flex items-center gap-1.5 text-body-sm px-3 py-2.5 border border-border rounded-lg hover:bg-surface-container-low text-foreground transition-colors min-h-[44px]">
               <span>{t.bids}</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
+              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
-            <AnimatePresence>
-              {showBids && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-xl z-50 py-1.5"
-                >
-                  <Link href="/dashboard" className="flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-muted">
-                    <span>{t.allBids}</span>
-                    <ExternalLink className="w-3 h-3 text-slate-400" />
-                  </Link>
-                  <Link href="/dashboard?filter=MORTH" className="flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-muted">
-                    <span>{t.deptBids}</span>
-                    <span className="bg-primary/20 text-teal-400 text-[9px] px-1 rounded">MoRTH</span>
-                  </Link>
-                  <Link href="/dashboard?msme=true" className="flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-muted">
-                    <span>{t.industryBids}</span>
-                    <span className="bg-orange-950 text-orange-400 text-[9px] px-1 rounded">MSME</span>
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {showBids && (
+              <div className="absolute right-0 mt-1.5 w-48 bg-white border border-border rounded-lg shadow-dropdown z-50 py-1 overflow-hidden">
+                <Link href="/dashboard" className="flex items-center justify-between px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
+                  <span>{t.allBids}</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                </Link>
+                <Link href="/dashboard?filter=MORTH" className="flex items-center justify-between px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
+                  <span>{t.deptBids}</span>
+                  <span className="bg-[#002869]/10 text-[#002869] text-[10px] font-semibold px-1.5 py-0.5 rounded">MoRTH</span>
+                </Link>
+                <Link href="/dashboard?msme=true" className="flex items-center justify-between px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
+                  <span>{t.industryBids}</span>
+                  <span className="bg-[#521a00]/10 text-[#521a00] text-[10px] font-semibold px-1.5 py-0.5 rounded">MSME</span>
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* RIGHT CONTAINER: 4. Wallet Connect -> 3. Role Badge -> 2. Profile Avatar -> 1. Bell Notification Icon */}
-          <div className="flex items-center space-x-3 ml-2 pl-2 border-l border-border/60">
-            {/* 4. Wallet Connect Button (only after login for Admin/Vendor) */}
+          {/* Right actions */}
+          <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border">
+            {/* Wallet Connect */}
             {currentUser && (currentUser.role === "officer" || currentUser.role === "vendor") && (
-              <button
-                onClick={() => {
-                  if (walletConnected) {
-                    disconnectWalletOnly();
-                  } else {
-                    connectWalletOnly();
-                  }
-                }}
-                className={`flex items-center space-x-2 text-xs font-bold font-mono px-3.5 py-1.5 rounded-lg border shadow-md transition-all shrink-0 ${
+              <button onClick={() => { if (walletConnected) disconnectWalletOnly(); else connectWalletOnly(); }}
+                className={`flex items-center gap-2 text-label-sm px-3 py-2.5 border rounded-lg transition-colors min-h-[44px] ${
                   walletConnected
-                    ? "bg-teal-950/40 border-teal-500/80 text-teal-300 hover:bg-rose-950/40 hover:text-rose-400 hover:border-rose-500"
-                    : "bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-600 hover:to-indigo-700 text-white border-transparent"
-                }`}
-              >
-                <Wallet className="w-3.5 h-3.5 shrink-0" />
-                <span className="tracking-tight shrink-0">
-                  {walletConnected ? (
-                    <span>
-                      {walletAddress.substring(0, 6)}...{walletAddress.substring(34)}
-                    </span>
-                  ) : (
-                    <span>Connect Wallet</span>
-                  )}
-                </span>
-                {walletConnected && <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />}
+                    ? "bg-[#056e00]/10 border-[#056e00] text-[#056e00] hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
+                    : "bg-[#002869] text-white border-[#002869] hover:bg-[#0b3d91]"
+                }`}>
+                <Wallet className="w-3.5 h-3.5" />
+                <span>{walletConnected ? `${walletAddress.substring(0,6)}...${walletAddress.substring(34)}` : "Connect wallet"}</span>
+                {walletConnected && <CheckCircle2 className="w-3.5 h-3.5" />}
               </button>
             )}
 
-            {/* 3. Role Badge (only if logged in) */}
+            {/* Role Badge */}
             {currentUser && (
-              <span className={`text-[10px] font-black uppercase tracking-wider font-mono px-2 py-1 rounded-md shrink-0 border ${
-                currentUser.role === "officer"
-                  ? "bg-emerald-950/30 text-emerald-400 border-emerald-500/30"
-                  : currentUser.role === "vendor"
-                  ? "bg-indigo-950/30 text-indigo-400 border-indigo-500/30"
-                  : "bg-amber-950/30 text-amber-400 border-amber-500/30"
+              <span className={`text-label-sm px-2.5 py-1 rounded-full font-semibold ${
+                currentUser.role === "officer" ? "bg-[#002869]/10 text-[#002869]"
+                : currentUser.role === "vendor" ? "bg-[#521a00]/10 text-[#521a00]"
+                : "bg-surface-container-high text-muted-foreground"
               }`}>
-                {currentUser.role === "officer" ? "Govt Officer" : currentUser.role === "vendor" ? "Vendor" : "Citizen Auditor"}
+                {currentUser.role === "officer" ? "Govt officer" : currentUser.role === "vendor" ? "Vendor" : "Citizen auditor"}
               </span>
             )}
 
-            {/* 2. Profile Avatar / Login Dropdown */}
+            {/* Profile Avatar */}
             <div ref={authRef} className="relative shrink-0">
-              <button 
-                onClick={() => setShowAuth(!showAuth)}
-                className="flex items-center justify-center w-8 h-8 rounded-full border border-border dark:border-slate-800 bg-secondary dark:bg-slate-900 hover:bg-muted transition-all"
-                aria-label="Toggle user authentication options"
-              >
+              <button onClick={() => setShowAuth(!showAuth)}
+                className="flex items-center justify-center w-10 h-10 border border-border bg-white hover:bg-surface-container-low rounded-lg transition-colors">
                 {currentUser ? (
-                  <div className="text-xs font-black text-slate-800 dark:text-slate-100 uppercase">
-                    {currentUser.name.substring(0, 2)}
-                  </div>
+                  <div className="text-body-sm font-semibold text-foreground">{currentUser.name.substring(0, 2)}</div>
                 ) : (
-                  <User className="w-4 h-4 text-slate-500" />
+                  <User className="w-4 h-4 text-muted-foreground" />
                 )}
               </button>
-              <AnimatePresence>
-                {showAuth && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-xl shadow-xl z-50 py-1.5 overflow-hidden"
-                  >
-                    {!currentUser ? (
-                      <>
-                        <button 
-                          onClick={() => { setShowAuth(false); router.push("/auth/admin"); }}
-                          className="w-full text-left flex items-center space-x-2.5 px-3 py-2.5 text-xs hover:bg-muted text-slate-800 dark:text-slate-200"
-                        >
-                          <Landmark className="w-4 h-4 text-emerald-500 shrink-0" />
-                          <div>
-                            <div className="font-bold">For Organization</div>
-                            <div className="text-[10px] text-muted-foreground">Officer Portal Credentials</div>
-                          </div>
-                        </button>
-                        <button 
-                          onClick={() => { setShowAuth(false); router.push("/auth/vendor"); }}
-                          className="w-full text-left flex items-center space-x-2.5 px-3 py-2.5 text-xs hover:bg-muted text-slate-800 dark:text-slate-200"
-                        >
-                          <Building className="w-4 h-4 text-indigo-500 shrink-0" />
-                          <div>
-                            <div className="font-bold">For Vendor</div>
-                            <div className="text-[10px] text-muted-foreground">Udyam KYC Bidding Zone</div>
-                          </div>
-                        </button>
-                        <button 
-                          onClick={() => { setShowAuth(false); router.push("/auditor/login"); }}
-                          className="w-full text-left flex items-center space-x-2.5 px-3 py-2.5 text-xs hover:bg-muted text-slate-800 dark:text-slate-200"
-                        >
-                          <ShieldCheck className="w-4 h-4 text-red-500 shrink-0" />
-                          <div>
-                            <div className="font-bold">For Auditor</div>
-                            <div className="text-[10px] text-muted-foreground">Verification Authority Portal</div>
-                          </div>
-                        </button>
-                        <button 
-                          onClick={() => { setShowAuth(false); router.push("/public"); }}
-                          className="w-full text-left flex items-center space-x-2.5 px-3 py-2.5 text-xs hover:bg-muted text-slate-800 dark:text-slate-200"
-                        >
-                          <User className="w-4 h-4 text-slate-400 shrink-0" />
-                          <div>
-                            <div className="font-bold">For Public</div>
-                            <div className="text-[10px] text-muted-foreground">Read-only Public Transparency</div>
-                          </div>
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <div className="px-3 py-2 bg-slate-900 border-b border-border text-slate-200 text-[10px] font-mono">
-                          <span className="block font-bold text-teal-400 uppercase tracking-widest">{currentUser.role} profile</span>
-                          <span className="block truncate mt-0.5">{currentUser.email}</span>
-                        </div>
-                        <Link 
-                          href={currentUser.role === "officer" ? "/admin/profile" : currentUser.role === "vendor" ? "/vendor/profile" : "/dashboard"} 
-                          className="flex items-center space-x-2 px-3 py-2.5 text-xs text-slate-800 dark:text-slate-200 hover:bg-muted font-bold"
-                          onClick={() => setShowAuth(false)}
-                        >
-                          <User className="w-4 h-4 text-primary" />
-                          <span>My Profile Dashboard</span>
-                        </Link>
-                        <button 
-                          onClick={() => { logoutUser(); setShowAuth(false); router.push("/"); }}
-                          className="w-full text-left flex items-center space-x-2 px-3 py-2.5 text-xs hover:bg-rose-950/20 text-rose-500 font-bold border-t border-border"
-                        >
-                          <LogOut className="w-4 h-4 shrink-0" />
-                          <span>Disconnect</span>
-                        </button>
-                      </>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {showAuth && (
+                <div className="absolute right-0 mt-1.5 w-52 bg-white border border-border rounded-lg shadow-dropdown z-50 py-1 overflow-hidden">
+                  {!currentUser ? (
+                    <>
+                      <button onClick={() => { setShowAuth(false); router.push("/auth/admin"); }}
+                        className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
+                        <Landmark className="w-4 h-4 text-[#002869] shrink-0" />
+                        <div><div className="font-semibold">{t.forOrg}</div></div>
+                      </button>
+                      <button onClick={() => { setShowAuth(false); router.push("/auth/vendor"); }}
+                        className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
+                        <Building className="w-4 h-4 text-[#521a00] shrink-0" />
+                        <div><div className="font-semibold">{t.forVendor}</div></div>
+                      </button>
+                      <button onClick={() => { setShowAuth(false); router.push("/auditor/login"); }}
+                        className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
+                        <ShieldCheck className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <div><div className="font-semibold">For auditor</div></div>
+                      </button>
+                      <button onClick={() => { setShowAuth(false); router.push("/public"); }}
+                        className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
+                        <User className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <div><div className="font-semibold">{t.forPublic}</div></div>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="px-3 py-2.5 bg-surface-container-low border-b border-border text-label-sm">
+                        <span className="block text-[#002869] font-semibold">{currentUser.role}</span>
+                        <span className="block truncate mt-0.5 text-muted-foreground">{currentUser.email}</span>
+                      </div>
+                      <Link href={currentUser.role === "officer" ? "/admin/profile" : currentUser.role === "vendor" ? "/vendor/profile" : "/dashboard"} 
+                        className="flex items-center gap-2 px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low font-semibold transition-colors"
+                        onClick={() => setShowAuth(false)}>
+                        <User className="w-4 h-4 text-[#002869]" />
+                        <span>My profile</span>
+                      </Link>
+                      <button onClick={() => { logoutUser(); setShowAuth(false); router.push("/"); }}
+                        className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-destructive/10 text-destructive border-t border-border font-semibold transition-colors">
+                        <LogOut className="w-4 h-4" />
+                        <span>Disconnect</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Register Button */}
             {!currentUser && (
-              <button 
-                onClick={() => router.push("/register")}
-                className="flex items-center space-x-1 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-emerald-600/50 bg-emerald-950/30 text-emerald-400 hover:bg-emerald-950/50 transition-all shrink-0"
-              >
+              <button onClick={() => router.push("/register")}
+                className="flex items-center gap-1.5 text-label-sm px-3 py-2.5 border-2 border-[#002869] rounded-lg text-[#002869] hover:bg-[#002869] hover:text-white transition-colors font-semibold min-h-[44px]">
                 <span>Register</span>
               </button>
             )}
 
-            {/* 1. Bell Notification Icon (completely to extreme top-right corner) */}
+            {/* Notification Bell */}
             <div ref={notifRef} className="relative shrink-0">
-              <button 
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2 rounded-lg hover:bg-muted border border-border dark:border-slate-800 transition-all text-slate-700 dark:text-slate-300"
-                aria-label="Toggle notifications dropdown"
-              >
-                <Bell className="w-4.5 h-4.5 text-slate-400" />
+              <button onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2.5 border border-border rounded-lg hover:bg-surface-container-low transition-colors text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center">
+                <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-6 h-6 bg-rose-500 text-white rounded-full text-sm flex items-center justify-center font-bold animate-pulse">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center rounded-full">
                     {unreadCount}
                   </span>
                 )}
               </button>
-              <AnimatePresence>
-                {showNotifications && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-2 w-80 bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden"
-                  >
-                    <div className="p-3 bg-slate-900 text-white flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider font-mono flex items-center gap-1.5">
-                        <Bell className="w-3.5 h-3.5 text-teal-400" />
-                        Notifications
-                      </span>
-                      {unreadCount > 0 && (
-                        <button 
-                          onClick={markAllNotificationsAsRead}
-                          className="text-[10px] text-teal-400 hover:underline font-semibold font-mono"
-                        >
-                          Mark all read
-                        </button>
-                      )}
-                    </div>
-                    <div className="max-h-72 overflow-y-auto divide-y divide-border">
-                      {notifications.length > 0 ? (
-                        notifications.map(notif => (
-                          <div 
-                            key={notif.id} 
-                            onClick={() => {
-                              markNotificationAsRead(notif.id);
-                              if (notif.actionUrl) router.push(notif.actionUrl);
-                              setShowNotifications(false);
-                            }}
-                            className={`p-3 text-left transition-colors hover:bg-muted/60 cursor-pointer ${notif.read ? "opacity-60" : "bg-teal-500/5"}`}
-                          >
-                            <div className="flex items-start justify-between space-x-2">
-                              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1">
-                                {notif.title}
-                              </span>
-                              {!notif.read && (
-                                <span className="w-2 h-2 bg-teal-400 rounded-full shrink-0 mt-1" />
-                              )}
-                            </div>
-                            <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">
-                              {notif.message}
-                            </p>
-                            <div className="text-[9px] text-slate-500 mt-1.5 font-mono">
-                              {new Date(notif.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </div>
+              {showNotifications && (
+                <div className="absolute right-0 mt-1.5 w-72 bg-white border border-border rounded-lg shadow-dropdown z-50 overflow-hidden">
+                  <div className="p-3 bg-surface-container-low border-b border-border flex items-center justify-between">
+                    <span className="text-label-sm font-semibold text-foreground uppercase tracking-wider">{t.notifications}</span>
+                    {unreadCount > 0 && (
+                      <button onClick={markAllNotificationsAsRead} className="text-label-sm text-[#002869] hover:underline font-semibold">{t.markRead}</button>
+                    )}
+                  </div>
+                  <div className="max-h-72 overflow-y-auto divide-y divide-border">
+                    {notifications.length > 0 ? (
+                      notifications.map(notif => (
+                        <div key={notif.id} onClick={() => { markNotificationAsRead(notif.id); if (notif.actionUrl) router.push(notif.actionUrl); setShowNotifications(false); }}
+                          className={`p-3 text-left transition-colors hover:bg-surface-container-low cursor-pointer ${notif.read ? "opacity-60" : "bg-[#002869]/5"}`}>
+                          <div className="flex items-start justify-between gap-2">
+                            <span className="text-body-sm text-foreground line-clamp-1 font-semibold">{notif.title}</span>
+                            {!notif.read && <span className="w-1.5 h-1.5 bg-[#002869] shrink-0 mt-1 rounded-full" />}
                           </div>
-                        ))
-                      ) : (
-                        <div className="p-6 text-center text-xs text-muted-foreground font-mono">
-                          No notifications received
+                          <p className="text-label-sm text-muted-foreground mt-1 line-clamp-2">{notif.message}</p>
+                          <div className="text-[11px] text-muted-foreground mt-1">
+                            {new Date(notif.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                      ))
+                    ) : (
+                      <div className="p-6 text-center text-body-sm text-muted-foreground">No notifications</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
