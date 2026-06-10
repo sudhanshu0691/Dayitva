@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useApp } from "../context/AppContext";
-import { Landmark, ShieldCheck, Mail, Phone, ExternalLink } from "lucide-react";
+import { Landmark, ShieldCheck, Mail, Phone, ExternalLink, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 export const Footer: React.FC = () => {
@@ -30,76 +30,81 @@ export const Footer: React.FC = () => {
   }[language];
 
   return (
-    <footer className="w-full bg-[#002869] text-white border-t border-white/10">
-      {/* Tricolor accent line */}
-      <div className="w-full h-1 flex">
-        <div className="w-1/3 h-full bg-[#521a00]" />
-        <div className="w-1/3 h-full bg-[#E5E7EB]" />
-        <div className="w-1/3 h-full bg-[#056e00]" />
-      </div>
+    <footer className="w-full bg-primary text-primary-foreground">
+      {/* Gradient accent line */}
+      <div className="w-full h-1 bg-gradient-to-r from-accent via-accent/50 to-accent/20" />
 
-      <div className="max-w-container mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-container mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
           
-          {/* Logo & About */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-white/10 flex items-center justify-center rounded-lg">
-                <Landmark className="w-4 h-4 text-white" />
+          {/* Logo & About - wider */}
+          <div className="lg:col-span-4 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-accent/20 flex items-center justify-center rounded-xl">
+                <Landmark className="w-5 h-5 text-accent" />
               </div>
-              <span className="font-bold text-white text-title-lg heading-font">Dayitva</span>
+              <div>
+                <span className="font-bold text-white text-headline-sm heading-font">Dayitva</span>
+                <span className="block text-caption text-white/50">Blockchain e-Procurement</span>
+              </div>
             </div>
-            <p className="text-body-sm text-white/70 leading-relaxed">
+            <p className="text-body-sm text-white/60 leading-relaxed">
               {t.aboutDesc}
             </p>
-            <div className="flex items-center gap-3 text-label-sm text-white/70">
-              <div className="flex items-center gap-1.5 border border-white/20 bg-white/10 px-2 py-1 rounded text-white/80">
-                <ShieldCheck className="w-3 h-3" />
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 border border-white/10 bg-white/5 px-2.5 py-1.5 rounded-lg text-caption text-white/70">
+                <ShieldCheck className="w-3.5 h-3.5 text-success" />
                 <span>EVM secured</span>
+              </div>
+              <div className="flex items-center gap-1.5 border border-white/10 bg-white/5 px-2.5 py-1.5 rounded-lg text-caption text-white/70">
+                <span className="w-1.5 h-1.5 bg-success rounded-full" />
+                <span>Network live</span>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="text-label-sm text-white/50 uppercase tracking-wider font-semibold mb-4">{t.quickLinks}</h3>
-            <ul className="space-y-2.5 text-body-sm">
-              <li><Link href="/about" className="text-white/70 hover:text-white transition-colors flex items-center gap-1.5"><ExternalLink className="w-3 h-3" />About blockchain portal</Link></li>
-              <li><Link href="/dashboard" className="text-white/70 hover:text-white transition-colors flex items-center gap-1.5"><ExternalLink className="w-3 h-3" />Browse live tenders</Link></li>
-              <li><Link href="/dispute" className="text-white/70 hover:text-white transition-colors flex items-center gap-1.5"><ExternalLink className="w-3 h-3" />Disputes and appeals</Link></li>
-              <li><Link href="/faq" className="text-white/70 hover:text-white transition-colors flex items-center gap-1.5"><ExternalLink className="w-3 h-3" />Help and FAQ</Link></li>
+          <div className="lg:col-span-2">
+            <h3 className="text-caption text-white/40 uppercase tracking-wider font-semibold mb-5">{t.quickLinks}</h3>
+            <ul className="space-y-3">
+              <li><Link href="/about" className="text-body-sm text-white/60 hover:text-white transition-colors flex items-center gap-1.5 group"><ArrowUpRight className="w-3 h-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />About blockchain portal</Link></li>
+              <li><Link href="/dashboard" className="text-body-sm text-white/60 hover:text-white transition-colors flex items-center gap-1.5 group"><ArrowUpRight className="w-3 h-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />Browse live tenders</Link></li>
+              <li><Link href="/dispute" className="text-body-sm text-white/60 hover:text-white transition-colors flex items-center gap-1.5 group"><ArrowUpRight className="w-3 h-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />Disputes and appeals</Link></li>
+              <li><Link href="/faq" className="text-body-sm text-white/60 hover:text-white transition-colors flex items-center gap-1.5 group"><ArrowUpRight className="w-3 h-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />Help and FAQ</Link></li>
             </ul>
           </div>
 
           {/* Resources */}
-          <div>
-            <h3 className="text-label-sm text-white/50 uppercase tracking-wider font-semibold mb-4">{t.resources}</h3>
-            <ul className="space-y-2.5 text-body-sm">
-              <li><Link href="/privacy" className="text-white/70 hover:text-white transition-colors">Privacy policy</Link></li>
-              <li><Link href="/terms" className="text-white/70 hover:text-white transition-colors">Terms and conditions</Link></li>
-              <li><a href="https://gem.gov.in" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">GeM portal India</a></li>
-              <li><a href="https://data.gov.in" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">Open government data</a></li>
+          <div className="lg:col-span-2">
+            <h3 className="text-caption text-white/40 uppercase tracking-wider font-semibold mb-5">{t.resources}</h3>
+            <ul className="space-y-3">
+              <li><Link href="/privacy" className="text-body-sm text-white/60 hover:text-white transition-colors">Privacy policy</Link></li>
+              <li><Link href="/terms" className="text-body-sm text-white/60 hover:text-white transition-colors">Terms and conditions</Link></li>
+              <li><a href="https://gem.gov.in" target="_blank" rel="noopener noreferrer" className="text-body-sm text-white/60 hover:text-white transition-colors flex items-center gap-1">GeM portal India <ExternalLink className="w-3 h-3" /></a></li>
+              <li><a href="https://data.gov.in" target="_blank" rel="noopener noreferrer" className="text-body-sm text-white/60 hover:text-white transition-colors flex items-center gap-1">Open government data <ExternalLink className="w-3 h-3" /></a></li>
             </ul>
           </div>
 
           {/* Contact */}
-          <div>
-            <h3 className="text-label-sm text-white/50 uppercase tracking-wider font-semibold mb-4">{t.contact}</h3>
-            <p className="text-body-sm text-white/70 leading-relaxed mb-3">
-              National e-Procurement Cell<br />{t.address}
-            </p>
-            <div className="space-y-2 text-body-sm text-white/70">
-              <p className="flex items-center gap-2"><Mail className="w-3.5 h-3.5 text-white/50" /> support@dayitva.gov.in</p>
-              <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 text-white/50" /> +91-11-2338XXXX</p>
+          <div className="lg:col-span-4">
+            <h3 className="text-caption text-white/40 uppercase tracking-wider font-semibold mb-5">{t.contact}</h3>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-4">
+              <p className="text-body-sm text-white/60 leading-relaxed">
+                National e-Procurement Cell<br />{t.address}
+              </p>
+              <div className="space-y-2.5 text-body-sm text-white/60">
+                <p className="flex items-center gap-2.5"><Mail className="w-4 h-4 text-accent" /> support@dayitva.gov.in</p>
+                <p className="flex items-center gap-2.5"><Phone className="w-4 h-4 text-accent" /> +91-11-2338XXXX</p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 my-8" />
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-body-sm text-white/50">
+        <div className="border-t border-white/10 my-10" />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-body-sm text-white/40">
           <p>© {new Date().getFullYear()} {t.rights}</p>
-          <p className="text-label-sm max-w-xl text-center md:text-right">{t.disclaimer}</p>
+          <p className="text-caption max-w-xl text-center md:text-right">{t.disclaimer}</p>
         </div>
       </div>
     </footer>

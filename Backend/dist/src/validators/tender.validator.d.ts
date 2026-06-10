@@ -29,11 +29,11 @@ export declare const createTenderSchema: z.ZodObject<{
     }>, "many">>;
     minScore: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
-    ministry: string;
-    title: string;
     description: string;
+    title: string;
     budget: number;
     deadline: string;
+    ministry: string;
     msmeQuota: boolean;
     criteria: string[];
     minScore: number;
@@ -45,21 +45,21 @@ export declare const createTenderSchema: z.ZodObject<{
         uploadedAt: string;
     }[] | undefined;
 }, {
-    ministry: string;
-    title: string;
     description: string;
+    title: string;
     budget: number;
     deadline: string;
+    ministry: string;
     criteria: string[];
-    msmeQuota?: boolean | undefined;
     ipfsHash?: string | undefined;
+    msmeQuota?: boolean | undefined;
+    minScore?: number | undefined;
     ipfsFiles?: {
         name: string;
         size: string;
         hash: string;
         uploadedAt: string;
     }[] | undefined;
-    minScore?: number | undefined;
 }>;
 /**
  * Schema for updating a tender.
@@ -75,24 +75,24 @@ export declare const updateTenderSchema: z.ZodObject<{
     ipfsHash: z.ZodOptional<z.ZodString>;
     minScore: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    status?: "Draft" | "Open" | "Closed" | "UnderEvaluation" | "Awarded" | "Cancelled" | undefined;
-    title?: string | undefined;
     description?: string | undefined;
+    title?: string | undefined;
+    ipfsHash?: string | undefined;
     budget?: number | undefined;
     deadline?: string | undefined;
+    status?: "Draft" | "Open" | "Closed" | "UnderEvaluation" | "Awarded" | "Cancelled" | undefined;
     msmeQuota?: boolean | undefined;
     criteria?: string[] | undefined;
-    ipfsHash?: string | undefined;
     minScore?: number | undefined;
 }, {
-    status?: "Draft" | "Open" | "Closed" | "UnderEvaluation" | "Awarded" | "Cancelled" | undefined;
-    title?: string | undefined;
     description?: string | undefined;
+    title?: string | undefined;
+    ipfsHash?: string | undefined;
     budget?: number | undefined;
     deadline?: string | undefined;
+    status?: "Draft" | "Open" | "Closed" | "UnderEvaluation" | "Awarded" | "Cancelled" | undefined;
     msmeQuota?: boolean | undefined;
     criteria?: string[] | undefined;
-    ipfsHash?: string | undefined;
     minScore?: number | undefined;
 }>;
 /**
@@ -109,7 +109,7 @@ export declare const tenderQuerySchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     limit: number;
     page: number;
-    sortBy: "createdAt" | "title" | "budget" | "deadline";
+    sortBy: "title" | "budget" | "deadline" | "createdAt";
     sortOrder: "asc" | "desc";
     search?: string | undefined;
     status?: "Draft" | "Open" | "Closed" | "UnderEvaluation" | "Awarded" | "Cancelled" | undefined;
@@ -120,7 +120,7 @@ export declare const tenderQuerySchema: z.ZodObject<{
     status?: "Draft" | "Open" | "Closed" | "UnderEvaluation" | "Awarded" | "Cancelled" | undefined;
     ministry?: string | undefined;
     page?: number | undefined;
-    sortBy?: "createdAt" | "title" | "budget" | "deadline" | undefined;
+    sortBy?: "title" | "budget" | "deadline" | "createdAt" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
 }>;
 export type CreateTenderInput = z.infer<typeof createTenderSchema>;

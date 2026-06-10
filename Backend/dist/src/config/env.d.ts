@@ -9,6 +9,7 @@ export declare const env: {
     readonly JWT_REFRESH_EXPIRY: string;
     readonly PINATA_API_KEY: string;
     readonly PINATA_SECRET_KEY: string;
+    readonly PINATA_JWT: string;
     readonly AWS_ACCESS_KEY_ID: string;
     readonly AWS_SECRET_ACCESS_KEY: string;
     readonly AWS_SESSION_TOKEN: string;
@@ -17,12 +18,10 @@ export declare const env: {
     readonly AWS_S3_ENDPOINT: string;
     readonly AWS_S3_PUBLIC_URL: string;
     readonly AWS_S3_FORCE_PATH_STYLE: boolean;
-    readonly ETH_RPC_URL: string;
-    readonly ETH_CHAIN_ID: number;
+    readonly BLOCKCHAIN_RPC_URL: string;
+    readonly BLOCKCHAIN_CHAIN_ID: number;
     readonly CONTRACT_ADDRESS: string;
-    readonly OFFICER_PRIVATE_KEY: string;
-    readonly VENDOR_PRIVATE_KEY: string;
-    readonly BLOCKCHAIN_SIMULATION_MODE: boolean;
+    readonly BLOCKCHAIN_EXPLORER_URL: string;
     readonly SOCKET_CORS_ORIGIN: string;
     readonly EMAIL_HOST: string;
     readonly EMAIL_PORT: number;

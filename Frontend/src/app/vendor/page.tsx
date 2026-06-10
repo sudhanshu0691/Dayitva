@@ -21,7 +21,6 @@ export default function VendorDashboard() {
   const [bidAmounts, setBidAmounts] = useState<Record<string, string>>({});
   const [submittingBid, setSubmittingBid] = useState<Record<string, boolean>>({});
   const [bidSuccess, setBidSuccess] = useState<Record<string, any>>({});
-  const [expandedBid, setExpandedBid] = useState<string | null>(null);
 
   const isKycApproved = currentUser?.kycStatus === "Approved";
 
@@ -64,7 +63,6 @@ export default function VendorDashboard() {
         }
       }));
       setBidAmounts(prev => ({ ...prev, [tenderId]: "" }));
-      // Refresh tenders
       const response = await tenderService.listTenders();
       setTenders(response.data || []);
     } catch (err: any) {
@@ -77,7 +75,7 @@ export default function VendorDashboard() {
   if (!hydrated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -85,14 +83,16 @@ export default function VendorDashboard() {
   if (!currentUser || currentUser.role !== "vendor") {
     return (
       <div className="max-w-xl mx-auto px-6 py-20 text-center">
-        <h2 className="text-xl font-bold text-foreground">Access Denied</h2>
-        <p className="text-xs text-muted-foreground mt-2">Vendor credentials required.</p>
-        <button onClick={() => router.push("/auth/vendor")} className="mt-6 px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold">Go to Vendor Login</button>
+        <h2 className="text-headline-sm font-semibold text-foreground">Access Denied</h2>
+        <p className="text-body-sm text-muted-foreground mt-2">Vendor credentials required.</p>
+        <Button onClick={() => router.push("/auth/vendor")} className="mt-6">
+          Go to Vendor Login
+        </Button>
       </div>
     );
   }
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>;
 
   const formatCurrency = (amount: number) => {
     if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(2)} Cr`;
@@ -102,39 +102,46 @@ export default function VendorDashboard() {
   const openTenders = tenders.filter((t: any) => t.status === "Open");
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 py-10">
+    <div className="w-full max-w-7xl mx-auto px-6 py-10 relative perspective">
+      {/* 3D grid background */}
+      <div className="absolute inset-0 pointer-events-none bg-grid-3d" />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="floating-shape floating-shape-2" style={{ right: '-5%', top: '5%' }} />
+        <div className="floating-shape floating-shape-3" style={{ left: '-3%', bottom: '10%' }} />
+      </div>
+
       {/* Header */}
-      <div className="p-6 bg-slate-900 border border-slate-800 text-white rounded-2xl mb-8">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-teal-950 border border-teal-500/30 rounded-xl flex items-center justify-center text-teal-400">
+      <div className="p-6 bg-gradient-to-br from-primary to-primary/80 border border-border text-primary-foreground rounded-xl mb-8 shadow-depth relative z-10">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-accent/20 border border-accent/30 rounded-xl flex items-center justify-center text-accent-foreground">
             <Building className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] text-teal-400 font-bold uppercase tracking-wider font-mono">Vendor Workspace</span>
-            <h1 className="text-lg font-black mt-0.5">{currentUser.companyName || currentUser.name}</h1>
-            <span className="text-[10px] text-slate-400 font-mono mt-1 block">{currentUser.email}</span>
+            <span className="text-caption text-accent-foreground/80 font-semibold uppercase tracking-wider">Vendor Workspace</span>
+            <h1 className="text-headline-sm font-semibold mt-0.5">{currentUser.companyName || currentUser.name}</h1>
+            <span className="text-caption text-primary-foreground/60 mt-1 block">{currentUser.email}</span>
           </div>
         </div>
       </div>
 
       {/* KYC Status Banner */}
-      <div className={`mb-8 p-4 rounded-2xl border ${
+      <div className={`mb-8 p-4 rounded-xl border ${
         isKycApproved 
-          ? "bg-emerald-950/10 border-emerald-800/20" 
-          : "bg-amber-950/10 border-amber-800/20"
+          ? "bg-success/10 border-success/20" 
+          : "bg-warning/10 border-warning/20"
       }`}>
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             {isKycApproved ? (
-              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+              <CheckCircle2 className="w-8 h-8 text-success" />
             ) : (
-              <AlertTriangle className="w-8 h-8 text-amber-400" />
+              <AlertTriangle className="w-8 h-8 text-warning" />
             )}
             <div>
-              <p className="font-bold text-sm text-foreground">
-                {isKycApproved ? "KYC Verified ✓" : "KYC Verification Required"}
+              <p className="font-semibold text-body-sm text-foreground">
+                {isKycApproved ? "KYC Verified" : "KYC Verification Required"}
               </p>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-label-sm text-muted-foreground mt-0.5">
                 {isKycApproved 
                   ? "Your identity has been verified. You can place bids on open tenders."
                   : `Current KYC Status: ${currentUser.kycStatus || "Pending"}. Complete KYC to place bids.`
@@ -143,42 +150,39 @@ export default function VendorDashboard() {
             </div>
           </div>
           {!isKycApproved && (
-            <button
-              onClick={() => router.push("/vendor/profile")}
-              className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-xs font-bold hover:bg-amber-500/20 transition-all"
-            >
+            <Button variant="outline" size="sm" onClick={() => router.push("/vendor/profile")}>
               Complete KYC Now
-            </button>
+            </Button>
           )}
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 text-xs text-destructive rounded-lg flex items-center gap-1.5">
+        <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 text-body-sm text-destructive rounded-lg flex items-center gap-1.5">
           <AlertCircle className="w-3.5 h-3.5" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 text-white">
-        <div className="p-4 bg-slate-950 border border-slate-900 rounded-xl">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">Available Tenders</span>
-          <span className="block text-xl font-black font-mono mt-1">{tenders.length}</span>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 relative z-10">
+        <div className="stat-card-3d border-l-accent">
+          <span className="text-caption text-muted-foreground font-semibold uppercase tracking-wider">Available Tenders</span>
+          <span className="block text-headline-sm font-bold mt-1 text-foreground">{tenders.length}</span>
         </div>
-        <div className="p-4 bg-slate-950 border border-slate-900 rounded-xl">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">Open</span>
-          <span className="block text-xl font-black font-mono mt-1 text-teal-400">{openTenders.length}</span>
+        <div className="stat-card-3d border-l-accent">
+          <span className="text-caption text-muted-foreground font-semibold uppercase tracking-wider">Open</span>
+          <span className="block text-headline-sm font-bold mt-1 text-accent">{openTenders.length}</span>
         </div>
-        <div className="p-4 bg-slate-950 border border-slate-900 rounded-xl">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">Won</span>
-          <span className="block text-xl font-black font-mono mt-1 text-emerald-400">
+        <div className="stat-card-3d border-l-success">
+          <span className="text-caption text-muted-foreground font-semibold uppercase tracking-wider">Won</span>
+          <span className="block text-headline-sm font-bold mt-1 text-success">
             {tenders.filter((t: any) => t.winnerName === currentUser.companyName).length}
           </span>
         </div>
-        <div className="p-4 bg-slate-950 border border-slate-900 rounded-xl">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">KYC</span>
-          <span className={`block text-xl font-black font-mono mt-1 ${isKycApproved ? "text-emerald-400" : "text-amber-400"}`}>
+        <div className="stat-card-3d border-l-primary">
+          <span className="text-caption text-muted-foreground font-semibold uppercase tracking-wider">KYC</span>
+          <span className={`block text-headline-sm font-bold mt-1 ${isKycApproved ? "text-success" : "text-warning"}`}>
             {currentUser.kycStatus || "Pending"}
           </span>
         </div>
@@ -186,9 +190,9 @@ export default function VendorDashboard() {
 
       {/* Open Tenders with inline bidding */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-black text-foreground">Open Tenders for Bidding</h3>
+        <h3 className="text-headline-sm font-semibold text-foreground">Open Tenders for Bidding</h3>
         {!isKycApproved && (
-          <div className="flex items-center gap-2 text-[10px] text-amber-400 font-mono bg-amber-950/20 border border-amber-800/30 px-3 py-1.5 rounded-lg">
+          <div className="flex items-center gap-2 text-caption text-warning font-semibold bg-warning/10 border border-warning/20 px-3 py-1.5 rounded-lg">
             <Lock className="w-3 h-3" />
             <span>KYC Pending — Bidding Locked</span>
           </div>
@@ -201,25 +205,25 @@ export default function VendorDashboard() {
           const success = bidSuccess[tender.id];
 
           return (
-            <div key={tender.id} className="p-5 rounded-2xl border border-border/80 bg-card hover:border-teal-500/30 transition-all">
+            <div key={tender.id} className="card-3d-tilt p-5 rounded-xl border border-border bg-card">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono font-bold text-teal-500">{tender.id}</span>
-                <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/20 text-[9px] px-2 py-0.5 rounded-full font-mono">Open</span>
+                <span className="text-caption font-semibold text-accent">{tender.id}</span>
+                <span className="status-open">Open</span>
               </div>
-              <h3 className="font-extrabold text-sm text-foreground">{tender.title}</h3>
-              <p className="text-[10px] text-muted-foreground font-mono mt-1">{tender.ministry}</p>
-              <div className="grid grid-cols-3 gap-2 my-3 text-[10px] font-mono bg-muted/20 p-3 rounded-lg">
+              <h3 className="text-body-sm font-semibold text-foreground">{tender.title}</h3>
+              <p className="text-caption text-muted-foreground mt-1">{tender.ministry}</p>
+              <div className="grid grid-cols-3 gap-2 my-3 text-caption bg-surface-container-low border border-border p-3 rounded-lg">
                 <div><span className="block text-muted-foreground">Budget</span><strong className="text-foreground">{formatCurrency(tender.budget)}</strong></div>
                 <div><span className="block text-muted-foreground">Deadline</span><strong className="text-foreground">{new Date(tender.deadline).toLocaleDateString()}</strong></div>
-                <div><span className="block text-muted-foreground">Bids</span><strong className="text-teal-400">{tender.bidsCount || 0}</strong></div>
+                <div><span className="block text-muted-foreground">Bids</span><strong className="text-accent">{tender.bidsCount || 0}</strong></div>
               </div>
 
               {/* Inline bidding form */}
               {isKycApproved && !success && (
-                <div className="mt-3 pt-3 border-t border-border/60">
+                <div className="mt-3 pt-3 border-t border-border">
                   <div className="flex items-end gap-3">
                     <div className="flex-1">
-                      <label className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground font-mono block mb-1">
+                      <label className="text-caption text-muted-foreground font-semibold block mb-1">
                         Your Bid (₹ in Crores)
                       </label>
                       <Input
@@ -229,25 +233,14 @@ export default function VendorDashboard() {
                         value={bidAmounts[tender.id] || ""}
                         onChange={(e) => setBidAmounts(prev => ({ ...prev, [tender.id]: e.target.value }))}
                         disabled={isSubmitting}
-                        className="text-xs font-mono"
                       />
                     </div>
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => router.push(`/tenders/${tender.id}`)}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => router.push(`/tenders/${tender.id}`)}>
                         <Eye className="w-3 h-3" />
                         <span className="hidden sm:inline ml-1">Details</span>
                       </Button>
-                      <Button
-                        size="sm"
-                        className="text-xs bg-gradient-to-r from-teal-500 to-indigo-600 text-white"
-                        disabled={isSubmitting || !bidAmounts[tender.id]}
-                        onClick={() => handleBidSubmit(tender.id)}
-                      >
+                      <Button variant="accent" size="sm" disabled={isSubmitting || !bidAmounts[tender.id]} onClick={() => handleBidSubmit(tender.id)}>
                         {isSubmitting ? (
                           <><RefreshCw className="w-3 h-3 animate-spin mr-1" />Submitting...</>
                         ) : (
@@ -261,12 +254,12 @@ export default function VendorDashboard() {
 
               {/* Success message */}
               {success && (
-                <div className="mt-3 pt-3 border-t border-border/60">
-                  <div className="flex items-center gap-2 p-3 bg-emerald-950/20 border border-emerald-500/20 rounded-lg">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                    <div className="text-xs">
-                      <p className="font-bold text-emerald-300">Bid Submitted ✓</p>
-                      <p className="text-emerald-400/70 font-mono mt-0.5">
+                <div className="mt-3 pt-3 border-t border-border">
+                  <div className="flex items-center gap-2 p-3 bg-success/10 border border-success/20 rounded-lg">
+                    <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
+                    <div className="text-body-sm">
+                      <p className="font-semibold text-success">Bid Submitted</p>
+                      <p className="text-label-sm text-success/80 font-mono mt-0.5">
                         Transaction: {success.txHash?.substring(0, 16)}...{success.txHash?.substring(-8)}
                       </p>
                     </div>
@@ -276,11 +269,11 @@ export default function VendorDashboard() {
 
               {/* KYC Locked state */}
               {!isKycApproved && (
-                <div className="mt-3 pt-3 border-t border-border/60">
-                  <div className="p-2.5 bg-amber-950/10 border border-amber-800/20 rounded-lg text-[10px] text-amber-400 font-mono text-center">
+                <div className="mt-3 pt-3 border-t border-border">
+                  <div className="p-2.5 bg-warning/10 border border-warning/20 rounded-lg text-caption text-warning text-center">
                     <Lock className="w-3 h-3 inline mr-1" />
                     KYC must be approved to bid.{" "}
-                    <button onClick={() => router.push("/vendor/profile")} className="underline hover:text-amber-300">Update KYC</button>
+                    <button onClick={() => router.push("/vendor/profile")} className="underline hover:text-warning/80">Update KYC</button>
                   </div>
                 </div>
               )}
@@ -288,9 +281,9 @@ export default function VendorDashboard() {
           );
         })}
         {openTenders.length === 0 && (
-          <div className="p-12 text-center text-muted-foreground">
+          <div className="p-12 text-center text-muted-foreground border border-dashed border-border/40 bg-card/20 rounded-xl">
             <Building className="w-8 h-8 mx-auto mb-3 opacity-30" />
-            <p className="text-sm">No open tenders available at the moment.</p>
+            <p className="text-body-sm">No open tenders available at the moment.</p>
           </div>
         )}
       </div>

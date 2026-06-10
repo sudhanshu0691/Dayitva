@@ -16,6 +16,7 @@ export declare const updateProfileSchema: z.ZodObject<{
     ministryCode: z.ZodOptional<z.ZodString>;
     permissions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
+    ministry?: string | undefined;
     name?: string | undefined;
     mobile?: string | undefined;
     companyName?: string | undefined;
@@ -25,10 +26,10 @@ export declare const updateProfileSchema: z.ZodObject<{
     turnover?: string | undefined;
     itrYears?: string[] | undefined;
     designation?: string | undefined;
-    ministry?: string | undefined;
     ministryCode?: string | undefined;
     permissions?: string[] | undefined;
 }, {
+    ministry?: string | undefined;
     name?: string | undefined;
     mobile?: string | undefined;
     companyName?: string | undefined;
@@ -38,7 +39,6 @@ export declare const updateProfileSchema: z.ZodObject<{
     turnover?: string | undefined;
     itrYears?: string[] | undefined;
     designation?: string | undefined;
-    ministry?: string | undefined;
     ministryCode?: string | undefined;
     permissions?: string[] | undefined;
 }>;
@@ -62,11 +62,11 @@ export declare const createDisputeSchema: z.ZodObject<{
     tenderId: z.ZodString;
     text: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    text: string;
     tenderId: string;
+    text: string;
 }, {
-    text: string;
     tenderId: string;
+    text: string;
 }>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type KYCVerificationInput = z.infer<typeof kycVerificationSchema>;

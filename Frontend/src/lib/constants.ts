@@ -22,7 +22,6 @@ export const APP_CONFIG = {
 export const ROLES = {
   OFFICER: "officer",
   VENDOR: "vendor",
-  PUBLIC: "public",
 };
 
 // Tender Status
@@ -33,6 +32,7 @@ export const TENDER_STATUS = {
   UNDER_EVALUATION: "UnderEvaluation",
   AWARDED: "Awarded",
   CANCELLED: "Cancelled",
+  EXPIRED: "Expired",
 };
 
 // KYC Status

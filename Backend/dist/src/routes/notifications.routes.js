@@ -14,8 +14,9 @@ const router = (0, express_1.Router)();
  */
 router.get("/", auth_1.authenticate, async (req, res, next) => {
     try {
+        const myId = req.user.userId;
         const notifications = await database_1.prisma.notification.findMany({
-            where: { userId: req.user.userId },
+            where: { userId: myId },
             orderBy: { createdAt: "desc" },
             take: 50,
         });
@@ -43,9 +44,10 @@ router.get("/", auth_1.authenticate, async (req, res, next) => {
 router.post("/mark-read", auth_1.authenticate, async (req, res, next) => {
     try {
         const { id, all } = req.body;
+        const myId = req.user.userId;
         if (all) {
             await database_1.prisma.notification.updateMany({
-                where: { userId: req.user.userId },
+                where: { userId: myId },
                 data: { read: true },
             });
         }
@@ -67,8 +69,9 @@ router.post("/mark-read", auth_1.authenticate, async (req, res, next) => {
  */
 router.get("/unread-count", auth_1.authenticate, async (req, res, next) => {
     try {
+        const myId = req.user.userId;
         const count = await database_1.prisma.notification.count({
-            where: { userId: req.user.userId, read: false },
+            where: { userId: myId, read: false },
         });
         res.json({ success: true, data: { unreadCount: count } });
     }

@@ -20,10 +20,11 @@ export declare const registerSchema: z.ZodObject<{
     ministryCode: z.ZodOptional<z.ZodString>;
     permissions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    role: "officer" | "vendor";
     name: string;
+    role: "vendor" | "officer";
     email: string;
     password: string;
+    ministry?: string | undefined;
     walletAddress?: string | undefined;
     mobile?: string | undefined;
     companyName?: string | undefined;
@@ -33,14 +34,14 @@ export declare const registerSchema: z.ZodObject<{
     turnover?: string | undefined;
     itrYears?: string[] | undefined;
     designation?: string | undefined;
-    ministry?: string | undefined;
     ministryCode?: string | undefined;
     permissions?: string[] | undefined;
 }, {
-    role: "officer" | "vendor";
     name: string;
+    role: "vendor" | "officer";
     email: string;
     password: string;
+    ministry?: string | undefined;
     walletAddress?: string | undefined;
     mobile?: string | undefined;
     companyName?: string | undefined;
@@ -50,7 +51,6 @@ export declare const registerSchema: z.ZodObject<{
     turnover?: string | undefined;
     itrYears?: string[] | undefined;
     designation?: string | undefined;
-    ministry?: string | undefined;
     ministryCode?: string | undefined;
     permissions?: string[] | undefined;
 }>;

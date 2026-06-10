@@ -15,6 +15,9 @@ const notifications_routes_1 = __importDefault(require("./notifications.routes")
 const disputes_routes_1 = __importDefault(require("./disputes.routes"));
 const dashboard_routes_1 = __importDefault(require("./dashboard.routes"));
 const uploads_routes_1 = __importDefault(require("./uploads.routes"));
+const auditor_routes_1 = __importDefault(require("./auditor.routes"));
+const kyc_routes_1 = __importDefault(require("./kyc.routes"));
+const blockchain_routes_1 = __importDefault(require("./blockchain.routes"));
 const router = (0, express_1.Router)();
 /**
  * API Routes
@@ -27,6 +30,9 @@ router.use("/notifications", notifications_routes_1.default);
 router.use("/disputes", disputes_routes_1.default);
 router.use("/dashboard", dashboard_routes_1.default);
 router.use("/uploads", uploads_routes_1.default);
+router.use("/auditor", auditor_routes_1.default);
+router.use("/kyc", kyc_routes_1.default);
+router.use("/blockchain", blockchain_routes_1.default);
 // Health check
 router.get("/health", (_req, res) => {
     res.json({

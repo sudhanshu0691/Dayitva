@@ -4,12 +4,15 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { 
   FileText, Download, Calendar, ShieldCheck, 
-  Lock, Unlock, ArrowLeft, Building, User, Clock, Info, 
-  Cpu, Award, ExternalLink, RefreshCw, Send, AlertTriangle, Database
+  Lock, ArrowLeft, Building, Clock, Info, 
+  Cpu, Award, ExternalLink, RefreshCw, Send, AlertTriangle, Database,
+  CheckCircle2, XCircle
 } from "lucide-react";
 import { useApp } from "../../../context/AppContext";
 import tenderService from "@/services/tenderService";
 import userService from "@/services/userService";
+import { Button } from "../../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/Card";
 
 export default function TenderDetailPage() {
   const params = useParams();
@@ -60,16 +63,21 @@ export default function TenderDetailPage() {
   }, [currentUser]);
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen"><div className="border-2 border-primary border-t-transparent w-6 h-6 animate-spin" /></div>;
+    return <div className="flex items-center justify-center min-h-screen"><div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>;
   }
 
   if (error || !tender) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-        <AlertTriangle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-        <h2 className="text-[18px] font-500 text-foreground">Tender not found</h2>
-        <p className="text-[13px] text-muted-foreground mt-2">{error || "The requested tender does not exist."}</p>
-        <button onClick={() => router.push("/dashboard")} className="mt-6 px-4 py-2 bg-primary text-primary-foreground text-[13px] border border-primary hover:bg-primary/90">Back to dashboard</button>
+        <div className="w-14 h-14 bg-muted border border-border rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <AlertTriangle className="w-6 h-6 text-muted-foreground" />
+        </div>
+        <h2 className="text-headline-sm font-semibold text-foreground">Tender not found</h2>
+        <p className="text-body-sm text-muted-foreground mt-2">{error || "The requested tender does not exist."}</p>
+        <button onClick={() => router.push("/dashboard")} 
+          className="mt-6 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-body-sm font-semibold shadow-soft hover:shadow-soft-md transition-all">
+          Back to dashboard
+        </button>
       </div>
     );
   }
@@ -117,44 +125,44 @@ export default function TenderDetailPage() {
     switch (status) {
       case "Open": return "status-approved";
       case "UnderEvaluation": return "status-pending";
-      case "Closed": return "border border-muted-foreground text-muted-foreground bg-muted";
-      case "Awarded": return "border border-primary text-primary bg-primary/10";
-      default: return "border border-muted-foreground text-muted-foreground bg-muted";
+      case "Closed": return "status-closed";
+      case "Awarded": return "border border-accent/30 text-accent bg-accent/10";
+      default: return "status-closed";
     }
   };
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-10">
       <button onClick={() => router.push(getBackUrl())}
-        className="flex items-center space-x-1 text-[13px] text-muted-foreground hover:text-primary mb-6">
+        className="inline-flex items-center gap-1.5 text-body-sm text-muted-foreground hover:text-accent mb-6 transition-colors font-medium">
         <ArrowLeft className="w-4 h-4" />
         <span>Back to dashboard</span>
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <section className="lg:col-span-8 space-y-6">
-          <div className="p-6 bg-card border border-border">
+          <Card className="p-6">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-              <span className="bg-muted border border-border text-primary text-[10px] px-2 py-0.5">Tender ID: {tender.id}</span>
-              <span className={`text-[10px] px-2 py-0.5 ${getStatusBadge(tender.status)}`}>{tender.status}</span>
+              <span className="bg-surface-container-low border border-border text-caption text-muted-foreground px-2.5 py-0.5 rounded font-mono font-semibold">Tender ID: {tender.id}</span>
+              <span className={`text-caption px-2.5 py-0.5 font-semibold ${getStatusBadge(tender.status)}`}>{tender.status}</span>
             </div>
-            <h1 className="text-[18px] font-500 text-foreground leading-snug">{tender.title}</h1>
-            <p className="text-[10px] text-primary tracking-wider mt-2 section-label">{tender.ministry}</p>
-            <p className="text-[13px] text-muted-foreground mt-4 leading-relaxed">{tender.description}</p>
-          </div>
+            <h1 className="text-headline-sm font-semibold text-foreground leading-snug">{tender.title}</h1>
+            <p className="text-caption text-accent tracking-wider mt-2 font-semibold uppercase">{tender.ministry}</p>
+            <p className="text-body-sm text-muted-foreground mt-4 leading-relaxed">{tender.description}</p>
+          </Card>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-4 bg-muted/30 border border-border text-center">
-              <span className="block text-[10px] text-muted-foreground section-label">Budget</span>
-              <span className="block font-500 text-[13px] text-foreground mt-1">{formatIndianCurrency(tender.budget)}</span>
+            <div className="p-5 bg-surface-container-low border border-border rounded-xl text-center">
+              <span className="block text-caption text-muted-foreground uppercase tracking-wider font-semibold">Budget</span>
+              <span className="block font-bold text-body-md text-foreground mt-1">{formatIndianCurrency(tender.budget)}</span>
             </div>
-            <div className="p-4 bg-muted/30 border border-border text-center">
-              <span className="block text-[10px] text-muted-foreground section-label">Deadline</span>
-              <span className="block font-500 text-[13px] text-foreground mt-1">{new Date(tender.deadline).toLocaleDateString()}</span>
+            <div className="p-5 bg-surface-container-low border border-border rounded-xl text-center">
+              <span className="block text-caption text-muted-foreground uppercase tracking-wider font-semibold">Deadline</span>
+              <span className="block font-bold text-body-md text-foreground mt-1">{new Date(tender.deadline).toLocaleDateString()}</span>
             </div>
-            <div className="p-4 bg-muted/30 border border-border text-center">
-              <span className="block text-[10px] text-muted-foreground section-label">MSME quota</span>
-              <span className={`block font-500 text-[13px] mt-1 ${tender.msmeQuota ? "text-accent" : "text-muted-foreground"}`}>
+            <div className="p-5 bg-surface-container-low border border-border rounded-xl text-center">
+              <span className="block text-caption text-muted-foreground uppercase tracking-wider font-semibold">MSME quota</span>
+              <span className={`block font-bold text-body-md mt-1 ${tender.msmeQuota ? "text-success" : "text-muted-foreground"}`}>
                 {tender.msmeQuota ? "YES" : "NO"}
               </span>
             </div>
@@ -163,71 +171,89 @@ export default function TenderDetailPage() {
 
         <section className="lg:col-span-4 space-y-6">
           {/* Bidding Section */}
-          <div className="p-5 border border-border bg-card">
-            <h3 className="section-label text-foreground flex items-center gap-1.5 pb-3 border-b border-border mb-4">
-              <Lock className="w-4 h-4 text-primary" /> Bidding
-            </h3>
-
-            {currentUser?.role === "vendor" && !isDeadlinePassed ? (
-              <form onSubmit={handleBidSubmit} className="space-y-4">
-                <div className="bg-muted/30 border border-border p-2.5 text-[11px] flex items-center gap-2">
-                  <Building className="w-4 h-4 text-primary" />
-                  <div>
-                    <span className="block text-muted-foreground">Bidding as:</span>
-                    <span className="font-500 text-foreground">{currentUser.companyName || currentUser.name}</span>
+          <Card className="p-5">
+            <CardHeader className="pb-3 border-b border-border mb-4">
+              <CardTitle className="text-caption font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <Lock className="w-4 h-4 text-accent" /> Bidding
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 p-0">
+              {currentUser?.role === "vendor" && !isDeadlinePassed ? (
+                <form onSubmit={handleBidSubmit} className="space-y-4">
+                  <div className="bg-surface-container-low border border-border p-3 rounded-xl text-caption flex items-center gap-2.5">
+                    <Building className="w-4 h-4 text-accent" />
+                    <div>
+                      <span className="block text-muted-foreground">Bidding as:</span>
+                      <span className="font-semibold text-foreground">{currentUser.companyName || currentUser.name}</span>
+                    </div>
                   </div>
+                  <div className={`p-3 border rounded-xl text-caption flex items-center gap-2 ${
+                    kycStatus === "Approved" 
+                      ? "bg-success/10 border-success/20 text-success" 
+                      : "bg-warning/10 border-warning/20 text-warning"
+                  }`}>
+                    {kycLoading ? (
+                      <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Checking KYC status...</>
+                    ) : kycStatus === "Approved" ? (
+                      <><CheckCircle2 className="w-3.5 h-3.5" /> KYC approved. You can submit bids.</>
+                    ) : (
+                      <><XCircle className="w-3.5 h-3.5" /> KYC: {kycStatus || "Pending"}. Bidding locked.</>
+                    )}
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-caption font-semibold uppercase tracking-wider text-muted-foreground block">Your bid (in crores INR)</label>
+                    <div className="relative">
+                      <input type="number" step="0.01" placeholder="e.g. 1210.50" value={bidAmount}
+                        onChange={(e) => setBidAmount(e.target.value)}
+                        className="w-full h-11 bg-card border-2 border-input text-foreground pl-3.5 pr-12 text-body-sm rounded-xl focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all"
+                        disabled={submittingBid} />
+                      <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-caption text-muted-foreground font-semibold">Cr</span>
+                    </div>
+                  </div>
+                  <Button type="submit" variant="accent" className="w-full" disabled={submittingBid || !canBid} loading={submittingBid} loadingText="Submitting...">
+                    <Send className="w-4 h-4" />
+                    Submit sealed bid
+                  </Button>
+                  {!canBid && !kycLoading && (
+                    <Button type="button" variant="outline" className="w-full" onClick={() => router.push("/vendor/profile")}>
+                      <ShieldCheck className="w-4 h-4" />
+                      Go to KYC profile
+                    </Button>
+                  )}
+                </form>
+              ) : (
+                <div className="text-center py-6">
+                  <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-body-sm text-muted-foreground">
+                    {isDeadlinePassed ? "Bidding has concluded for this tender." :
+                     currentUser?.role === "vendor" && kycStatus !== "Approved" ? "Your KYC must be approved before submitting bids." :
+                     "Please login as a vendor to submit a bid."}
+                  </p>
                 </div>
-                <div className={`p-3 border text-[11px] ${kycStatus === "Approved" ? "border-status-approved bg-status-approved-bg text-status-approved" : "border-status-pending bg-status-pending-bg text-status-pending"}`}>
-                  {kycLoading ? "Checking KYC status..." : kycStatus === "Approved" ? "KYC approved. You can submit bids." : `KYC status: ${kycStatus || "Pending"}. Bidding is locked until approval.`}
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] section-label text-muted-foreground block">Your bid (in crores INR)</label>
-                  <input type="number" step="0.01" placeholder="e.g. 1210.50" value={bidAmount}
-                    onChange={(e) => setBidAmount(e.target.value)}
-                    className="w-full bg-background border border-input text-foreground pl-3 pr-12 py-2 text-[13px] focus:outline-none focus:border-primary"
-                    disabled={submittingBid} />
-                </div>
-                <button type="submit" disabled={submittingBid || !canBid}
-                  className="w-full flex items-center justify-center space-x-2 text-[13px] text-primary-foreground bg-primary border border-primary py-2.5 hover:bg-primary/90 transition-colors">
-                  {submittingBid ? <><RefreshCw className="w-4 h-4 animate-spin" /><span>Submitting...</span></>
-                    : <><Send className="w-4 h-4" /><span>Submit sealed bid</span></>}
-                </button>
-                {!canBid && !kycLoading && (
-                  <button type="button" onClick={() => router.push("/vendor/profile")}
-                    className="w-full flex items-center justify-center space-x-2 text-[13px] text-foreground bg-muted py-2.5 border border-border">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>Go to KYC profile</span>
-                  </button>
-                )}
-              </form>
-            ) : (
-              <div className="text-center py-6">
-                <Lock className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-[13px] text-muted-foreground">
-                  {isDeadlinePassed ? "Bidding has concluded for this tender." :
-                   currentUser?.role === "vendor" && kycStatus !== "Approved" ? "Your KYC must be approved before submitting bids." :
-                   "Please login as a vendor to submit a bid."}
-                </p>
-              </div>
-            )}
-          </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Bids Registry */}
-          <div className="p-5 border border-border bg-card">
-            <h3 className="section-label text-foreground flex items-center gap-1.5 pb-3 border-b border-border mb-4">
-              <Database className="w-4 h-4 text-primary" /> Bids ({bids.length})
-            </h3>
-            {bids.length > 0 ? bids.map((bid: any) => (
-              <div key={bid.id} className="text-[11px] leading-relaxed border-b border-border pb-3 mb-3 last:border-b-0">
-                <div className="flex justify-between">
-                  <span className="font-500 text-foreground">{bid.vendorName}</span>
+          <Card className="p-5">
+            <CardHeader className="pb-3 border-b border-border mb-4">
+              <CardTitle className="text-caption font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <Database className="w-4 h-4 text-accent" /> Bids ({bids.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 space-y-3">
+              {bids.length > 0 ? bids.map((bid: any) => (
+                <div key={bid.id} className="border-b border-border pb-3 last:border-b-0">
+                  <div className="flex justify-between items-start">
+                    <span className="text-body-sm font-semibold text-foreground">{bid.vendorName}</span>
+                  </div>
+                  <div className="text-headline-sm font-bold text-accent mt-1">{formatIndianCurrency(bid.price)}</div>
                 </div>
-                <div className="text-[13px] font-500 text-primary mt-1">{formatIndianCurrency(bid.price)}</div>
-              </div>
-            )) : (
-              <div className="text-center py-6 text-[13px] text-muted-foreground">No bids yet</div>
-            )}
-          </div>
+              )) : (
+                <div className="text-center py-6 text-body-sm text-muted-foreground">No bids yet</div>
+              )}
+            </CardContent>
+          </Card>
         </section>
       </div>
     </div>

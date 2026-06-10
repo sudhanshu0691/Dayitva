@@ -13,6 +13,7 @@ import {
   Landmark,
   Building2,
   Globe,
+  ChevronRight,
 } from "lucide-react";
 
 export const PortalSidebar: React.FC = () => {
@@ -51,23 +52,23 @@ export const PortalSidebar: React.FC = () => {
   else navItems = [];
 
   return (
-    <aside className="hidden lg:flex w-[240px] shrink-0 flex-col border-r border-border bg-white min-h-[calc(100vh-8rem)]">
+    <aside className="hidden lg:flex w-[250px] shrink-0 flex-col border-r border-border bg-card min-h-[calc(100vh-8rem)]">
       {/* Session Info */}
       <div className="p-5 border-b border-border">
-        <p className="text-label-sm text-muted-foreground uppercase tracking-wider font-semibold">Portal session</p>
+        <p className="text-caption text-muted-foreground uppercase tracking-wider font-semibold">Portal session</p>
         <p className="text-body-sm text-foreground mt-2 font-semibold">{currentUser.name}</p>
-        <p className="text-label-sm text-muted-foreground truncate mt-0.5">{currentUser.email}</p>
+        <p className="text-caption text-muted-foreground truncate mt-0.5">{currentUser.email}</p>
         <div className="flex flex-wrap gap-2 mt-3">
-          <span className="inline-flex items-center gap-1 border border-[#002869]/50 bg-[#002869]/10 px-2.5 py-0.5 text-label-sm text-[#002869] font-semibold rounded-full">
+          <span className="inline-flex items-center gap-1 border border-accent/30 bg-accent/5 px-2.5 py-0.5 text-caption text-accent font-semibold rounded-full">
             {currentUser.role}
           </span>
           {walletConnected ? (
-            <span className="inline-flex items-center gap-1 border border-[#056e00]/50 bg-[#056e00]/10 px-2.5 py-0.5 text-label-sm text-[#056e00] font-semibold rounded-full">
+            <span className="inline-flex items-center gap-1 border border-success/30 bg-success/5 px-2.5 py-0.5 text-caption text-success font-semibold rounded-full">
               <Wallet className="w-3 h-3" />
               {walletBalance}
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 border border-border bg-surface-container-low px-2.5 py-0.5 text-label-sm text-muted-foreground rounded-full">
+            <span className="inline-flex items-center gap-1 border border-border bg-surface-container-low px-2.5 py-0.5 text-caption text-muted-foreground rounded-full">
               Wallet inactive
             </span>
           )}
@@ -75,8 +76,8 @@ export const PortalSidebar: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="py-2 flex-1">
-        <p className="text-label-sm text-muted-foreground px-5 py-2 uppercase tracking-wider font-semibold">Navigation</p>
+      <nav className="py-3 flex-1">
+        <p className="text-caption text-muted-foreground px-5 py-2 uppercase tracking-wider font-semibold">Navigation</p>
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -84,26 +85,27 @@ export const PortalSidebar: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-5 py-2.5 text-body-sm transition-colors border-l-2 ${
+              className={`flex items-center gap-3 px-5 py-2.5 text-body-sm transition-all duration-200 border-r-2 ${
                 active
-                  ? "bg-[#002869]/5 text-[#002869] border-l-[#002869] font-semibold"
-                  : "text-foreground hover:bg-surface-container-low border-l-transparent"
+                  ? "bg-accent/5 text-accent border-r-accent font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-surface-container-low border-r-transparent"
               }`}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${active ? "text-[#002869]" : "text-muted-foreground"}`} />
-              <span>{item.label}</span>
+              <Icon className={`w-4 h-4 shrink-0 ${active ? "text-accent" : "text-muted-foreground"}`} />
+              <span className="flex-1">{item.label}</span>
+              {active && <ChevronRight className="w-3.5 h-3.5 text-accent" />}
             </Link>
           );
         })}
       </nav>
 
       {/* Footer Info */}
-      <div className="mt-auto p-5 border-t border-border text-label-sm text-muted-foreground">
-        <div className="flex items-center gap-2 text-foreground font-semibold">
-          <Globe className="w-4 h-4 text-[#002869]" />
+      <div className="mt-auto p-5 border-t border-border">
+        <div className="flex items-center gap-2 text-caption text-foreground font-semibold">
+          <Globe className="w-4 h-4 text-accent" />
           Secure workspace
         </div>
-        <p className="mt-1.5 leading-relaxed">
+        <p className="text-caption text-muted-foreground mt-1.5 leading-relaxed">
           All sessions and wallet states persist until logout.
         </p>
       </div>

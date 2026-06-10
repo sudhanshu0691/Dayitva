@@ -11,6 +11,9 @@ import { useApp } from "../../../context/AppContext";
 import tenderService from "@/services/tenderService";
 import uploadService from "@/services/uploadService";
 import api from "@/services/api";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { Card, CardContent } from "../../../components/ui/Card";
 
 const ministries = [
   "Ministry of Road Transport and Highways (MoRTH)",
@@ -45,7 +48,6 @@ export default function CreateTenderPage() {
   const [checkingKyc, setCheckingKyc] = useState(true);
   const [kycApproved, setKycApproved] = useState(false);
 
-  // Check KYC status on mount
   useEffect(() => {
     const checkKYC = async () => {
       try {
@@ -57,7 +59,7 @@ export default function CreateTenderPage() {
           setKycApproved(false);
           setError("KYC not approved. Please complete KYC verification first.");
         }
-      } catch (err) {
+      } catch {
         setKycApproved(false);
         setError("Unable to verify KYC status. Please complete KYC first.");
       } finally {
@@ -85,10 +87,11 @@ export default function CreateTenderPage() {
 
   if (!currentUser || currentUser.role !== "officer") {
     return (
-      <div className="max-w-xl mx-auto px-6 py-20 text-center">
-        <h2 className="text-xl font-bold text-foreground">Access Denied</h2>
-        <p className="text-xs text-muted-foreground mt-2">Government Officer credentials required.</p>
-        <button onClick={() => router.push("/login")} className="mt-6 px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold">Go to Login</button>
+      <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+        <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+        <h2 className="text-headline-sm font-semibold text-foreground">Access Denied</h2>
+        <p className="text-body-sm text-muted-foreground mt-2">Government Officer credentials required.</p>
+        <Button onClick={() => router.push("/login")} className="mt-6">Go to Login</Button>
       </div>
     );
   }
@@ -96,7 +99,7 @@ export default function CreateTenderPage() {
   if (checkingKyc) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -104,21 +107,19 @@ export default function CreateTenderPage() {
   if (!kycApproved) {
     return (
       <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <Lock className="w-12 h-12 text-amber-400 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-foreground">KYC Verification Required</h2>
-        <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
+        <Lock className="w-12 h-12 text-warning mx-auto mb-4" />
+        <h2 className="text-headline-sm font-semibold text-foreground">KYC Verification Required</h2>
+        <p className="text-body-sm text-muted-foreground mt-2 max-w-md mx-auto">
           Your KYC must be approved by an Auditor before you can create tenders. 
           Please complete your KYC verification first.
         </p>
         <div className="flex items-center justify-center gap-4 mt-8">
-          <button onClick={() => router.push("/admin/profile")} 
-            className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-xs font-bold">
+          <Button variant="outline" onClick={() => router.push("/admin/profile")}>
             Go to KYC Profile
-          </button>
-          <button onClick={() => router.push("/admin")} 
-            className="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold">
+          </Button>
+          <Button variant="accent" onClick={() => router.push("/admin")}>
             Back to Dashboard
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -137,7 +138,7 @@ export default function CreateTenderPage() {
         hash: result?.hash || "uploaded",
         uploadedAt: new Date().toISOString()
       }]);
-    } catch (err) {
+    } catch {
       setError("Failed to upload file");
     } finally {
       setUploading(false);
@@ -193,174 +194,171 @@ export default function CreateTenderPage() {
   const handleBack = () => setCurrentStep(prev => Math.max(prev - 1, 1));
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-6 py-10">
-      <div className="border-b border-border/80 pb-5 mb-8">
-        <h1 className="text-xl sm:text-2xl font-black text-foreground flex items-center gap-2">
-          <Landmark className="w-6 h-6 text-teal-400" />
+    <div className="w-full max-w-4xl mx-auto px-6 py-10 relative perspective">
+      <div className="absolute inset-0 pointer-events-none bg-grid-3d" />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="floating-shape floating-shape-3" style={{ right: '-3%', top: '5%' }} />
+      </div>
+      <div className="border-b border-border pb-5 mb-8 relative z-10">
+        <h1 className="text-headline-sm font-semibold text-foreground flex items-center gap-2">
+          <Landmark className="w-6 h-6 text-accent" />
           Create New Tender
         </h1>
       </div>
 
       {error && (
-        <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 text-xs text-destructive rounded-lg flex items-center gap-1.5">
+        <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 text-body-sm text-destructive rounded-lg flex items-center gap-1.5">
           <AlertCircle className="w-3.5 h-3.5" />
           <span>{error}</span>
         </div>
       )}
 
-      <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm min-h-[350px] flex flex-col justify-between">
-        <AnimatePresence mode="wait">
-          <motion.div key={currentStep} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-6">
+      <Card variant="elevated" className="min-h-[350px] flex flex-col justify-between">
+        <CardContent>
+          <AnimatePresence mode="wait">
+            <motion.div key={currentStep} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-6">
 
-            {/* STEP 1 */}
-            {currentStep === 1 && (
-              <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-wider font-mono text-teal-400 border-b border-border/60 pb-2">Step 1: Basic Information</h3>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">Title</label>
-                  <input type="text" placeholder="e.g., Procurement of Tactical Software Defined Radios"
-                    value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="w-full bg-background border border-input rounded-lg p-2.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary" />
+              {/* STEP 1 */}
+              {currentStep === 1 && (
+                <div className="space-y-4">
+                  <h3 className="text-caption font-semibold uppercase tracking-wider text-accent border-b border-border pb-2">Step 1: Basic Information</h3>
+                  <div className="space-y-1.5">
+                    <label className="text-caption text-muted-foreground font-semibold block">Title</label>
+                    <Input type="text" placeholder="e.g., Procurement of Tactical Software Defined Radios"
+                      value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-caption text-muted-foreground font-semibold block">Ministry</label>
+                    <select value={formData.ministry} onChange={(e) => setFormData({...formData, ministry: e.target.value})}
+                      className="w-full h-11 bg-card border-2 border-input text-foreground px-3.5 text-body-sm rounded-xl focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all">
+                      {ministries.map((m, idx) => <option key={idx} value={m}>{m}</option>)}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-caption text-muted-foreground font-semibold block">Description</label>
+                    <textarea placeholder="Detailed scope of work..."
+                      value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      className="w-full bg-card border-2 border-input text-foreground px-3.5 py-2.5 text-body-sm rounded-xl focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all h-36" />
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">Ministry</label>
-                  <select value={formData.ministry} onChange={(e) => setFormData({...formData, ministry: e.target.value})}
-                    className="w-full bg-background border border-input rounded-lg p-2.5 text-xs font-bold">
-                    {ministries.map((m, idx) => <option key={idx} value={m}>{m}</option>)}
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">Description</label>
-                  <textarea placeholder="Detailed scope of work..."
-                    value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    className="w-full bg-background border border-input rounded-lg p-2.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary h-36" />
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* STEP 2: Files */}
-            {currentStep === 2 && (
-              <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-wider font-mono text-teal-400 border-b border-border/60 pb-2">Step 2: Upload Technical Documents</h3>
-                <div className="border-2 border-dashed border-border rounded-2xl p-8 text-center">
-                  <input type="file" id="file-upload" onChange={handleFileUpload} className="hidden" disabled={uploading} />
-                  <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-3">
-                    <UploadCloud className="w-10 h-10 text-primary" />
-                    <span className="text-xs font-bold text-muted-foreground">Click to upload documents</span>
+              {/* STEP 2: Files */}
+              {currentStep === 2 && (
+                <div className="space-y-4">
+                  <h3 className="text-caption font-semibold uppercase tracking-wider text-accent border-b border-border pb-2">Step 2: Upload Technical Documents</h3>
+                  <div className="border-2 border-dashed border-border rounded-xl p-8 text-center bg-muted/30">
+                    <input type="file" id="file-upload" onChange={handleFileUpload} className="hidden" disabled={uploading} />
+                    <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-3">
+                      <UploadCloud className="w-10 h-10 text-accent" />
+                      <span className="text-body-sm text-muted-foreground">Click to upload documents</span>
+                    </label>
+                  </div>
+                  {uploadedFiles.map((f, idx) => (
+                    <div key={idx} className="p-3 border border-border rounded-xl flex items-center justify-between bg-card">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-accent" />
+                        <div>
+                          <span className="text-body-sm text-foreground font-medium">{f.name}</span>
+                          <span className="text-caption text-muted-foreground block">{f.size}</span>
+                        </div>
+                      </div>
+                      <button onClick={() => handleRemoveFile(idx)} className="text-destructive hover:text-destructive/80"><Trash className="w-4 h-4" /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* STEP 3: Budget */}
+              {currentStep === 3 && (
+                <div className="space-y-4">
+                  <h3 className="text-caption font-semibold uppercase tracking-wider text-accent border-b border-border pb-2">Step 3: Budget</h3>
+                  <div className="space-y-1.5">
+                    <label className="text-caption text-muted-foreground font-semibold block">Estimated Budget (in Crore INR)</label>
+                    <Input type="number" step="0.01" placeholder="e.g., 450.00"
+                      value={formData.budget} onChange={(e) => setFormData({...formData, budget: e.target.value})} />
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 4: Deadline */}
+              {currentStep === 4 && (
+                <div className="space-y-4">
+                  <h3 className="text-caption font-semibold uppercase tracking-wider text-accent border-b border-border pb-2">Step 4: Deadline</h3>
+                  <div className="space-y-1.5">
+                    <label className="text-caption text-muted-foreground font-semibold block">Bidding Deadline</label>
+                    <Input type="datetime-local" value={formData.deadline} onChange={(e) => setFormData({...formData, deadline: e.target.value})} />
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 5: MSME */}
+              {currentStep === 5 && (
+                <div className="space-y-4">
+                  <h3 className="text-caption font-semibold uppercase tracking-wider text-accent border-b border-border pb-2">Step 5: MSME Quota</h3>
+                  <label className="flex items-center gap-3 cursor-pointer p-4 border border-border rounded-xl hover:bg-muted/30 transition-all">
+                    <input type="checkbox" checked={formData.msmeQuota} onChange={(e) => setFormData({...formData, msmeQuota: e.target.checked})}
+                      className="w-5 h-5 rounded border-border accent-accent" />
+                    <div>
+                      <span className="text-body-sm font-semibold text-foreground">Enable MSME Reservation</span>
+                      <span className="text-caption text-muted-foreground block">At least 25% reserved for MSME bidders</span>
+                    </div>
                   </label>
                 </div>
-                {uploadedFiles.map((f, idx) => (
-                  <div key={idx} className="p-3 border border-border rounded-xl flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-primary" />
-                      <div>
-                        <span className="text-xs font-bold">{f.name}</span>
-                        <span className="text-[10px] text-muted-foreground block">{f.size}</span>
-                      </div>
+              )}
+
+              {/* STEP 6: Criteria */}
+              {currentStep === 6 && (
+                <div className="space-y-4">
+                  <h3 className="text-caption font-semibold uppercase tracking-wider text-accent border-b border-border pb-2">Step 6: Eligibility Criteria</h3>
+                  <div className="flex gap-2">
+                    <Input type="text" placeholder="Add criteria..." value={criteriaInput} onChange={(e) => setCriteriaInput(e.target.value)} />
+                    <Button variant="accent" onClick={handleAddCriteria}><Plus className="w-4 h-4" /></Button>
+                  </div>
+                  {formData.criteria.map((c, idx) => (
+                    <div key={idx} className="p-3 border border-border rounded-xl flex items-start justify-between gap-3 text-body-sm bg-card">
+                      <span className="text-foreground">{c}</span>
+                      <button onClick={() => handleRemoveCriteria(idx)} className="text-muted-foreground hover:text-destructive">
+                        <Trash className="w-4 h-4" />
+                      </button>
                     </div>
-                    <button onClick={() => handleRemoveFile(idx)} className="text-destructive hover:text-red-400"><Trash className="w-4 h-4" /></button>
+                  ))}
+                </div>
+              )}
+
+              {/* STEP 7: Review */}
+              {currentStep === 7 && (
+                <div className="space-y-4">
+                  <h3 className="text-caption font-semibold uppercase tracking-wider text-accent border-b border-border pb-2">Step 7: Review & Submit</h3>
+                  <div className="bg-muted border border-border rounded-xl p-4 space-y-2 text-body-sm">
+                    <div className="flex justify-between"><span className="text-muted-foreground">Title: </span><strong className="text-foreground text-right">{formData.title}</strong></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Ministry: </span><strong className="text-foreground text-right">{formData.ministry}</strong></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Budget: </span><strong className="text-foreground text-right">₹{formData.budget} Cr</strong></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Deadline: </span><strong className="text-foreground text-right">{formData.deadline}</strong></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">MSME: </span><strong className="text-foreground text-right">{formData.msmeQuota ? "Yes" : "No"}</strong></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Files: </span><strong className="text-foreground text-right">{uploadedFiles.length}</strong></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Criteria: </span><strong className="text-foreground text-right">{formData.criteria.length} items</strong></div>
                   </div>
-                ))}
-              </div>
-            )}
-
-            {/* STEP 3: Budget */}
-            {currentStep === 3 && (
-              <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-wider font-mono text-teal-400 border-b border-border/60 pb-2">Step 3: Budget</h3>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">Estimated Budget (in Crore INR)</label>
-                  <input type="number" step="0.01" placeholder="e.g., 450.00"
-                    value={formData.budget} onChange={(e) => setFormData({...formData, budget: e.target.value})}
-                    className="w-full bg-background border border-input rounded-lg p-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-1 focus:ring-primary" />
+                  <Button variant="accent" className="w-full" onClick={handleSubmit} disabled={submitting} loading={submitting} loadingText="Creating...">
+                    Create Tender
+                  </Button>
                 </div>
-              </div>
-            )}
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-            {/* STEP 4: Deadline */}
-            {currentStep === 4 && (
-              <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-wider font-mono text-teal-400 border-b border-border/60 pb-2">Step 4: Deadline</h3>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-mono">Bidding Deadline</label>
-                  <input type="datetime-local" value={formData.deadline} onChange={(e) => setFormData({...formData, deadline: e.target.value})}
-                    className="w-full bg-background border border-input rounded-lg p-2.5 text-xs font-bold font-mono focus:outline-none focus:ring-1 focus:ring-primary" />
-                </div>
-              </div>
-            )}
-
-            {/* STEP 5: MSME */}
-            {currentStep === 5 && (
-              <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-wider font-mono text-teal-400 border-b border-border/60 pb-2">Step 5: MSME Quota</h3>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" checked={formData.msmeQuota} onChange={(e) => setFormData({...formData, msmeQuota: e.target.checked})}
-                    className="w-5 h-5 rounded border-border" />
-                  <div>
-                    <span className="text-xs font-bold">Enable MSME Reservation</span>
-                    <span className="text-[10px] text-muted-foreground block">At least 25% reserved for MSME bidders</span>
-                  </div>
-                </label>
-              </div>
-            )}
-
-            {/* STEP 6: Criteria */}
-            {currentStep === 6 && (
-              <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-wider font-mono text-teal-400 border-b border-border/60 pb-2">Step 6: Eligibility Criteria</h3>
-                <div className="flex gap-2">
-                  <input type="text" placeholder="Add criteria..." value={criteriaInput} onChange={(e) => setCriteriaInput(e.target.value)}
-                    className="flex-1 bg-background border border-input rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary" />
-                  <button type="button" onClick={handleAddCriteria} className="px-3 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold">
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-                {formData.criteria.map((c, idx) => (
-                  <div key={idx} className="p-3 border border-border rounded-xl flex items-start justify-between gap-3 text-xs">
-                    <span>{c}</span>
-                    <button type="button" onClick={() => handleRemoveCriteria(idx)} className="text-muted-foreground hover:text-destructive">
-                      <Trash className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* STEP 7: Review */}
-            {currentStep === 7 && (
-              <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-wider font-mono text-teal-400 border-b border-border/60 pb-2">Step 7: Review & Submit</h3>
-                <div className="bg-muted/40 border border-border rounded-xl p-4 space-y-2 text-xs">
-                  <div><span className="text-muted-foreground">Title: </span><strong>{formData.title}</strong></div>
-                  <div><span className="text-muted-foreground">Ministry: </span><strong>{formData.ministry}</strong></div>
-                  <div><span className="text-muted-foreground">Budget: </span><strong>₹{formData.budget} Cr</strong></div>
-                  <div><span className="text-muted-foreground">Deadline: </span><strong>{formData.deadline}</strong></div>
-                  <div><span className="text-muted-foreground">MSME: </span><strong>{formData.msmeQuota ? "Yes" : "No"}</strong></div>
-                  <div><span className="text-muted-foreground">Files: </span><strong>{uploadedFiles.length}</strong></div>
-                  <div><span className="text-muted-foreground">Criteria: </span><strong>{formData.criteria.length} items</strong></div>
-                </div>
-                <button onClick={handleSubmit} disabled={submitting}
-                  className="w-full py-3 bg-primary text-primary-foreground rounded-xl text-xs font-bold font-mono">
-                  {submitting ? "Creating..." : "Create Tender"}
-                </button>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {currentStep < 7 && (
-          <div className="flex items-center justify-between border-t border-border/80 pt-4 mt-6">
-            <button onClick={handleBack} disabled={currentStep === 1}
-              className="flex items-center space-x-1 text-xs font-bold px-4 py-2 border border-border rounded-xl hover:bg-muted disabled:opacity-30">
-              <ChevronLeft className="w-4 h-4" /><span>Back</span>
-            </button>
-            <button onClick={handleNext}
-              className="flex items-center space-x-1 text-xs font-bold px-4 py-2 border border-border rounded-xl hover:bg-muted">
-              <span>Next</span><ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
+          {currentStep < 7 && (
+            <div className="flex items-center justify-between border-t border-border pt-4 mt-6">
+              <Button variant="outline" onClick={handleBack} disabled={currentStep === 1}>
+                <ChevronLeft className="w-4 h-4 mr-1" />Back
+              </Button>
+              <Button variant="accent" onClick={handleNext}>
+                Next<ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

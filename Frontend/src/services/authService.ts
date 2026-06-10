@@ -14,7 +14,7 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
-  role: "vendor" | "officer" | "public" | "auditor";
+  role: "vendor" | "officer";
   mobile?: string;
   // Vendor-specific
   companyName?: string;

@@ -24,7 +24,6 @@
     "@aws-sdk/lib-storage": "^3.700.0",
     "@pinata/sdk": "^2.1.0",
     "@prisma/client": "^5.22.0",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -43,7 +42,6 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^5.1.0",
-    "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",

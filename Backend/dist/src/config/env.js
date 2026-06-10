@@ -28,6 +28,7 @@ exports.env = {
     // Pinata (IPFS)
     PINATA_API_KEY: process.env.PINATA_API_KEY || "",
     PINATA_SECRET_KEY: process.env.PINATA_SECRET_KEY || "",
+    PINATA_JWT: process.env.PINATA_JWT || "",
     // AWS S3
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || "",
@@ -35,17 +36,18 @@ exports.env = {
     AWS_REGION: process.env.AWS_REGION || "ap-south-1",
     AWS_S3_BUCKET: process.env.AWS_S3_BUCKET || "tenderchain-documents",
     AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT || "",
-    AWS_S3_PUBLIC_URL: process.env.AWS_S3_PUBLIC_URL || "",
+    AWS_S3_PUBLIC_URL: process.env.AWS_S3_PUBLIC_URL || "https://tenderchain-documents.s3.ap-south-1.amazonaws.com",
     AWS_S3_FORCE_PATH_STYLE: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
     // ===========================================
-    // Local Ganache Blockchain
+    // Ganache Local Blockchain (via MetaMask)
     // ===========================================
-    ETH_RPC_URL: process.env.ETH_RPC_URL || "http://127.0.0.1:7545",
-    ETH_CHAIN_ID: parseInt(process.env.ETH_CHAIN_ID || "1337", 10),
+    // Ganache default: http://127.0.0.1:7545 or http://127.0.0.1:8545
+    // Chain ID: 1337 (Ganache default) or 5777
+    BLOCKCHAIN_RPC_URL: process.env.BLOCKCHAIN_RPC_URL || "http://127.0.0.1:7545",
+    BLOCKCHAIN_CHAIN_ID: parseInt(process.env.BLOCKCHAIN_CHAIN_ID || "1337", 10),
     CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || "",
-    OFFICER_PRIVATE_KEY: process.env.OFFICER_PRIVATE_KEY || "",
-    VENDOR_PRIVATE_KEY: process.env.VENDOR_PRIVATE_KEY || "",
-    BLOCKCHAIN_SIMULATION_MODE: process.env.BLOCKCHAIN_SIMULATION_MODE === "true",
+    // Optional block explorer (Ganache has no explorer by default)
+    BLOCKCHAIN_EXPLORER_URL: process.env.BLOCKCHAIN_EXPLORER_URL || "",
     // Socket.io
     SOCKET_CORS_ORIGIN: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3000",
     // Email (SMTP configuration)
@@ -63,7 +65,7 @@ function validateEnv() {
     const requiredVars = ["DATABASE_URL", "JWT_SECRET", "JWT_REFRESH_SECRET"];
     for (const varName of requiredVars) {
         if (!process.env[varName]) {
-            console.error(`❌ Missing required environment variable: ${varName}`);
+            console.error(`Missing required environment variable: ${varName}`);
             console.error("   Copy .env.example to .env and fill in the values");
             process.exit(1);
         }

@@ -2,6 +2,7 @@
 // ============================================================
 // Dashboard Service
 // Business logic for dashboards and reports
+// Updated: Uses independent Vendor and Officer models
 // ============================================================
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOfficerDashboard = getOfficerDashboard;
@@ -16,10 +17,10 @@ const errorHandler_1 = require("../middleware/errorHandler");
  * Get officer dashboard statistics
  */
 async function getOfficerDashboard(officerId) {
-    const officer = await database_1.prisma.user.findUnique({
+    const officer = await database_1.prisma.officer.findUnique({
         where: { id: officerId },
     });
-    if (!officer || officer.role !== "officer") {
+    if (!officer) {
         throw new errorHandler_1.AppError("Officer not found", 403);
     }
     // Get statistics
@@ -94,14 +95,14 @@ async function getOfficerDashboard(officerId) {
  * Get vendor dashboard statistics
  */
 async function getVendorDashboard(vendorId) {
-    const vendor = await database_1.prisma.user.findUnique({
+    const vendor = await database_1.prisma.vendor.findUnique({
         where: { id: vendorId },
     });
-    if (!vendor || vendor.role !== "vendor") {
+    if (!vendor) {
         throw new errorHandler_1.AppError("Vendor not found", 403);
     }
     // Get statistics
-    const [totalBids, winningBids, activeBids, kycStatus] = await Promise.all([
+    const [totalBids, winningBids, activeBids] = await Promise.all([
         database_1.prisma.bid.count({
             where: { vendorId },
         }),
@@ -119,10 +120,6 @@ async function getVendorDashboard(vendorId) {
                 vendorId,
                 status: "Submitted",
             },
-        }),
-        database_1.prisma.user.findUnique({
-            where: { id: vendorId },
-            select: { kycStatus: true },
         }),
     ]);
     // Get recent bids
@@ -164,7 +161,7 @@ async function getVendorDashboard(vendorId) {
             totalBids,
             winningBids,
             activeBids,
-            kycStatus: kycStatus?.kycStatus || "Pending",
+            kycStatus: vendor.kycStatus || "Pending",
         },
         recentBids,
         availableTenders,
@@ -174,10 +171,9 @@ async function getVendorDashboard(vendorId) {
  * Get system-wide analytics
  */
 async function getAnalytics() {
-    const [totalUsers, totalOfficers, totalVendors, totalTenders, totalBids, totalDisputes] = await Promise.all([
-        database_1.prisma.user.count(),
-        database_1.prisma.user.count({ where: { role: "officer" } }),
-        database_1.prisma.user.count({ where: { role: "vendor" } }),
+    const [totalVendors, totalOfficers, totalTenders, totalBids, totalDisputes] = await Promise.all([
+        database_1.prisma.vendor.count(),
+        database_1.prisma.officer.count(),
         database_1.prisma.tender.count(),
         database_1.prisma.bid.count(),
         database_1.prisma.dispute.count(),
@@ -192,16 +188,11 @@ async function getAnalytics() {
         by: ["status"],
         _count: true,
     });
-    // Get KYC status distribution
-    const kycStatus = await database_1.prisma.user.groupBy({
-        by: ["kycStatus"],
-        _count: true,
-    });
     return {
         users: {
-            total: totalUsers,
-            officers: totalOfficers,
+            total: totalVendors + totalOfficers,
             vendors: totalVendors,
+            officers: totalOfficers,
         },
         tenders: {
             total: totalTenders,
@@ -214,12 +205,6 @@ async function getAnalytics() {
             total: totalBids,
             byStatus: bidStatus.map((s) => ({
                 status: s.status,
-                count: s._count,
-            })),
-        },
-        kyc: {
-            byStatus: kycStatus.map((s) => ({
-                status: s.kycStatus,
                 count: s._count,
             })),
         },
@@ -328,10 +313,9 @@ async function getKYCReports(query) {
     const limit = parseInt(query.limit || "10", 10);
     const skip = (page - 1) * limit;
     const status = query.status || "UnderReview";
-    const [users, total] = await Promise.all([
-        database_1.prisma.user.findMany({
+    const [vendors, vendorTotal] = await Promise.all([
+        database_1.prisma.vendor.findMany({
             where: {
-                role: "vendor",
                 kycStatus: status,
             },
             select: {
@@ -348,20 +332,19 @@ async function getKYCReports(query) {
             take: limit,
             orderBy: { createdAt: "asc" },
         }),
-        database_1.prisma.user.count({
+        database_1.prisma.vendor.count({
             where: {
-                role: "vendor",
                 kycStatus: status,
             },
         }),
     ]);
     return {
-        data: users,
+        data: vendors,
         pagination: {
             page,
             limit,
-            total,
-            pages: Math.ceil(total / limit),
+            total: vendorTotal,
+            pages: Math.ceil(vendorTotal / limit),
         },
     };
 }

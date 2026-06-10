@@ -42,7 +42,6 @@ exports.updateProfile = updateProfile;
 exports.getKYCStatus = getKYCStatus;
 exports.submitKYC = submitKYC;
 exports.getPendingKYC = getPendingKYC;
-exports.verifyKYC = verifyKYC;
 exports.getAllUsers = getAllUsers;
 exports.deleteUser = deleteUser;
 const userService = __importStar(require("../services/user.service"));
@@ -133,27 +132,6 @@ async function getPendingKYC(req, res, next) {
         res.status(200).json({
             success: true,
             ...result,
-        });
-    }
-    catch (error) {
-        next(error);
-    }
-}
-/**
- * PUT /api/users/kyc/:vendorId/verify
- * Verify vendor KYC (Officer only)
- */
-async function verifyKYC(req, res, next) {
-    try {
-        const user = await userService.verifyKYC(req.params.vendorId, {
-            status: req.body.status || "UnderReview",
-            feedback: req.body.feedback,
-        }, req.user.userId);
-        logger_1.logger.info(`KYC ${req.body.status} by officer: ${req.user.userId} for vendor: ${req.params.vendorId}`);
-        res.status(200).json({
-            success: true,
-            message: `KYC ${req.body.status} successfully`,
-            data: user,
         });
     }
     catch (error) {

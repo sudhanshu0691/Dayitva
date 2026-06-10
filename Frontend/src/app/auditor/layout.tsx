@@ -21,8 +21,13 @@ export default function AuditorLayout({ children }: { children: React.ReactNode 
   // On auth pages or not authenticated: no sidebar, full-width content
   if (!mounted || !authenticated || isAuthPage) {
     return (
-      <div className="min-h-screen bg-background">
-        <main className="w-full">
+      <div className="min-h-screen bg-background relative perspective">
+        <div className="absolute inset-0 pointer-events-none bg-grid-3d" />
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="floating-shape floating-shape-3" style={{ right: '-3%', top: '10%' }} />
+          <div className="floating-shape floating-shape-1" style={{ left: '-5%', bottom: '10%' }} />
+        </div>
+        <main className="w-full relative z-10">
           {children}
         </main>
       </div>
@@ -31,9 +36,14 @@ export default function AuditorLayout({ children }: { children: React.ReactNode 
 
   // Authenticated: show sidebar with appropriate margin
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background relative perspective">
+      <div className="absolute inset-0 pointer-events-none bg-grid-3d" />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="floating-shape floating-shape-3" style={{ right: '-3%', top: '10%' }} />
+        <div className="floating-shape floating-shape-1" style={{ left: '-5%', bottom: '10%' }} />
+      </div>
       <AuditorSidebar />
-      <main className="flex-1 ml-[220px] p-0">
+      <main className="flex-1 ml-[220px] p-0 relative z-10">
         {children}
       </main>
     </div>

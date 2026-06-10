@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   Building, Landmark, ShieldCheck, UploadCloud, CheckCircle2,
   Laptop, Clock, Globe, Lock, Mail, Eye, EyeOff, AlertCircle,
-  UserRound, Phone, KeyRound, IdCard
+  UserRound, Phone, KeyRound
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BackButton } from "../../components/ui/BackButton";
@@ -14,14 +14,13 @@ import { Input } from "../../components/ui/input";
 import { ErrorBoundary } from "../../components/ui/ErrorBoundary";
 import { Card, CardContent } from "../../components/ui/Card";
 import authService from "@/services/authService";
-import auditorService from "@/services/auditorService";
 import { useApp } from "../../context/AppContext";
 
 function RegisterContent() {
   const router = useRouter();
   const { language } = useApp();
 
-  const [regType, setRegType] = useState<"vendor" | "officer" | "auditor">("vendor");
+  const [regType, setRegType] = useState<"vendor" | "officer">("vendor");
 
   // Auto-captured metadata
   const [metadata, setMetadata] = useState({
@@ -65,47 +64,8 @@ function RegisterContent() {
     ministry: "",
   });
 
-  // Auditor Registration states
-  const [auditorData, setAuditorData] = useState({
-    fullName: "",
-    officialEmail: "",
-    employeeId: "",
-    department: "",
-    phoneNumber: "",
-    password: "",
-    confirmPassword: "",
-  });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const [uploads, setUploads] = useState<any[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    const file = e.target.files[0];
-
-    setUploading(true);
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress(p => {
-        if (p >= 100) {
-          clearInterval(interval);
-          setUploads(prev => [
-            ...prev,
-            { name: file.name, size: (file.size / (1024*1024)).toFixed(2) + " MB", uploadedAt: new Date().toISOString() }
-          ]);
-          setUploading(false);
-          return 100;
-        }
-        return p + 25;
-      });
-    }, 150);
-  };
 
   const handleVendorSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,10 +78,6 @@ function RegisterContent() {
     }
     if (vendorData.password.length < 8) {
       setError("Password must be at least 8 characters");
-      return;
-    }
-    if (uploads.length === 0) {
-      setError("Please upload at least one KYC document");
       return;
     }
 
@@ -141,7 +97,6 @@ function RegisterContent() {
         regNumber: vendorData.regNumber,
       });
 
-      // Do NOT store auth data - user must verify email first before login
       router.push(`/verify?email=${encodeURIComponent(vendorData.email)}&type=VERIFY_EMAIL&role=vendor`);
     } catch (err: any) {
       const message = err?.response?.data?.message || err?.message || "Registration failed. Please try again.";
@@ -178,60 +133,7 @@ function RegisterContent() {
         ministryCode: officerData.ministryCode,
       });
 
-      // Do NOT store auth data - user must verify email first before login
       router.push(`/verify?email=${encodeURIComponent(officerData.email)}&type=VERIFY_EMAIL&role=officer`);
-    } catch (err: any) {
-      const message = err?.response?.data?.message || err?.message || "Registration failed. Please try again.";
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAuditorSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    // Validation
-    if (!auditorData.fullName.trim()) {
-      setError("Full name is required");
-      return;
-    }
-    if (!auditorData.officialEmail.trim()) {
-      setError("Official email is required");
-      return;
-    }
-    if (!auditorData.employeeId.trim()) {
-      setError("Employee ID is required");
-      return;
-    }
-    if (!auditorData.department.trim()) {
-      setError("Department is required");
-      return;
-    }
-    if (auditorData.password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-    if (auditorData.password !== auditorData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      await auditorService.register({
-        fullName: auditorData.fullName,
-        officialEmail: auditorData.officialEmail,
-        employeeId: auditorData.employeeId,
-        department: auditorData.department,
-        phoneNumber: auditorData.phoneNumber || undefined,
-        password: auditorData.password,
-      });
-
-      // Redirect to login after successful registration
-      router.push("/auditor/login");
     } catch (err: any) {
       const message = err?.response?.data?.message || err?.message || "Registration failed. Please try again.";
       setError(message);
@@ -243,10 +145,9 @@ function RegisterContent() {
   const t = {
     en: {
       title: "Consortium Registration Hub",
-      desc: "Enroll as a verified tender issuing officer, register your corporate entity, or create an auditor account on the blockchain KYC system.",
+      desc: "Enroll as a verified tender issuing officer or register your corporate entity on the blockchain KYC system.",
       vendorTab: "Corporate Vendor",
       officerTab: "Government Officer",
-      auditorTab: "Auditor",
       metadataTitle: "Security Metadata",
       metadataDesc: "For compliance tracking and auditing:",
       name: "Full Name",
@@ -268,26 +169,18 @@ function RegisterContent() {
       officerID: "Officer ID",
       desig: "Designation",
       ministry: "Ministry Name",
-      auditorName: "Auditor Full Name",
-      auditorEmail: "Official Email / Login ID",
-      auditorID: "Employee ID",
-      department: "Department",
-      auditorPhone: "Phone Number",
-      auditorDesc: "Register as a verification authority. Create your secure auditor account.",
       regCTA: "Submit Registration",
       loadingVendor: "Creating vendor account...",
       loadingOfficer: "Creating officer account...",
-      loadingAuditor: "Creating auditor account...",
       backLabel: "Back to Home",
       haveAccount: "Already have an account?",
       loginLink: "Sign in",
     },
     hi: {
       title: "कंसोर्टियम पंजीकरण हब",
-      desc: "सत्यापित निविदा अधिकारी, कॉर्पोरेट इकाई या ऑडिटर खाते के रूप में पंजीकरण करें।",
+      desc: "सत्यापित निविदा अधिकारी या कॉर्पोरेट इकाई के रूप में पंजीकरण करें।",
       vendorTab: "कॉर्पोरेट विक्रेता",
       officerTab: "सरकारी अधिकारी",
-      auditorTab: "ऑडिटर",
       metadataTitle: "सुरक्षा मेटाडेटा",
       metadataDesc: "अनुपालन ट्रैकिंग और ऑडिटिंग के लिए:",
       name: "पूरा नाम",
@@ -309,16 +202,9 @@ function RegisterContent() {
       officerID: "अधिकारी आईडी",
       desig: "पदनाम",
       ministry: "मंत्रालय का नाम",
-      auditorName: "ऑडिटर का पूरा नाम",
-      auditorEmail: "आधिकारिक ईमेल",
-      auditorID: "कर्मचारी आईडी",
-      department: "विभाग",
-      auditorPhone: "फ़ोन नंबर",
-      auditorDesc: "सत्यापन प्राधिकरण के रूप में पंजीकरण करें।",
       regCTA: "पंजीकरण जमा करें",
       loadingVendor: "विक्रेता खाता बनाया जा रहा है...",
       loadingOfficer: "अधिकारी खाता बनाया जा रहा है...",
-      loadingAuditor: "ऑडिटर खाता बनाया जा रहा है...",
       backLabel: "होम पर वापस जाएं",
       haveAccount: "पहले से खाता है?",
       loginLink: "साइन इन करें",
@@ -326,13 +212,21 @@ function RegisterContent() {
   }[language];
 
   return (
-    <main className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-      <nav aria-label="Breadcrumb" className="mb-4">
+    <main className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-10 relative perspective">
+      {/* 3D grid background */}
+      <div className="absolute inset-0 pointer-events-none bg-grid-3d" />
+      {/* Floating shapes */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="floating-shape floating-shape-2" style={{ right: '-10%', top: '5%' }} />
+        <div className="floating-shape floating-shape-3" style={{ left: '-8%', bottom: '10%' }} />
+      </div>
+
+      <nav aria-label="Breadcrumb" className="mb-4 relative z-10">
         <BackButton href="/" label={t.backLabel} variant="text" />
       </nav>
 
       {/* Title */}
-      <header className="text-center mb-8 border-b border-border/80 pb-6">
+      <header className="text-center mb-8 border-b border-border/80 pb-6 relative z-10">
         <h1 className="text-xl sm:text-2xl font-black text-foreground flex items-center justify-center gap-2">
           <ShieldCheck className="w-6 h-6 text-primary" aria-hidden="true" />
           {t.title}
@@ -366,17 +260,6 @@ function RegisterContent() {
           <Landmark className="w-4 h-4" aria-hidden="true" />
           <span>{t.officerTab}</span>
         </button>
-        <button
-          onClick={() => setRegType("auditor")}
-          role="tab"
-          aria-selected={regType === "auditor"}
-          className={`flex-1 py-2.5 rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-            regType === "auditor" ? "bg-background text-red-400 shadow-md border border-border" : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-          <span>{t.auditorTab}</span>
-        </button>
       </div>
 
       {/* Error message */}
@@ -409,7 +292,7 @@ function RegisterContent() {
         </div>
       </section>
 
-      <Card variant="default" className="space-y-6">
+      <Card variant="3d-tilt" className="space-y-6 shadow-depth relative z-10">
         <CardContent>
           <AnimatePresence mode="wait">
 
@@ -472,16 +355,11 @@ function RegisterContent() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.passLabel}</label>
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type="password"
                       placeholder={t.passPH}
                       value={vendorData.password}
                       onChange={(e) => setVendorData({...vendorData, password: e.target.value})}
                       leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
-                      rightIcon={
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-muted-foreground">
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      }
                       required
                       minLength={8}
                     />
@@ -490,16 +368,11 @@ function RegisterContent() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.confirmPass}</label>
                     <Input
-                      type={showConfirmPassword ? "text" : "password"}
+                      type="password"
                       placeholder={t.passPH}
                       value={vendorData.confirmPassword}
                       onChange={(e) => setVendorData({...vendorData, confirmPassword: e.target.value})}
                       leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
-                      rightIcon={
-                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-muted-foreground">
-                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      }
                       required
                       minLength={8}
                     />
@@ -550,43 +423,6 @@ function RegisterContent() {
                       className="font-mono"
                     />
                   </div>
-                </div>
-
-                {/* Document upload */}
-                <div className="space-y-3 pt-3 border-t border-border/80">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">
-                    {t.uploadTitle}
-                  </label>
-                  <div className="border border-dashed border-border bg-muted/20 p-5 text-center rounded-xl relative">
-                    <input type="file" id="kyc-files" className="hidden" onChange={handleFileUpload} />
-                    <label htmlFor="kyc-files" className="cursor-pointer flex flex-col items-center gap-1">
-                      <UploadCloud className="w-8 h-8 text-primary" />
-                      <span className="text-xs font-bold text-muted-foreground">{t.uploadHint}</span>
-                    </label>
-                  </div>
-
-                  {uploading && (
-                    <div className="p-2.5 bg-muted rounded-xl border border-border text-xs font-mono text-primary space-y-1">
-                      <div className="flex justify-between font-bold">
-                        <span>Uploading...</span>
-                        <span>{uploadProgress}%</span>
-                      </div>
-                      <div className="w-full bg-background h-1 rounded-full overflow-hidden">
-                        <div className="bg-primary h-1 rounded-full transition-all duration-200" style={{ width: `${uploadProgress}%` }} />
-                      </div>
-                    </div>
-                  )}
-
-                  {uploads.length > 0 && (
-                    <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
-                      {uploads.map((f, i) => (
-                        <div key={i} className="p-2 border border-border rounded-lg bg-muted text-foreground text-xs font-mono flex items-center justify-between gap-2">
-                          <span className="truncate">{f.name} ({f.size})</span>
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
                 <Button
@@ -673,16 +509,11 @@ function RegisterContent() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.passLabel}</label>
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type="password"
                       placeholder={t.passPH}
                       value={officerData.password}
                       onChange={(e) => setOfficerData({...officerData, password: e.target.value})}
                       leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
-                      rightIcon={
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-muted-foreground">
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      }
                       required
                       minLength={8}
                     />
@@ -691,16 +522,11 @@ function RegisterContent() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.confirmPass}</label>
                     <Input
-                      type={showConfirmPassword ? "text" : "password"}
+                      type="password"
                       placeholder={t.passPH}
                       value={officerData.confirmPassword}
                       onChange={(e) => setOfficerData({...officerData, confirmPassword: e.target.value})}
                       leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
-                      rightIcon={
-                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-muted-foreground">
-                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      }
                       required
                       minLength={8}
                     />
@@ -716,158 +542,6 @@ function RegisterContent() {
                   loadingText={t.loadingOfficer}
                 >
                   <Lock className="w-4 h-4" />
-                  {t.regCTA}
-                </Button>
-              </motion.form>
-            )}
-
-            {/* AUDITOR REGISTRATION FORM */}
-            {regType === "auditor" && (
-              <motion.form
-                key="auditor-form"
-                onSubmit={handleAuditorSubmit}
-                initial={{ opacity: 0, x: 5 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -5 }}
-                className="space-y-4"
-                noValidate
-              >
-                {/* Auditor badge */}
-                <div className="flex items-center gap-2 px-3 py-2 bg-red-950/20 border border-red-800/30 rounded-lg">
-                  <ShieldCheck className="w-4 h-4 text-red-400 shrink-0" />
-                  <span className="text-xs text-red-300 font-semibold font-mono">
-                    AUTHORIZED PERSONNEL ONLY — GOVERNMENT VERIFICATION
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Full Name */}
-                  <div className="space-y-1.5 sm:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.auditorName}</label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. Shri Amit Sharma"
-                      value={auditorData.fullName}
-                      onChange={(e) => setAuditorData({...auditorData, fullName: e.target.value})}
-                      leftIcon={<UserRound className="w-4 h-4 text-muted-foreground" />}
-                      required
-                    />
-                  </div>
-
-                  {/* Official Email */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.auditorEmail}</label>
-                    <Input
-                      type="email"
-                      placeholder="e.g. auditor@gov.in"
-                      value={auditorData.officialEmail}
-                      onChange={(e) => setAuditorData({...auditorData, officialEmail: e.target.value})}
-                      leftIcon={<Mail className="w-4 h-4 text-muted-foreground" />}
-                      className="font-mono"
-                      required
-                      autoComplete="email"
-                    />
-                  </div>
-
-                  {/* Employee ID */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.auditorID}</label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. GOV-AUD-7712"
-                      value={auditorData.employeeId}
-                      onChange={(e) => setAuditorData({...auditorData, employeeId: e.target.value})}
-                      leftIcon={<IdCard className="w-4 h-4 text-muted-foreground" />}
-                      className="font-mono uppercase"
-                      required
-                    />
-                  </div>
-
-                  {/* Department */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.department}</label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. Central Bureau of Verification"
-                      value={auditorData.department}
-                      onChange={(e) => setAuditorData({...auditorData, department: e.target.value})}
-                      leftIcon={<Building className="w-4 h-4 text-muted-foreground" />}
-                      required
-                    />
-                  </div>
-
-                  {/* Phone Number (optional) */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">
-                      {t.auditorPhone} <span className="text-muted-foreground/60 normal-case">(optional)</span>
-                    </label>
-                    <Input
-                      type="tel"
-                      placeholder="e.g. +91 98765XXXXX"
-                      value={auditorData.phoneNumber}
-                      onChange={(e) => setAuditorData({...auditorData, phoneNumber: e.target.value})}
-                      leftIcon={<Phone className="w-4 h-4 text-muted-foreground" />}
-                    />
-                  </div>
-
-                  {/* Divider before password */}
-                  <div className="sm:col-span-2 border-t border-border/60 pt-3">
-                    <div className="flex items-center gap-2 mb-3">
-                      <KeyRound className="w-3.5 h-3.5 text-muted-foreground" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono">
-                        Set Password
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Password */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.passLabel}</label>
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder={t.passPH}
-                      value={auditorData.password}
-                      onChange={(e) => setAuditorData({...auditorData, password: e.target.value})}
-                      leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
-                      rightIcon={
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-muted-foreground">
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      }
-                      required
-                      minLength={8}
-                    />
-                  </div>
-
-                  {/* Confirm Password */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono block">{t.confirmPass}</label>
-                    <Input
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder={t.passPH}
-                      value={auditorData.confirmPassword}
-                      onChange={(e) => setAuditorData({...auditorData, confirmPassword: e.target.value})}
-                      leftIcon={<Lock className="w-4 h-4 text-muted-foreground" />}
-                      rightIcon={
-                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-muted-foreground">
-                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      }
-                      required
-                      minLength={8}
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="default"
-                  className="w-full gap-2 font-mono"
-                  disabled={loading}
-                  loading={loading}
-                  loadingText={t.loadingAuditor}
-                >
-                  <ShieldCheck className="w-4 h-4" />
                   {t.regCTA}
                 </Button>
               </motion.form>

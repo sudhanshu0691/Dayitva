@@ -41,7 +41,11 @@ const InnerProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (!hydrated) return;
     if (currentUser && (pathname === "/" || isAuthRoute)) {
-      router.replace(currentUser.role === "officer" ? "/admin" : currentUser.role === "vendor" ? "/vendor" : "/public");
+      if (currentUser.role === "officer") {
+        router.replace("/admin");
+      } else if (currentUser.role === "vendor") {
+        router.replace("/vendor");
+      }
     }
   }, [hydrated, currentUser, isAuthRoute, pathname, router]);
 

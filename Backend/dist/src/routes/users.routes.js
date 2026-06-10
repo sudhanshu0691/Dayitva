@@ -43,7 +43,6 @@ const auth_1 = require("../middleware/auth");
 const roleGuard_1 = require("../middleware/roleGuard");
 const validate_1 = require("../middleware/validate");
 const user_validator_1 = require("../validators/user.validator");
-const userService = __importStar(require("../services/user.service"));
 const zod_1 = require("zod");
 const router = (0, express_1.Router)();
 const submitKYCSchema = zod_1.z.object({
@@ -89,27 +88,14 @@ router.put("/profile", auth_1.authenticate, (0, validate_1.validate)(user_valida
 router.get("/kyc/status", auth_1.authenticate, userController.getKYCStatus);
 /**
  * POST /api/users/kyc/submit
- * Submit KYC documents
+ * Submit KYC documents (for both vendors and officers)
  */
-router.post("/kyc/submit", auth_1.authenticate, (0, roleGuard_1.authorize)("vendor"), (0, validate_1.validate)(submitKYCSchema), userController.submitKYC);
+router.post("/kyc/submit", auth_1.authenticate, (0, validate_1.validate)(submitKYCSchema), userController.submitKYC);
 /**
  * GET /api/users/kyc/pending
- * Get pending KYC applications (Officer only)
+ * Get pending KYC applications (Auditor only)
  */
-router.get("/kyc/pending", auth_1.authenticate, (0, roleGuard_1.authorize)("officer"), userController.getPendingKYC);
-/**
- * PUT /api/users/kyc/:vendorId/verify
- * Verify vendor KYC (Officer only).
- */
-router.put("/kyc/:vendorId/verify", auth_1.authenticate, (0, roleGuard_1.authorize)("officer"), (0, validate_1.validate)(user_validator_1.kycVerificationSchema), async (req, res, next) => {
-    try {
-        const user = await userService.verifyKYC(req.params.vendorId, req.body, req.user.userId);
-        res.json({ success: true, message: `KYC ${req.body.status}`, data: user });
-    }
-    catch (error) {
-        next(error);
-    }
-});
+router.get("/kyc/pending", auth_1.authenticate, (0, roleGuard_1.authorize)("auditor"), userController.getPendingKYC);
 /**
  * GET /api/users (list all users)
  * Get all users (Officer only)

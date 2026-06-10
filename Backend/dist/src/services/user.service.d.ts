@@ -5,9 +5,10 @@ import { IUserProfile } from "../types";
  */
 export declare function updateProfile(userId: string, input: UpdateProfileInput): Promise<IUserProfile>;
 /**
- * KYC verification (Officer only).
+ * KYC verification - ONLY AUDITOR can do this.
+ * @deprecated Use auditorService.approveUser() or auditorService.rejectUser()
  */
-export declare function verifyKYC(vendorId: string, input: KYCVerificationInput, officerId: string): Promise<IUserProfile>;
+export declare function verifyKYC(vendorId: string, input: KYCVerificationInput, officerId: string): Promise<void>;
 /**
  * Get user by ID
  */
@@ -16,17 +17,25 @@ export declare function getUserById(userId: string): Promise<IUserProfile>;
  * Get KYC status
  */
 export declare function getKYCStatus(userId: string): Promise<{
-    role: import(".prisma/client").$Enums.UserRole;
+    id: string;
     name: string;
+    role: string;
     email: string;
     pan: string | null;
     gst: string | null;
     kycStatus: import(".prisma/client").$Enums.KYCStatus;
-    id: string;
     solvencyCertificate: string | null;
+} | {
+    id: string;
+    ministry: string | null;
+    name: string;
+    role: string;
+    email: string;
+    designation: string | null;
+    kycStatus: import(".prisma/client").$Enums.KYCStatus;
 }>;
 /**
- * Submit KYC documents
+ * Submit KYC documents (supports both vendors and officers)
  */
 export declare function submitKYC(userId: string, kycData: any): Promise<IUserProfile>;
 /**
@@ -34,13 +43,24 @@ export declare function submitKYC(userId: string, kycData: any): Promise<IUserPr
  */
 export declare function getPendingKYC(query: any): Promise<{
     data: {
-        name: string;
-        email: string;
-        companyName: string | null;
-        kycStatus: import(".prisma/client").$Enums.KYCStatus;
-        id: string;
-        createdAt: Date;
-    }[];
+        vendors: {
+            id: string;
+            createdAt: Date;
+            name: string;
+            email: string;
+            companyName: string | null;
+            kycStatus: import(".prisma/client").$Enums.KYCStatus;
+        }[];
+        officers: {
+            id: string;
+            ministry: string | null;
+            createdAt: Date;
+            name: string;
+            email: string;
+            designation: string | null;
+            kycStatus: import(".prisma/client").$Enums.KYCStatus;
+        }[];
+    };
     pagination: {
         page: number;
         limit: number;
@@ -52,16 +72,7 @@ export declare function getPendingKYC(query: any): Promise<{
  * Get all users (with filters)
  */
 export declare function getAllUsers(query: any): Promise<{
-    data: {
-        role: import(".prisma/client").$Enums.UserRole;
-        name: string;
-        email: string;
-        mobile: string | null;
-        companyName: string | null;
-        kycStatus: import(".prisma/client").$Enums.KYCStatus;
-        id: string;
-        createdAt: Date;
-    }[];
+    data: any[];
     pagination: {
         page: number;
         limit: number;

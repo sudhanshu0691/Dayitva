@@ -4,7 +4,7 @@
 // Updated: Uses independent Vendor and Officer models
 // ============================================================
 
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { ethers } from "ethers";
 import { v4 as uuidv4 } from "uuid";
 import { prisma } from "../config/database";

@@ -1,67 +1,58 @@
-import { ethers } from "ethers";
 /**
- * Manages all blockchain interactions with local Ganache network.
- * Supports two separate wallet accounts:
- *   - Officer Wallet: for creating tenders on-chain
- *   - Vendor Wallet: for submitting bids on-chain
- * MetaMask users connect their own wallets via the frontend.
+ * Generate an explorer URL for a transaction (Ganache has no native explorer)
  */
-declare class GanacheBlockchainService {
-    provider: ethers.JsonRpcProvider | null;
-    officerWallet: ethers.Wallet | null;
-    vendorWallet: ethers.Wallet | null;
-    contract: ethers.Contract | null;
-    isConnected: boolean;
-    /**
-     * Initialize connection to local Ganache.
-     * @returns true if connection successful, false otherwise
-     */
-    connect(): Promise<boolean>;
-    /**
-     * Generate a unique transaction hash (for simulation mode).
-     */
-    generateTxHash(): string;
-    /**
-     * Generate a simulated block number.
-     */
-    generateBlockNumber(): number;
-    /**
-     * Get all Ganache accounts from the provider.
-     */
-    getAccounts(): Promise<string[]>;
-    /**
-     * Get ETH balance of a specific address.
-     */
-    getBalance(address: string): Promise<string>;
-    /**
-     * Create a tender on the Ganache blockchain.
-     * Returns transaction data including hash and block number.
-     */
-    createTenderOnChain(params: {
-        title: string;
-        ipfsHash: string;
-        budget: number;
-        deadline: number;
-        minScore: number;
-        msmeQuota: boolean;
-    }): Promise<{
-        txHash: string;
-        blockNumber: number;
-        tenderId?: number;
-    } | null>;
-    /**
-     * Listen for new blocks on Ganache (for real-time updates).
-     */
-    onNewBlock(callback: (blockNumber: number) => void): void;
-    /**
-     * Listen for TenderCreated events from the contract.
-     */
-    onTenderCreated(callback: (tenderId: number, officer: string, title: string) => void): void;
-    /**
-     * Listen for BidSubmitted events from the contract.
-     */
-    onBidSubmitted(callback: (tenderId: number, bidder: string, hash: string) => void): void;
-}
-export declare const blockchainService: GanacheBlockchainService;
-export {};
+export declare function getExplorerTxUrl(txHash: string): string;
+/**
+ * Generate an explorer URL for an address
+ */
+export declare function getExplorerAddressUrl(address: string): string;
+/**
+ * Store a blockchain transaction record after MetaMask confirmation
+ */
+export declare function storeTransaction(params: {
+    txHash: string;
+    walletAddress: string;
+    type: string;
+    status?: string;
+    metadata?: Record<string, any>;
+    tenderId?: string;
+    userId?: string;
+    chainId?: number;
+}): Promise<any>;
+/**
+ * Update transaction status after MetaMask confirmation
+ */
+export declare function updateTransactionStatus(txHash: string, status: string): Promise<void>;
+/**
+ * Verify a transaction exists on Ganache
+ */
+export declare function verifyTransactionOnChain(txHash: string): Promise<{
+    verified: boolean;
+    blockNumber?: number;
+    from?: string;
+    to?: string;
+}>;
+/**
+ * Get the current gas price on Ganache
+ */
+export declare function getGasPrice(): Promise<string>;
+/**
+ * Check if the Ganache network is reachable
+ */
+export declare function isBlockchainReachable(): Promise<boolean>;
+/**
+ * Get contract ABI for frontend MetaMask interactions
+ */
+export declare function getContractABI(): string[];
+declare const _default: {
+    getExplorerTxUrl: typeof getExplorerTxUrl;
+    getExplorerAddressUrl: typeof getExplorerAddressUrl;
+    storeTransaction: typeof storeTransaction;
+    updateTransactionStatus: typeof updateTransactionStatus;
+    verifyTransactionOnChain: typeof verifyTransactionOnChain;
+    getGasPrice: typeof getGasPrice;
+    isBlockchainReachable: typeof isBlockchainReachable;
+    getContractABI: typeof getContractABI;
+};
+export default _default;
 //# sourceMappingURL=blockchain.service.d.ts.map

@@ -11,21 +11,7 @@ exports.updateTender = updateTender;
 exports.updateTenderStatus = updateTenderStatus;
 exports.deleteTender = deleteTender;
 const database_1 = require("../config/database");
-const env_1 = require("../config/env");
 const errorHandler_1 = require("../middleware/errorHandler");
-/**
- * Generate a simulated transaction hash and block number.
- * In production, this would come from the smart contract.
- */
-function generateTxData() {
-    if (env_1.env.BLOCKCHAIN_SIMULATION_MODE) {
-        return {
-            txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-            blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-        };
-    }
-    return { txHash: null, blockNumber: null };
-}
 /**
  * Format a Prisma tender with bids and audit logs into ITender shape.
  */
@@ -95,9 +81,9 @@ function formatAuditLog(log) {
 }
 /**
  * Create a new tender (Officer only).
+ * txHash is provided from MetaMask - the frontend handles the real blockchain transaction
  */
 async function createTender(input, officerId) {
-    const txData = generateTxData();
     const tender = await database_1.prisma.tender.create({
         data: {
             title: input.title,
@@ -110,8 +96,8 @@ async function createTender(input, officerId) {
             criteria: JSON.stringify(input.criteria),
             ipfsHash: input.ipfsHash || null,
             minScore: input.minScore || 0,
-            txHash: txData.txHash,
-            blockNumber: txData.blockNumber,
+            txHash: input.txHash || null,
+            blockNumber: input.blockNumber || null,
             officerId,
             // Create tender files if provided
             tenderFiles: input.ipfsFiles
@@ -134,8 +120,8 @@ async function createTender(input, officerId) {
                     },
                     {
                         title: "Tender Published",
-                        description: `Tender published on-chain with IPFS reference`,
-                        txHash: txData.txHash,
+                        description: `Tender published on-chain via MetaMask`,
+                        txHash: input.txHash || null,
                         iconType: "published",
                     },
                 ],
@@ -203,7 +189,7 @@ async function listTenders(query) {
             tenderFiles: true,
             auditLogs: {
                 orderBy: { timestamp: "asc" },
-                take: 1, // Only first audit log for summary
+                take: 1,
             },
         },
     });

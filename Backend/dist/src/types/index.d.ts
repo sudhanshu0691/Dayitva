@@ -6,7 +6,7 @@ export interface AuthRequest extends Request {
         walletAddress?: string;
     };
 }
-export type UserRole = "officer" | "vendor";
+export type UserRole = "officer" | "vendor" | "auditor";
 export type KYCStatus = "Pending" | "UnderReview" | "Approved" | "Rejected";
 export interface IUserProfile {
     id: string;
@@ -91,7 +91,7 @@ export interface IAuditStep {
     txHash?: string;
     iconType: AuditIconType;
 }
-export type TxType = "TENDER_PUBLISHED" | "BID_SUBMITTED" | "SMART_CONTRACT_EXECUTED" | "WINNER_DECLARED" | "WALLET_CONNECTED" | "KYC_APPROVED";
+export type TxType = "TENDER_PUBLISHED" | "BID_SUBMITTED" | "BID_REVEALED" | "SMART_CONTRACT_EXECUTED" | "WINNER_DECLARED" | "WALLET_CONNECTED" | "KYC_APPROVED" | "KYC_REJECTED";
 export type TxStatus = "success" | "pending" | "failed";
 export interface IBlockchainTx {
     id: string;

@@ -19,7 +19,12 @@ router.get("/", authenticate, async (req: AuthRequest, res: Response, next: Next
   try {
     const myId = req.user!.userId;
     const notifications = await prisma.notification.findMany({
-      where: { userId: myId },
+      where: {
+        OR: [
+          { vendorId: myId },
+          { officerId: myId },
+        ],
+      },
       orderBy: { createdAt: "desc" },
       take: 50,
     });
@@ -52,7 +57,12 @@ router.post("/mark-read", authenticate, async (req: AuthRequest, res: Response, 
 
     if (all) {
       await prisma.notification.updateMany({
-        where: { userId: myId },
+        where: {
+          OR: [
+            { vendorId: myId },
+            { officerId: myId },
+          ],
+        },
         data: { read: true },
       });
     } else if (id) {
@@ -76,7 +86,13 @@ router.get("/unread-count", authenticate, async (req: AuthRequest, res: Response
   try {
     const myId = req.user!.userId;
     const count = await prisma.notification.count({
-      where: { userId: myId, read: false },
+      where: {
+        OR: [
+          { vendorId: myId },
+          { officerId: myId },
+        ],
+        read: false,
+      },
     });
 
     res.json({ success: true, data: { unreadCount: count } });
@@ -100,7 +116,7 @@ router.delete("/:id", authenticate, async (req: AuthRequest, res: Response, next
       return res.status(404).json({ success: false, message: "Notification not found" });
     }
 
-    if (notification.userId !== req.user!.userId) {
+    if (notification.vendorId !== req.user!.userId && notification.officerId !== req.user!.userId) {
       return res.status(403).json({ success: false, message: "Not authorized to delete this notification" });
     }
 
@@ -118,7 +134,12 @@ router.delete("/:id", authenticate, async (req: AuthRequest, res: Response, next
 router.delete("/", authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     await prisma.notification.deleteMany({
-      where: { userId: req.user!.userId },
+      where: {
+        OR: [
+          { vendorId: req.user!.userId },
+          { officerId: req.user!.userId },
+        ],
+      },
     });
     res.json({ success: true, message: "All notifications deleted" });
   } catch (error) {

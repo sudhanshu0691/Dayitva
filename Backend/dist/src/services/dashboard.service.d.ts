@@ -10,21 +10,21 @@ export declare function getOfficerDashboard(officerId: string): Promise<{
         disputes: number;
     };
     recentTenders: {
-        status: import(".prisma/client").$Enums.TenderStatus;
         id: string;
-        createdAt: Date;
         title: string;
         deadline: Date;
+        status: import(".prisma/client").$Enums.TenderStatus;
+        createdAt: Date;
     }[];
     recentBids: {
         vendor: {
             name: string;
             companyName: string | null;
         };
-        status: import(".prisma/client").$Enums.BidStatus;
         id: string;
-        submittedAt: Date;
+        status: import(".prisma/client").$Enums.BidStatus;
         tenderId: string;
+        submittedAt: Date;
         price: number | null;
     }[];
 }>;
@@ -40,19 +40,19 @@ export declare function getVendorDashboard(vendorId: string): Promise<{
     };
     recentBids: ({
         tender: {
-            status: import(".prisma/client").$Enums.TenderStatus;
             id: string;
             title: string;
             deadline: Date;
+            status: import(".prisma/client").$Enums.TenderStatus;
         };
     } & {
-        status: import(".prisma/client").$Enums.BidStatus;
         id: string;
-        vendorId: string;
+        status: import(".prisma/client").$Enums.BidStatus;
         txHash: string | null;
         blockNumber: number | null;
-        submittedAt: Date;
         tenderId: string;
+        vendorId: string;
+        submittedAt: Date;
         encryptedBidHash: string | null;
         price: number | null;
         financialStrength: number | null;
@@ -67,11 +67,11 @@ export declare function getVendorDashboard(vendorId: string): Promise<{
         revealedAt: Date | null;
     })[];
     availableTenders: {
-        ministry: string | null;
         id: string;
         title: string;
         budget: number;
         deadline: Date;
+        ministry: string | null;
     }[];
 }>;
 /**
@@ -80,27 +80,21 @@ export declare function getVendorDashboard(vendorId: string): Promise<{
 export declare function getAnalytics(): Promise<{
     users: {
         total: number;
-        officers: number;
         vendors: number;
+        officers: number;
     };
     tenders: {
         total: number;
         byStatus: {
-            status: import(".prisma/client").$Enums.TenderStatus;
-            count: number;
+            status: any;
+            count: any;
         }[];
     };
     bids: {
         total: number;
         byStatus: {
-            status: import(".prisma/client").$Enums.BidStatus;
-            count: number;
-        }[];
-    };
-    kyc: {
-        byStatus: {
-            status: import(".prisma/client").$Enums.KYCStatus;
-            count: number;
+            status: any;
+            count: any;
         }[];
     };
     disputes: {
@@ -112,13 +106,13 @@ export declare function getAnalytics(): Promise<{
  */
 export declare function getTenderReports(query: any): Promise<{
     data: {
-        status: import(".prisma/client").$Enums.TenderStatus;
-        ministry: string | null;
         id: string;
-        createdAt: Date;
         title: string;
         budget: number;
         deadline: Date;
+        status: import(".prisma/client").$Enums.TenderStatus;
+        ministry: string | null;
+        createdAt: Date;
         _count: {
             bids: number;
         };
@@ -135,22 +129,22 @@ export declare function getTenderReports(query: any): Promise<{
  */
 export declare function getBidReports(query: any): Promise<{
     data: ({
-        tender: {
-            title: string;
-            budget: number;
-        };
         vendor: {
             name: string;
             companyName: string | null;
         };
+        tender: {
+            title: string;
+            budget: number;
+        };
     } & {
-        status: import(".prisma/client").$Enums.BidStatus;
         id: string;
-        vendorId: string;
+        status: import(".prisma/client").$Enums.BidStatus;
         txHash: string | null;
         blockNumber: number | null;
-        submittedAt: Date;
         tenderId: string;
+        vendorId: string;
+        submittedAt: Date;
         encryptedBidHash: string | null;
         price: number | null;
         financialStrength: number | null;
@@ -176,14 +170,14 @@ export declare function getBidReports(query: any): Promise<{
  */
 export declare function getKYCReports(query: any): Promise<{
     data: {
+        id: string;
+        createdAt: Date;
         name: string;
         email: string;
         companyName: string | null;
         pan: string | null;
         gst: string | null;
         kycStatus: import(".prisma/client").$Enums.KYCStatus;
-        id: string;
-        createdAt: Date;
     }[];
     pagination: {
         page: number;

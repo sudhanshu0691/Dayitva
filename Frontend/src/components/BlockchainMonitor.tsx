@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   Terminal, ShieldCheck, Activity, Cpu, Layers, 
-  ExternalLink, Hash, Database, RefreshCw
+  Hash, RefreshCw, CircleCheck
 } from "lucide-react";
 
 interface TxEvent {
@@ -108,104 +108,116 @@ export const BlockchainMonitor: React.FC = () => {
     return () => clearInterval(blockInterval);
   }, []);
 
-  const getTxColor = (type: string) => {
+  const getTxStyle = (type: string) => {
     switch (type) {
-      case "TENDER_PUBLISHED": return "border-primary/50 text-primary bg-primary/5";
-      case "BID_SUBMITTED": return "border-accent/50 text-accent bg-accent/5";
-      case "SMART_CONTRACT_EXECUTED": return "border-muted-foreground text-muted-foreground bg-muted";
-      case "WINNER_DECLARED": return "border-primary/50 text-primary bg-primary/5";
-      case "KYC_APPROVED": return "border-primary/30 text-primary bg-primary/5";
-      default: return "border-border text-muted-foreground";
+      case "TENDER_PUBLISHED": return "border-accent/20 bg-accent/5";
+      case "BID_SUBMITTED": return "border-warning/20 bg-warning/5";
+      case "SMART_CONTRACT_EXECUTED": return "border-muted-foreground/20 bg-muted/30";
+      case "WINNER_DECLARED": return "border-accent/20 bg-accent/5";
+      case "KYC_APPROVED": return "border-success/20 bg-success/5";
+      default: return "border-border";
+    }
+  };
+
+  const getTxBadge = (type: string) => {
+    switch (type) {
+      case "TENDER_PUBLISHED": return "bg-accent/10 text-accent border-accent/20";
+      case "BID_SUBMITTED": return "bg-warning/10 text-warning border-warning/20";
+      case "SMART_CONTRACT_EXECUTED": return "bg-muted text-muted-foreground border-border";
+      case "WINNER_DECLARED": return "bg-accent/10 text-accent border-accent/20";
+      case "KYC_APPROVED": return "bg-success/10 text-success border-success/20";
+      default: return "bg-muted text-muted-foreground border-border";
     }
   };
 
   return (
-    <div className="w-full bg-card border border-border">
-      <div className="w-full bg-sidebar border-b border-border px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Terminal className="w-4 h-4 text-primary" />
-          <span className="text-[11px] section-label text-foreground">
+    <div className="w-full bg-card border border-border rounded-xl overflow-hidden shadow-soft">
+      {/* Header */}
+      <div className="bg-surface-container-low border-b border-border px-5 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <Terminal className="w-4 h-4 text-accent" />
+          <span className="text-caption font-semibold text-foreground uppercase tracking-wider">
             Distributed ledger monitor
           </span>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full bg-primary opacity-75"></span>
-            <span className="relative inline-flex h-2 w-2 bg-primary"></span>
+            <span className="absolute inline-flex h-full w-full bg-accent rounded-full opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 bg-accent rounded-full" />
           </span>
-          <span className="text-[10px] text-primary font-medium">LIVE SYNC</span>
+          <span className="text-caption text-accent font-semibold">LIVE SYNC</span>
         </div>
       </div>
 
       {/* Network Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-border divide-x divide-border bg-muted/40">
-        <div className="p-3 text-center">
-          <div className="section-label text-muted-foreground flex items-center justify-center gap-1">
-            <Layers className="w-3 h-3 text-primary" /> Latest block
+      <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-border divide-x divide-border bg-muted/20">
+        <div className="p-4 text-center">
+          <div className="text-caption text-muted-foreground flex items-center justify-center gap-1.5 mb-1">
+            <Layers className="w-3.5 h-3.5 text-accent" /> Latest block
           </div>
-          <div className="text-[13px] text-foreground font-medium mt-1">#{latestBlock.toLocaleString()}</div>
+          <div className="text-body-sm text-foreground font-bold font-mono">#{latestBlock.toLocaleString()}</div>
         </div>
-        <div className="p-3 text-center">
-          <div className="section-label text-muted-foreground flex items-center justify-center gap-1">
-            <RefreshCw className="w-3 h-3 text-primary" /> Avg block time
+        <div className="p-4 text-center">
+          <div className="text-caption text-muted-foreground flex items-center justify-center gap-1.5 mb-1">
+            <RefreshCw className="w-3.5 h-3.5 text-accent" /> Avg block time
           </div>
-          <div className="text-[13px] text-foreground font-medium mt-1">8.4s</div>
+          <div className="text-body-sm text-foreground font-bold font-mono">8.4s</div>
         </div>
-        <div className="p-3 text-center">
-          <div className="section-label text-muted-foreground flex items-center justify-center gap-1">
-            <Activity className="w-3 h-3 text-primary" /> Gas constant
+        <div className="p-4 text-center">
+          <div className="text-caption text-muted-foreground flex items-center justify-center gap-1.5 mb-1">
+            <Activity className="w-3.5 h-3.5 text-accent" /> Gas constant
           </div>
-          <div className="text-[13px] text-foreground font-medium mt-1">0.008 MATIC</div>
+          <div className="text-body-sm text-foreground font-bold font-mono">0.008 MATIC</div>
         </div>
-        <div className="p-3 text-center">
-          <div className="section-label text-muted-foreground flex items-center justify-center gap-1">
-            <ShieldCheck className="w-3 h-3 text-primary" /> Verifiers active
+        <div className="p-4 text-center">
+          <div className="text-caption text-muted-foreground flex items-center justify-center gap-1.5 mb-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-accent" /> Verifiers active
           </div>
-          <div className="text-[13px] text-foreground font-medium mt-1">1,842 Nodes</div>
+          <div className="text-body-sm text-foreground font-bold font-mono">1,842 Nodes</div>
         </div>
       </div>
 
       {/* Terminal Output */}
-      <div className="p-4 bg-card text-[11px] leading-relaxed">
-        <div className="text-muted-foreground mb-3 border-b border-border pb-2">
+      <div className="p-5">
+        <div className="text-caption text-muted-foreground mb-4 pb-3 border-b border-border font-mono space-y-0.5">
           <div>$ ssh tenderchain-gateway.nic.in</div>
           <div>Authorized government audit gateway</div>
           <div>Establishing decentralized channel...</div>
         </div>
 
-        <div className="space-y-3 max-h-[28rem] overflow-y-auto pr-1">
+        <div className="space-y-3 max-h-[30rem] overflow-y-auto pr-1 scrollbar-thin">
           {txs.map((tx) => (
             <div key={tx.txHash}
-              className={`p-3 border transition-colors ${getTxColor(tx.type)}`}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
-                <div className="flex items-center space-x-2">
-                  <span className="font-medium uppercase text-[10px]">{tx.type.replace(/_/g, " ")}</span>
-                  <span className="bg-primary/20 text-primary text-[9px] px-1.5 py-0.2 border border-primary/30 flex items-center gap-0.5">
-                    <ShieldCheck className="w-2.5 h-2.5" /> Secured
+              className={`p-4 border rounded-xl transition-all ${getTxStyle(tx.type)}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-semibold text-caption uppercase tracking-wider text-foreground">{tx.type.replace(/_/g, " ")}</span>
+                  <span className={`text-caption px-1.5 py-0.5 border rounded flex items-center gap-1 ${getTxBadge(tx.type)}`}>
+                    <CircleCheck className="w-2.5 h-2.5" /> Secured
                   </span>
                 </div>
-                <div className="text-muted-foreground flex items-center space-x-1.5 text-[10px]">
-                  <Hash className="w-3 h-3 text-muted-foreground" />
+                <div className="text-caption text-muted-foreground flex items-center gap-1.5 font-mono">
+                  <Hash className="w-3 h-3" />
                   <span>Block #{tx.blockNumber}</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 pt-2 border-t border-border text-muted-foreground text-[10px]">
-                <div><span className="text-muted-foreground font-medium">Tx hash: </span>
-                  <span>{tx.txHash.substring(0, 16)}...{tx.txHash.substring(48)}</span></div>
-                <div><span className="text-muted-foreground font-medium">Wallet: </span>
-                  <span>{tx.walletAddress.substring(0, 8)}...{tx.walletAddress.substring(32)}</span></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-border/60 text-caption text-muted-foreground font-mono">
+                <div><span className="text-foreground/60">Tx: </span>
+                  <span className="text-foreground/80">{tx.txHash.substring(0, 16)}...{tx.txHash.substring(48)}</span></div>
+                <div><span className="text-foreground/60">Wallet: </span>
+                  <span className="text-foreground/80">{tx.walletAddress.substring(0, 8)}...{tx.walletAddress.substring(32)}</span></div>
               </div>
 
-              <div className="mt-2 text-[10px] bg-muted/40 p-2 border border-border text-muted-foreground">
-                <div className="text-primary font-medium uppercase tracking-wider text-[9px]">Event info</div>
-                <div className="text-foreground mt-1 font-medium">{tx.metadata.tenderTitle || "Blockchain event"}</div>
+              <div className="mt-3 bg-card/50 border border-border/60 rounded-lg p-3 text-caption">
+                <div className="text-caption text-accent font-semibold uppercase tracking-wider">Event info</div>
+                <div className="text-body-sm text-foreground mt-1 font-medium">{tx.metadata.tenderTitle || "Blockchain event"}</div>
                 {tx.metadata.vendorName && (
-                  <div className="text-muted-foreground mt-0.5 text-[9px]">Entity: <span className="text-accent font-medium">{tx.metadata.vendorName}</span></div>
+                  <div className="text-caption text-muted-foreground mt-0.5">Entity: <span className="text-warning font-medium">{tx.metadata.vendorName}</span></div>
                 )}
-                <div className="text-muted-foreground text-[9px] mt-1.5 flex items-center justify-between">
-                  <span>Gas: {tx.gasFee} MATIC</span>
-                  <span>{new Date(tx.timestamp).toLocaleTimeString()}</span>
+                <div className="text-caption text-muted-foreground mt-2 flex items-center justify-between border-t border-border/40 pt-2">
+                  <span>Gas: <span className="font-mono">{tx.gasFee} MATIC</span></span>
+                  <span className="font-mono">{new Date(tx.timestamp).toLocaleTimeString()}</span>
                 </div>
               </div>
             </div>

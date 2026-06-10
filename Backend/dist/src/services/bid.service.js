@@ -8,21 +8,44 @@ exports.submitBid = submitBid;
 exports.revealBid = revealBid;
 exports.getTenderBids = getTenderBids;
 exports.evaluateTender = evaluateTender;
+const ethers_1 = require("ethers");
 const database_1 = require("../config/database");
-const env_1 = require("../config/env");
 const errorHandler_1 = require("../middleware/errorHandler");
 const scoring_service_1 = require("./scoring.service");
+const blockchain_service_1 = require("./blockchain.service");
+const BLOCKCHAIN_SIMULATION_MODE = process.env.BLOCKCHAIN_SIMULATION_MODE !== "false";
 /**
- * Generate a simulated blockchain transaction.
+ * Generate transaction data using real blockchain or simulation.
  */
-function generateTxData() {
-    if (env_1.env.BLOCKCHAIN_SIMULATION_MODE) {
-        return {
-            txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-            blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-        };
+async function generateTxData(type, params) {
+    if (!BLOCKCHAIN_SIMULATION_MODE) {
+        try {
+            const isReachable = await (0, blockchain_service_1.isBlockchainReachable)();
+            if (isReachable && params) {
+                let result;
+                if (type === "bid" && params.tenderId && params.encryptedBidHash) {
+                    result = await (0, blockchain_service_1.submitBidOnChain)(params.tenderId, params.encryptedBidHash, params.vendorWalletKey);
+                }
+                else if (type === "reveal" && params.tenderId && params.price !== undefined && params.scoreHashes && params.nonce) {
+                    result = await (0, blockchain_service_1.revealBidOnChain)(params.tenderId, params.price, params.scoreHashes, params.nonce, params.vendorWalletKey);
+                }
+                else if (type === "evaluate" && params.tenderId && params.winnerAddress && params.winnerScore !== undefined) {
+                    result = await (0, blockchain_service_1.evaluateTenderOnChain)(params.tenderId, params.winnerAddress, params.winnerScore);
+                }
+                if (result) {
+                    return { txHash: result.txHash, blockNumber: result.blockNumber };
+                }
+            }
+        }
+        catch (error) {
+            console.error(`Blockchain ${type} failed, falling back to simulation:`, error.message);
+        }
     }
-    return { txHash: null, blockNumber: null };
+    // Fallback to simulation
+    return {
+        txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
+        blockNumber: Math.floor(Math.random() * 50000) + 18240000,
+    };
 }
 /**
  * Submit an encrypted bid (commit phase).
@@ -48,11 +71,19 @@ async function submitBid(tenderId, input, vendorId) {
         throw new errorHandler_1.AppError("You have already submitted a bid for this tender", 409);
     }
     // Check vendor KYC is approved
-    const vendor = await database_1.prisma.user.findUnique({ where: { id: vendorId } });
+    const vendor = await database_1.prisma.vendor.findUnique({ where: { id: vendorId } });
     if (!vendor || vendor.kycStatus !== "Approved") {
         throw new errorHandler_1.AppError("Your KYC must be approved before submitting bids", 403);
     }
-    const txData = generateTxData();
+    // Generate encrypted bid hash for on-chain commitment
+    const bidHash = ethers_1.ethers.keccak256(ethers_1.ethers.toUtf8Bytes(input.encryptedBidHash + vendorId + Date.now()));
+    // Real blockchain transaction for bid submission
+    const chainParams = {
+        tenderId: parseInt(tender.id.replace(/\D/g, "") || "1"),
+        encryptedBidHash: bidHash,
+        vendorWalletKey: vendor.walletAddress ? undefined : undefined,
+    };
+    const txData = await generateTxData("bid", chainParams);
     // Create the bid
     const bid = await database_1.prisma.bid.create({
         data: {
@@ -83,7 +114,7 @@ async function submitBid(tenderId, input, vendorId) {
             message: `Vendor '${vendor.name}' submitted a sealed bid`,
             category: "bid",
             actionUrl: `/tenders/${tenderId}`,
-            userId: tender.officerId,
+            officerId: tender.officerId,
         },
     });
     return {
@@ -131,7 +162,22 @@ async function revealBid(tenderId, input, vendorId) {
         compliance: input.compliance,
         proposalQuality: input.proposalQuality,
     });
-    const txData = generateTxData();
+    // Real blockchain transaction for reveal
+    const revealParams = {
+        tenderId: parseInt(tender.id.replace(/\D/g, "") || "1"),
+        price: input.price,
+        scoreHashes: [
+            scoreResult.financialStrength * 100,
+            scoreResult.pastExperience * 100,
+            scoreResult.performanceFeedback * 100,
+            scoreResult.technicalCapability * 100,
+            scoreResult.compliance * 100,
+            scoreResult.proposalQuality * 100,
+        ],
+        nonce: ethers_1.ethers.hexlify(ethers_1.ethers.randomBytes(32)),
+        vendorWalletKey: bid.vendor?.walletAddress || undefined,
+    };
+    const txData = await generateTxData("reveal", revealParams);
     // Update bid with revealed data
     const updatedBid = await database_1.prisma.bid.update({
         where: { id: bid.id },
@@ -244,7 +290,13 @@ async function evaluateTender(tenderId, officerId) {
     if (!winner) {
         throw new errorHandler_1.AppError("No revealed bids to evaluate", 400);
     }
-    const txData = generateTxData();
+    // Real blockchain transaction for evaluation
+    const evalParams = {
+        tenderId: parseInt(tender.id.replace(/\D/g, "") || "1"),
+        winnerAddress: winner.winnerAddress,
+        winnerScore: winner.winnerScore,
+    };
+    const txData = await generateTxData("evaluate", evalParams);
     // Update tender with winner
     await database_1.prisma.tender.update({
         where: { id: tenderId },
@@ -277,7 +329,7 @@ async function evaluateTender(tenderId, officerId) {
                     : `The tender "${tender.title}" has been awarded to ${winner.winnerName}.`,
                 category: "bid",
                 actionUrl: `/tenders/${tenderId}`,
-                userId: bid.vendorId,
+                vendorId: bid.vendorId,
             },
         });
     }

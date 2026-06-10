@@ -26,11 +26,6 @@ export declare function submitKYC(req: AuthRequest, res: Response, next: NextFun
  */
 export declare function getPendingKYC(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
 /**
- * PUT /api/users/kyc/:vendorId/verify
- * Verify vendor KYC (Officer only)
- */
-export declare function verifyKYC(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
-/**
  * GET /api/users
  * Get all users (Admin/Officer only)
  */

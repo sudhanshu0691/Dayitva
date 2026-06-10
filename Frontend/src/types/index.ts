@@ -1,4 +1,4 @@
-export type UserRole = "officer" | "vendor";
+export type UserRole = "officer" | "vendor" | "auditor";
 
 export interface UserProfile {
   id: string;
@@ -61,7 +61,7 @@ export interface Tender {
   ministry: string;
   budget: number;
   deadline: string;
-  status: "Open" | "Closed" | "Under Evaluation" | "Awarded";
+  status: "Open" | "Closed" | "UnderEvaluation" | "Awarded" | "Draft" | "Cancelled" | "Expired";
   msmeQuota: boolean;
   criteria: string[];
   ipfsHash: string;

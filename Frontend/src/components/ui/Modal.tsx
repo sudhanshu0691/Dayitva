@@ -3,7 +3,6 @@
 import * as React from "react";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { Button } from "./button";
 
 export interface ModalProps {
   open: boolean;
@@ -38,7 +37,6 @@ export const Modal: React.FC<ModalProps> = ({
   showCloseButton = true,
   className,
 }) => {
-  // Close on Escape key
   React.useEffect(() => {
     if (!open) return;
     const handleEscape = (e: KeyboardEvent) => {
@@ -48,7 +46,6 @@ export const Modal: React.FC<ModalProps> = ({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open, onClose]);
 
-  // Trap focus inside modal when open
   const modalRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     if (!open || !modalRef.current) return;
@@ -59,7 +56,6 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [open]);
 
-  // Prevent body scroll when modal is open
   React.useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -80,36 +76,33 @@ export const Modal: React.FC<ModalProps> = ({
       aria-modal="true"
       aria-label={title || "Modal dialog"}
     >
-      {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-foreground/40 backdrop-blur-sm animate-fade-in"
         onClick={closeOnOverlay ? onClose : undefined}
         aria-hidden="true"
       />
 
-      {/* Modal Panel */}
       <div
         ref={modalRef}
         tabIndex={-1}
         className={cn(
-          "relative w-full rounded-2xl bg-card border border-border shadow-2xl",
+          "relative w-full rounded-2xl bg-card border border-border shadow-depth",
           "flex flex-col max-h-[90vh]",
-          "animate-in fade-in zoom-in-95 duration-200",
+          "animate-perspective-in",
           sizeStyles[size],
           className
         )}
       >
-        {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-start justify-between p-5 pb-3 border-b border-border/60">
+          <div className="flex items-start justify-between p-6 pb-4 border-b border-border/60">
             <div className="flex-1 min-w-0 pr-4">
               {title && (
-                <h2 className="text-lg font-bold text-foreground leading-snug">
+                <h2 className="text-headline-sm font-semibold text-foreground leading-snug">
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-body-sm text-muted-foreground mt-1">
                   {description}
                 </p>
               )}
@@ -117,7 +110,7 @@ export const Modal: React.FC<ModalProps> = ({
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus-ring"
                 aria-label="Close modal"
               >
                 <X className="w-4 h-4" />
@@ -126,12 +119,10 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         )}
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="flex-1 overflow-y-auto p-6">
           {children}
         </div>
 
-        {/* Footer */}
         {footer && (
           <div className="p-4 pt-3 border-t border-border/60 flex items-center justify-end gap-3">
             {footer}
@@ -142,9 +133,6 @@ export const Modal: React.FC<ModalProps> = ({
   );
 };
 
-/**
- * useModal - Hook for managing modal open/close state
- */
 export const useModal = (initialOpen = false) => {
   const [open, setOpen] = React.useState(initialOpen);
   const onOpen = () => setOpen(true);

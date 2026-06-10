@@ -71,7 +71,7 @@ export declare function evaluateTender(tenderId: string, officerId: string): Pro
         winnerPrice: number;
         winnerScore: number;
     };
-    txHash: string | null;
-    blockNumber: number | null;
+    txHash: any;
+    blockNumber: any;
 }>;
 //# sourceMappingURL=bid.service.d.ts.map

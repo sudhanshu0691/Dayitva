@@ -2,8 +2,12 @@ import { CreateTenderInput, UpdateTenderInput, TenderQueryInput } from "../valid
 import { ITender } from "../types";
 /**
  * Create a new tender (Officer only).
+ * txHash is provided from MetaMask - the frontend handles the real blockchain transaction
  */
-export declare function createTender(input: CreateTenderInput, officerId: string): Promise<ITender>;
+export declare function createTender(input: CreateTenderInput & {
+    txHash?: string;
+    blockNumber?: number;
+}, officerId: string): Promise<ITender>;
 /**
  * Get tender by ID with full details.
  */

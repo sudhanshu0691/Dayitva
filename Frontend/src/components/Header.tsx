@@ -4,8 +4,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { useApp } from "../context/AppContext";
 import { 
   Search, Bell, HelpCircle, Wallet, Globe, Sun, Moon, 
-  ChevronDown, BookOpen, MessageSquare, Phone, Check, 
-  ExternalLink, User, Building, Landmark, LogOut, CheckCircle2, ShieldCheck
+  ChevronDown, BookOpen, MessageSquare, 
+  ExternalLink, User, Building, Landmark, LogOut, CheckCircle2, ShieldCheck, Menu, X
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,12 +16,7 @@ export const Header: React.FC = () => {
     walletConnected,
     walletAddress,
     walletBalance,
-    userRole,
     currentUser,
-    connectWallet,
-    disconnectWallet,
-    loginUser,
-    logoutUser,
     connectWalletOnly,
     disconnectWalletOnly,
     notifications,
@@ -49,6 +44,7 @@ export const Header: React.FC = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [showBids, setShowBids] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const searchRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -147,118 +143,112 @@ export const Header: React.FC = () => {
   }[language];
 
   return (
-    <header className="w-full z-50 sticky top-0 bg-white border-b border-border shadow-sm">
-      {/* 1. TOP UTILITY BAR — Navy #002869 */}
-      <div className="w-full bg-[#002869] text-white text-label-sm py-1.5 px-4 md:px-6 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {/* Multilingual Selector */}
-          <div className="flex items-center gap-1.5 border-r border-white/20 pr-4">
-            <Globe className="w-3.5 h-3.5 opacity-70" />
+    <header className="w-full z-50 sticky top-0 bg-white/80 backdrop-blur-md border-b border-border/60">
+      {/* Top Utility Bar */}
+      <div className="w-full bg-primary text-primary-foreground text-caption py-1.5 px-4 md:px-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 border-r border-white/15 pr-3">
+            <Globe className="w-3 h-3 opacity-60" />
             <button 
               onClick={() => setLanguage("en")} 
-              className={`hover:underline transition-colors ${language === "en" ? "font-semibold" : "opacity-70"}`}
+              className={`hover:text-white/90 transition-colors ${language === "en" ? "font-semibold" : "opacity-60 hover:opacity-80"}`}
             >
               English
             </button>
-            <span className="opacity-40">|</span>
+            <span className="opacity-30">|</span>
             <button 
               onClick={() => setLanguage("hi")} 
-              className={`hover:underline transition-colors ${language === "hi" ? "font-semibold" : "opacity-70"}`}
+              className={`hover:text-white/90 transition-colors ${language === "hi" ? "font-semibold" : "opacity-60 hover:opacity-80"}`}
             >
               हिन्दी
             </button>
           </div>
 
-          {/* Font Size controls */}
-          <div className="hidden sm:flex items-center gap-2 border-r border-white/20 pr-4">
-            <span className="opacity-70">Font:</span>
-            <button onClick={decreaseFontScale} className="hover:underline px-1 text-xs">A-</button>
-            <button onClick={resetFontScale} className="hover:underline px-1 font-semibold text-xs">A</button>
-            <button onClick={increaseFontScale} className="hover:underline px-1 text-xs">A+</button>
+          <div className="hidden sm:flex items-center gap-2 border-r border-white/15 pr-3">
+            <span className="opacity-60">Font:</span>
+            <button onClick={decreaseFontScale} className="hover:text-white/90 px-1 opacity-60 hover:opacity-100 text-xs">A-</button>
+            <button onClick={resetFontScale} className="hover:text-white/90 px-1 font-semibold text-xs">A</button>
+            <button onClick={increaseFontScale} className="hover:text-white/90 px-1 opacity-60 hover:opacity-100 text-xs">A+</button>
           </div>
 
           <div className="hidden md:flex items-center gap-1.5">
-            <span className="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-            <span className="text-[11px] opacity-60">Blockchain network active</span>
+            <span className="inline-block w-1.5 h-1.5 bg-success rounded-full animate-pulse-soft" />
+            <span className="text-caption opacity-60">Blockchain network active</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Dark / Light Toggle */}
+        <div className="flex items-center gap-3">
           <button 
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-            className="flex items-center gap-1 hover:underline transition-colors p-1 text-label-sm"
+            className="flex items-center gap-1 hover:text-white/90 transition-colors opacity-60 hover:opacity-100"
           >
             {theme === "dark" ? (
-              <><Sun className="w-3.5 h-3.5" /><span className="hidden sm:inline">Light mode</span></>
+              <><Sun className="w-3 h-3" /><span className="hidden sm:inline text-caption">Light</span></>
             ) : (
-              <><Moon className="w-3.5 h-3.5" /><span className="hidden sm:inline">Dark mode</span></>
+              <><Moon className="w-3 h-3" /><span className="hidden sm:inline text-caption">Dark</span></>
             )}
           </button>
 
           {walletConnected && currentUser && (currentUser.role === "officer" || currentUser.role === "vendor") && (
-            <div className="flex items-center gap-2 bg-white/10 border border-white/20 px-2.5 py-1 text-[11px] rounded">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-              <span>{walletBalance}</span>
-              <span className="px-1.5 py-0.5 bg-white/15 border border-white/20 rounded text-[10px]">Chain verified</span>
+            <div className="flex items-center gap-2 bg-white/10 border border-white/10 px-2.5 py-1 text-caption rounded-lg">
+              <span className="w-1.5 h-1.5 bg-success rounded-full" />
+              <span className="font-mono text-xs">{walletBalance}</span>
+              <span className="px-1.5 py-0.5 bg-white/10 border border-white/10 rounded text-[10px]">Chain</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* 2. MAIN HEADER — White surface */}
-      <div className="w-full max-w-container mx-auto px-4 md:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-4">
-        {/* Left Section: Logo & Branding */}
-        <div className="flex items-center justify-between w-full lg:w-auto">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 flex items-center justify-center bg-[#002869] text-white rounded-lg">
-              <Landmark className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-heading-md text-[#002869] leading-none heading-font font-bold">
-                {t.brand}
-              </h1>
-              <span className="text-[11px] text-[#002869] tracking-wider opacity-70">
-                {t.subBrand}
-              </span>
-            </div>
-          </Link>
-        </div>
+      {/* Main Header */}
+      <div className="w-full max-w-container mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between gap-4">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <div className="w-9 h-9 flex items-center justify-center bg-accent text-white rounded-lg shadow-soft transition-transform group-hover:scale-105">
+            <Landmark className="w-4 h-4" />
+          </div>
+          <div className="hidden sm:block">
+            <h1 className="text-title-md text-primary leading-none heading-font">
+              {t.brand}
+            </h1>
+            <span className="text-caption text-muted-foreground tracking-wide">
+              {t.subBrand}
+            </span>
+          </div>
+        </Link>
 
-        {/* Center Section: Global Search Bar */}
-        <div ref={searchRef} className="w-full lg:flex-1 max-w-xl relative">
-          <form onSubmit={handleSearchSubmit} className="relative w-full">
+        {/* Search */}
+        <div ref={searchRef} className="flex-1 max-w-lg relative">
+          <form onSubmit={handleSearchSubmit} className="relative">
+            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setShowSearchDropdown(true); }}
               onFocus={() => setShowSearchDropdown(true)}
-              className="w-full bg-surface-container-low border border-border text-foreground pl-9 pr-9 py-2.5 text-body-sm rounded-lg focus:outline-none focus:border-[#002869] focus:ring-2 focus:ring-[#002869]/15 transition-all min-h-[44px]"
+              className="w-full bg-surface-container-low border border-border text-foreground pl-9 pr-3 py-2 text-body-sm rounded-xl focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all min-h-[40px]"
             />
-            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-3.5" />
             {searchQuery && (
-              <button type="button" onClick={() => setSearchQuery("")} className="text-muted-foreground hover:text-foreground absolute right-3 top-3 text-label-sm">
-                Clear
+              <button type="button" onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-caption">
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </form>
 
-          {/* Search dropdown */}
           {showSearchDropdown && (
-            <div className="absolute w-full mt-1.5 bg-white border border-border rounded-lg shadow-dropdown z-50 overflow-hidden">
+            <div className="absolute w-full mt-1.5 bg-card border border-border rounded-xl shadow-dropdown z-50 overflow-hidden animate-slide-down">
               {searchQuery && (
                 <div className="p-3 border-b border-border">
-                  <p className="text-label-sm text-muted-foreground mb-2 uppercase tracking-wider font-semibold">{t.suggestions}</p>
+                  <p className="text-caption text-muted-foreground mb-2 uppercase tracking-wider font-semibold">{t.suggestions}</p>
                   {suggestions.length > 0 ? (
                     <div className="space-y-1">
                       {suggestions.map(tender => (
                         <button key={tender.id} onClick={() => handleSuggestionClick(tender.title, tender.id)}
-                          className="w-full text-left flex items-start gap-2 p-2 hover:bg-surface-container-low rounded transition-colors">
-                          <span className="bg-[#002869]/10 text-[#002869] text-[10px] font-semibold px-1.5 py-0.5 shrink-0 mt-0.5 rounded">{tender.id}</span>
+                          className="w-full text-left flex items-start gap-2 p-2 hover:bg-surface-container-low rounded-lg transition-colors">
+                          <span className="bg-surface-container-high text-muted-foreground text-[10px] font-semibold px-1.5 py-0.5 shrink-0 mt-0.5 rounded">{tender.id}</span>
                           <div>
                             <div className="text-body-sm text-foreground line-clamp-1">{tender.title}</div>
-                            <div className="text-label-sm text-muted-foreground line-clamp-1">{tender.ministry}</div>
+                            <div className="text-caption text-muted-foreground line-clamp-1">{tender.ministry}</div>
                           </div>
                         </button>
                       ))}
@@ -270,11 +260,11 @@ export const Header: React.FC = () => {
               )}
 
               <div className="p-3 bg-surface-container-low">
-                <p className="text-label-sm text-muted-foreground mb-1.5 uppercase tracking-wider font-semibold">{t.recent}</p>
+                <p className="text-caption text-muted-foreground mb-1.5 uppercase tracking-wider font-semibold">{t.recent}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {recentSearches.map((search, idx) => (
                     <button key={idx} onClick={() => { setSearchQuery(search); addRecentSearch(search); setShowSearchDropdown(false); router.push(`/dashboard?search=${encodeURIComponent(search)}`); }}
-                      className="text-label-sm px-2.5 py-1 bg-white border border-border hover:bg-surface-container-low text-muted-foreground hover:text-foreground rounded transition-colors">
+                      className="text-caption px-2.5 py-1 bg-card border border-border hover:bg-surface-container-low text-muted-foreground hover:text-foreground rounded-lg transition-colors">
                       {search}
                     </button>
                   ))}
@@ -284,87 +274,79 @@ export const Header: React.FC = () => {
           )}
         </div>
 
-        {/* Right Section */}
-        <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2 w-full lg:w-auto">
-          
-          {/* Help Dropdown */}
+        {/* Desktop Actions */}
+        <div className="hidden lg:flex items-center gap-1.5">
           <div ref={helpRef} className="relative">
             <button onClick={() => setShowHelp(!showHelp)}
-              className="flex items-center gap-1.5 text-body-sm px-3 py-2.5 border border-border rounded-lg hover:bg-surface-container-low text-foreground transition-colors min-h-[44px]">
+              className="flex items-center gap-1.5 text-body-sm px-3 py-2 border border-border rounded-xl hover:bg-surface-container-low text-muted-foreground hover:text-foreground transition-all min-h-[40px]">
               <HelpCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">{t.needHelp}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="hidden xl:inline">{t.needHelp}</span>
             </button>
             {showHelp && (
-              <div className="absolute right-0 mt-1.5 w-44 bg-white border border-border rounded-lg shadow-dropdown z-50 py-1 overflow-hidden">
+              <div className="absolute right-0 mt-1.5 w-44 bg-card border border-border rounded-xl shadow-dropdown z-50 py-1 overflow-hidden animate-slide-down">
                 <Link href="/faq" className="flex items-center gap-2 px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
-                  <BookOpen className="w-3.5 h-3.5 text-[#002869]" />
+                  <BookOpen className="w-3.5 h-3.5 text-accent" />
                   <span>{t.faqs}</span>
                 </Link>
                 <Link href="/dispute" className="flex items-center gap-2 px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
-                  <MessageSquare className="w-3.5 h-3.5 text-[#521a00]" />
+                  <MessageSquare className="w-3.5 h-3.5 text-warning" />
                   <span>Submit dispute</span>
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Bids Dropdown */}
           <div ref={bidsRef} className="relative">
             <button onClick={() => setShowBids(!showBids)}
-              className="flex items-center gap-1.5 text-body-sm px-3 py-2.5 border border-border rounded-lg hover:bg-surface-container-low text-foreground transition-colors min-h-[44px]">
+              className="flex items-center gap-1.5 text-body-sm px-3 py-2 border border-border rounded-xl hover:bg-surface-container-low text-muted-foreground hover:text-foreground transition-all min-h-[40px]">
               <span>{t.bids}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+              <ChevronDown className="w-3 h-3 text-muted-foreground" />
             </button>
             {showBids && (
-              <div className="absolute right-0 mt-1.5 w-48 bg-white border border-border rounded-lg shadow-dropdown z-50 py-1 overflow-hidden">
+              <div className="absolute right-0 mt-1.5 w-48 bg-card border border-border rounded-xl shadow-dropdown z-50 py-1 overflow-hidden animate-slide-down">
                 <Link href="/dashboard" className="flex items-center justify-between px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
                   <span>{t.allBids}</span>
                   <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                 </Link>
                 <Link href="/dashboard?filter=MORTH" className="flex items-center justify-between px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
                   <span>{t.deptBids}</span>
-                  <span className="bg-[#002869]/10 text-[#002869] text-[10px] font-semibold px-1.5 py-0.5 rounded">MoRTH</span>
+                  <span className="bg-accent/10 text-accent text-[10px] font-semibold px-1.5 py-0.5 rounded">MoRTH</span>
                 </Link>
                 <Link href="/dashboard?msme=true" className="flex items-center justify-between px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low transition-colors">
                   <span>{t.industryBids}</span>
-                  <span className="bg-[#521a00]/10 text-[#521a00] text-[10px] font-semibold px-1.5 py-0.5 rounded">MSME</span>
+                  <span className="bg-warning/10 text-warning text-[10px] font-semibold px-1.5 py-0.5 rounded">MSME</span>
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border">
-            {/* Wallet Connect */}
+          <div className="flex items-center gap-1.5 ml-1.5 pl-1.5 border-l border-border">
             {currentUser && (currentUser.role === "officer" || currentUser.role === "vendor") && (
               <button onClick={() => { if (walletConnected) disconnectWalletOnly(); else connectWalletOnly(); }}
-                className={`flex items-center gap-2 text-label-sm px-3 py-2.5 border rounded-lg transition-colors min-h-[44px] ${
+                className={`flex items-center gap-2 text-caption px-3 py-2 border rounded-xl transition-all min-h-[40px] ${
                   walletConnected
-                    ? "bg-[#056e00]/10 border-[#056e00] text-[#056e00] hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-                    : "bg-[#002869] text-white border-[#002869] hover:bg-[#0b3d91]"
+                    ? "bg-success/10 border-success/30 text-success hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
+                    : "bg-accent text-accent-foreground border-accent hover:bg-accent/90 shadow-soft"
                 }`}>
                 <Wallet className="w-3.5 h-3.5" />
-                <span>{walletConnected ? `${walletAddress.substring(0,6)}...${walletAddress.substring(34)}` : "Connect wallet"}</span>
-                {walletConnected && <CheckCircle2 className="w-3.5 h-3.5" />}
+                <span className="hidden md:inline">{walletConnected ? `${walletAddress.substring(0,6)}...${walletAddress.substring(34)}` : "Connect"}</span>
+                {walletConnected && <CheckCircle2 className="w-3 h-3" />}
               </button>
             )}
 
-            {/* Role Badge */}
             {currentUser && (
-              <span className={`text-label-sm px-2.5 py-1 rounded-full font-semibold ${
-                currentUser.role === "officer" ? "bg-[#002869]/10 text-[#002869]"
-                : currentUser.role === "vendor" ? "bg-[#521a00]/10 text-[#521a00]"
+              <span className={`text-caption px-2.5 py-1 rounded-full font-semibold hidden xl:inline ${
+                currentUser.role === "officer" ? "bg-accent/10 text-accent"
+                : currentUser.role === "vendor" ? "bg-warning/10 text-warning"
                 : "bg-surface-container-high text-muted-foreground"
               }`}>
-                {currentUser.role === "officer" ? "Govt officer" : currentUser.role === "vendor" ? "Vendor" : "Citizen auditor"}
+                {currentUser.role === "officer" ? "Govt Officer" : currentUser.role === "vendor" ? "Vendor" : "Auditor"}
               </span>
             )}
 
-            {/* Profile Avatar */}
             <div ref={authRef} className="relative shrink-0">
               <button onClick={() => setShowAuth(!showAuth)}
-                className="flex items-center justify-center w-10 h-10 border border-border bg-white hover:bg-surface-container-low rounded-lg transition-colors">
+                className="flex items-center justify-center w-10 h-10 border border-border bg-card hover:bg-surface-container-low rounded-xl transition-all">
                 {currentUser ? (
                   <div className="text-body-sm font-semibold text-foreground">{currentUser.name.substring(0, 2)}</div>
                 ) : (
@@ -372,17 +354,17 @@ export const Header: React.FC = () => {
                 )}
               </button>
               {showAuth && (
-                <div className="absolute right-0 mt-1.5 w-52 bg-white border border-border rounded-lg shadow-dropdown z-50 py-1 overflow-hidden">
+                <div className="absolute right-0 mt-1.5 w-52 bg-card border border-border rounded-xl shadow-dropdown z-50 py-1 overflow-hidden animate-slide-down">
                   {!currentUser ? (
                     <>
                       <button onClick={() => { setShowAuth(false); router.push("/auth/admin"); }}
                         className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
-                        <Landmark className="w-4 h-4 text-[#002869] shrink-0" />
+                        <Landmark className="w-4 h-4 text-accent shrink-0" />
                         <div><div className="font-semibold">{t.forOrg}</div></div>
                       </button>
                       <button onClick={() => { setShowAuth(false); router.push("/auth/vendor"); }}
                         className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
-                        <Building className="w-4 h-4 text-[#521a00] shrink-0" />
+                        <Building className="w-4 h-4 text-warning shrink-0" />
                         <div><div className="font-semibold">{t.forVendor}</div></div>
                       </button>
                       <button onClick={() => { setShowAuth(false); router.push("/auditor/login"); }}
@@ -398,17 +380,17 @@ export const Header: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      <div className="px-3 py-2.5 bg-surface-container-low border-b border-border text-label-sm">
-                        <span className="block text-[#002869] font-semibold">{currentUser.role}</span>
-                        <span className="block truncate mt-0.5 text-muted-foreground">{currentUser.email}</span>
+                      <div className="px-3 py-2.5 bg-surface-container-low border-b border-border">
+                        <span className="block text-accent text-caption font-semibold capitalize">{currentUser.role}</span>
+                        <span className="block truncate mt-0.5 text-caption text-muted-foreground">{currentUser.email}</span>
                       </div>
                       <Link href={currentUser.role === "officer" ? "/admin/profile" : currentUser.role === "vendor" ? "/vendor/profile" : "/dashboard"} 
                         className="flex items-center gap-2 px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low font-semibold transition-colors"
                         onClick={() => setShowAuth(false)}>
-                        <User className="w-4 h-4 text-[#002869]" />
+                        <User className="w-4 h-4 text-accent" />
                         <span>My profile</span>
                       </Link>
-                      <button onClick={() => { logoutUser(); setShowAuth(false); router.push("/"); }}
+                      <button onClick={() => { setShowAuth(false); router.push("/"); }}
                         className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-destructive/10 text-destructive border-t border-border font-semibold transition-colors">
                         <LogOut className="w-4 h-4" />
                         <span>Disconnect</span>
@@ -419,44 +401,42 @@ export const Header: React.FC = () => {
               )}
             </div>
 
-            {/* Register Button */}
             {!currentUser && (
               <button onClick={() => router.push("/register")}
-                className="flex items-center gap-1.5 text-label-sm px-3 py-2.5 border-2 border-[#002869] rounded-lg text-[#002869] hover:bg-[#002869] hover:text-white transition-colors font-semibold min-h-[44px]">
+                className="flex items-center gap-1.5 text-caption px-3 py-2 bg-accent text-accent-foreground rounded-xl hover:bg-accent/90 transition-all font-semibold shadow-soft min-h-[40px]">
                 <span>Register</span>
               </button>
             )}
 
-            {/* Notification Bell */}
             <div ref={notifRef} className="relative shrink-0">
               <button onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2.5 border border-border rounded-lg hover:bg-surface-container-low transition-colors text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center">
+                className="relative p-2.5 border border-border rounded-xl hover:bg-surface-container-low transition-all text-muted-foreground hover:text-foreground min-h-[40px] min-w-[40px] flex items-center justify-center">
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center rounded-full">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center rounded-full shadow-soft">
                     {unreadCount}
                   </span>
                 )}
               </button>
               {showNotifications && (
-                <div className="absolute right-0 mt-1.5 w-72 bg-white border border-border rounded-lg shadow-dropdown z-50 overflow-hidden">
+                <div className="absolute right-0 mt-1.5 w-72 bg-card border border-border rounded-xl shadow-dropdown z-50 overflow-hidden animate-slide-down">
                   <div className="p-3 bg-surface-container-low border-b border-border flex items-center justify-between">
-                    <span className="text-label-sm font-semibold text-foreground uppercase tracking-wider">{t.notifications}</span>
+                    <span className="text-caption font-semibold text-foreground uppercase tracking-wider">{t.notifications}</span>
                     {unreadCount > 0 && (
-                      <button onClick={markAllNotificationsAsRead} className="text-label-sm text-[#002869] hover:underline font-semibold">{t.markRead}</button>
+                      <button onClick={markAllNotificationsAsRead} className="text-caption text-accent hover:underline font-semibold">{t.markRead}</button>
                     )}
                   </div>
                   <div className="max-h-72 overflow-y-auto divide-y divide-border">
                     {notifications.length > 0 ? (
                       notifications.map(notif => (
                         <div key={notif.id} onClick={() => { markNotificationAsRead(notif.id); if (notif.actionUrl) router.push(notif.actionUrl); setShowNotifications(false); }}
-                          className={`p-3 text-left transition-colors hover:bg-surface-container-low cursor-pointer ${notif.read ? "opacity-60" : "bg-[#002869]/5"}`}>
+                          className={`p-3 text-left transition-colors hover:bg-surface-container-low cursor-pointer ${notif.read ? "opacity-60" : "bg-accent/5"}`}>
                           <div className="flex items-start justify-between gap-2">
                             <span className="text-body-sm text-foreground line-clamp-1 font-semibold">{notif.title}</span>
-                            {!notif.read && <span className="w-1.5 h-1.5 bg-[#002869] shrink-0 mt-1 rounded-full" />}
+                            {!notif.read && <span className="w-1.5 h-1.5 bg-accent shrink-0 mt-1 rounded-full" />}
                           </div>
-                          <p className="text-label-sm text-muted-foreground mt-1 line-clamp-2">{notif.message}</p>
-                          <div className="text-[11px] text-muted-foreground mt-1">
+                          <p className="text-caption text-muted-foreground mt-1 line-clamp-2">{notif.message}</p>
+                          <div className="text-caption text-muted-foreground mt-1">
                             {new Date(notif.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </div>
@@ -469,9 +449,52 @@ export const Header: React.FC = () => {
               )}
             </div>
           </div>
-          
         </div>
+
+        {/* Mobile Menu Button */}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden p-2 border border-border rounded-xl hover:bg-surface-container-low transition-colors">
+          {mobileMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
+        </button>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden border-t border-border bg-card animate-slide-down">
+          <div className="p-4 space-y-3">
+            {currentUser && (currentUser.role === "officer" || currentUser.role === "vendor") && (
+              <button onClick={() => { if (walletConnected) disconnectWalletOnly(); else connectWalletOnly(); setMobileMenuOpen(false); }}
+                className={`flex items-center gap-2 w-full text-body-sm px-3 py-2.5 border rounded-xl transition-all ${
+                  walletConnected
+                    ? "bg-success/10 border-success/30 text-success"
+                    : "bg-accent text-accent-foreground border-accent"
+                }`}>
+                <Wallet className="w-4 h-4" />
+                <span>{walletConnected ? `${walletAddress.substring(0,6)}...${walletAddress.substring(34)}` : "Connect wallet"}</span>
+                {walletConnected && <CheckCircle2 className="w-3.5 h-3.5 ml-auto" />}
+              </button>
+            )}
+            {!currentUser && (
+              <button onClick={() => { router.push("/register"); setMobileMenuOpen(false); }}
+                className="flex items-center gap-2 w-full text-body-sm px-3 py-2.5 bg-accent text-accent-foreground rounded-xl font-semibold">
+                Register
+              </button>
+            )}
+            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}
+              className="block text-body-sm text-foreground px-3 py-2.5 hover:bg-surface-container-low rounded-xl transition-colors">
+              Browse tenders
+            </Link>
+            <Link href="/faq" onClick={() => setMobileMenuOpen(false)}
+              className="block text-body-sm text-foreground px-3 py-2.5 hover:bg-surface-container-low rounded-xl transition-colors">
+              Help & FAQ
+            </Link>
+            <Link href="/about" onClick={() => setMobileMenuOpen(false)}
+              className="block text-body-sm text-foreground px-3 py-2.5 hover:bg-surface-container-low rounded-xl transition-colors">
+              About
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

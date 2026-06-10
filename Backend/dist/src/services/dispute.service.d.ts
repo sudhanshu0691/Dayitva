@@ -3,109 +3,93 @@
  */
 export declare function createDispute(tenderId: string, userId: string, text: string, category?: string): Promise<{
     user: {
-        name: string;
-        email: string;
         id: string;
+        name: string;
+        role: string;
+        email: string;
     };
     tender: {
-        ministry: string | null;
         title: string;
+        ministry: string | null;
     };
-} & {
-    userId: string;
-    status: import(".prisma/client").$Enums.DisputeStatus;
-    text: string;
     id: string;
+    status: import(".prisma/client").$Enums.DisputeStatus;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
+    entityId: string | null;
+    entityType: string | null;
+    text: string;
 }>;
 /**
  * Get dispute by ID
  */
 export declare function getDisputeById(disputeId: string): Promise<{
-    user: {
-        role: import(".prisma/client").$Enums.UserRole;
-        name: string;
-        email: string;
-        id: string;
-    };
+    user: any;
     tender: {
-        ministry: string | null;
         id: string;
         title: string;
+        ministry: string | null;
     };
-} & {
-    userId: string;
-    status: import(".prisma/client").$Enums.DisputeStatus;
-    text: string;
     id: string;
+    status: import(".prisma/client").$Enums.DisputeStatus;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
+    entityId: string | null;
+    entityType: string | null;
+    text: string;
 }>;
 /**
  * Get disputes for a tender
  */
-export declare function getDisputesByTender(tenderId: string): Promise<({
-    user: {
-        name: string;
-        email: string;
-        id: string;
-    };
-} & {
-    userId: string;
-    status: import(".prisma/client").$Enums.DisputeStatus;
-    text: string;
+export declare function getDisputesByTender(tenderId: string): Promise<{
+    user: any;
     id: string;
+    status: import(".prisma/client").$Enums.DisputeStatus;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
-})[]>;
+    entityId: string | null;
+    entityType: string | null;
+    text: string;
+}[]>;
 /**
  * Update dispute status
  */
 export declare function updateDisputeStatus(disputeId: string, status: string, resolution: string): Promise<{
-    user: {
-        name: string;
-        email: string;
-        id: string;
-    };
+    user: any;
     tender: {
         title: string;
     };
-} & {
-    userId: string;
-    status: import(".prisma/client").$Enums.DisputeStatus;
-    text: string;
     id: string;
+    status: import(".prisma/client").$Enums.DisputeStatus;
     createdAt: Date;
     updatedAt: Date;
     tenderId: string;
+    entityId: string | null;
+    entityType: string | null;
+    text: string;
 }>;
 /**
  * List disputes with filters
  */
 export declare function listDisputes(query: any): Promise<{
-    data: ({
-        user: {
-            name: string;
-            email: string;
-            id: string;
-        };
+    data: {
+        user: any;
         tender: {
             id: string;
             title: string;
         };
-    } & {
-        userId: string;
-        status: import(".prisma/client").$Enums.DisputeStatus;
-        text: string;
         id: string;
+        status: import(".prisma/client").$Enums.DisputeStatus;
         createdAt: Date;
         updatedAt: Date;
         tenderId: string;
-    })[];
+        entityId: string | null;
+        entityType: string | null;
+        text: string;
+    }[];
     pagination: {
         page: number;
         limit: number;

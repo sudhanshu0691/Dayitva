@@ -55,7 +55,8 @@ const bidService = __importStar(require("../services/bid.service"));
  */
 async function createTender(req, res, next) {
     try {
-        const tender = await tenderService.createTender(req.body, req.user.userId);
+        const { txHash, blockNumber } = req.body;
+        const tender = await tenderService.createTender({ ...req.body, txHash, blockNumber }, req.user.userId);
         res.status(201).json({ success: true, message: "Tender created successfully", data: tender });
     }
     catch (error) {

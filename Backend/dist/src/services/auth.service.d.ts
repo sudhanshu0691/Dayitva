@@ -17,7 +17,6 @@ export declare function loginWithCredentials(input: LoginInput): Promise<{
 }>;
 /**
  * Generate a nonce for MetaMask wallet signature verification.
- * Nonce is a random string that expires after 5 minutes.
  */
 export declare function generateNonce(walletAddress: string): Promise<{
     nonce: string;
@@ -26,7 +25,6 @@ export declare function generateNonce(walletAddress: string): Promise<{
 }>;
 /**
  * Login with MetaMask wallet signature.
- * Verifies that the user signed the nonce with their private key.
  */
 export declare function loginWithMetaMask(walletAddress: string, signature: string): Promise<{
     accessToken: string;

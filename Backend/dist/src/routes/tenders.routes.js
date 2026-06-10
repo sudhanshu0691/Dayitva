@@ -62,7 +62,7 @@ router.get("/:id", tenderController.getTenderById);
  * POST /api/tenders
  * Create a new tender (Officer only).
  */
-router.post("/", auth_1.authenticate, (0, roleGuard_1.authorize)("officer"), rateLimiter_1.tenderLimiter, (0, validate_1.validate)(tender_validator_1.createTenderSchema), tenderController.createTender);
+router.post("/", auth_1.authenticate, (0, roleGuard_1.authorize)("officer"), roleGuard_1.requireOfficerKYC, rateLimiter_1.tenderLimiter, (0, validate_1.validate)(tender_validator_1.createTenderSchema), tenderController.createTender);
 /**
  * PUT /api/tenders/:id
  * Update a tender (Officer only).
@@ -83,7 +83,7 @@ router.delete("/:id", auth_1.authenticate, (0, roleGuard_1.authorize)("officer")
  * POST /api/tenders/:id/bids
  * Submit a bid (Vendor only).
  */
-router.post("/:id/bids", auth_1.authenticate, (0, roleGuard_1.authorize)("vendor"), (0, validate_1.validate)(bid_validator_1.submitBidSchema), tenderController.submitBid);
+router.post("/:id/bids", auth_1.authenticate, (0, roleGuard_1.authorize)("vendor"), roleGuard_1.requireKYC, (0, validate_1.validate)(bid_validator_1.submitBidSchema), tenderController.submitBid);
 /**
  * POST /api/tenders/:id/bids/reveal
  * Reveal a bid after deadline (Vendor only).
