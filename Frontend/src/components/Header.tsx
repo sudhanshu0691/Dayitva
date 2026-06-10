@@ -19,6 +19,7 @@ export const Header: React.FC = () => {
     currentUser,
     connectWalletOnly,
     disconnectWalletOnly,
+    logoutUser,
     notifications,
     unreadCount,
     markNotificationAsRead,
@@ -103,7 +104,7 @@ export const Header: React.FC = () => {
       deptBids: "Departmental bids",
       industryBids: "Industry bids",
       signupLogin: "Sign in",
-      forOrg: "For government admin",
+      forOrg: "For government officer",
       forVendor: "For corporate vendor",
       forPublic: "For public view",
       walletConnect: "Connect wallet",
@@ -128,7 +129,7 @@ export const Header: React.FC = () => {
       deptBids: "विभागीय बोलियां",
       industryBids: "उद्योग बोलियां",
       signupLogin: "लॉगिन",
-      forOrg: "सरकारी व्यवस्थापक के लिए",
+      forOrg: "सरकारी अधिकारी के लिए",
       forVendor: "कॉरपोरेट विक्रेता के लिए",
       forPublic: "सार्वजनिक दृश्य",
       walletConnect: "वॉलेट कनेक्ट करें",
@@ -357,7 +358,7 @@ export const Header: React.FC = () => {
                 <div className="absolute right-0 mt-1.5 w-52 bg-card border border-border rounded-xl shadow-dropdown z-50 py-1 overflow-hidden animate-slide-down">
                   {!currentUser ? (
                     <>
-                      <button onClick={() => { setShowAuth(false); router.push("/auth/admin"); }}
+                      <button onClick={() => { setShowAuth(false); router.push("/auth/officer"); }}
                         className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
                         <Landmark className="w-4 h-4 text-accent shrink-0" />
                         <div><div className="font-semibold">{t.forOrg}</div></div>
@@ -372,7 +373,7 @@ export const Header: React.FC = () => {
                         <ShieldCheck className="w-4 h-4 text-muted-foreground shrink-0" />
                         <div><div className="font-semibold">For auditor</div></div>
                       </button>
-                      <button onClick={() => { setShowAuth(false); router.push("/public"); }}
+                      <button onClick={() => { setShowAuth(false); router.push("/dashboard"); }}
                         className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-surface-container-low text-foreground transition-colors">
                         <User className="w-4 h-4 text-muted-foreground shrink-0" />
                         <div><div className="font-semibold">{t.forPublic}</div></div>
@@ -384,13 +385,13 @@ export const Header: React.FC = () => {
                         <span className="block text-accent text-caption font-semibold capitalize">{currentUser.role}</span>
                         <span className="block truncate mt-0.5 text-caption text-muted-foreground">{currentUser.email}</span>
                       </div>
-                      <Link href={currentUser.role === "officer" ? "/admin/profile" : currentUser.role === "vendor" ? "/vendor/profile" : "/dashboard"} 
+                      <Link href={currentUser.role === "officer" ? "/officer/profile" : currentUser.role === "vendor" ? "/vendor/profile" : "/dashboard"} 
                         className="flex items-center gap-2 px-3 py-2.5 text-body-sm text-foreground hover:bg-surface-container-low font-semibold transition-colors"
                         onClick={() => setShowAuth(false)}>
                         <User className="w-4 h-4 text-accent" />
                         <span>My profile</span>
                       </Link>
-                      <button onClick={() => { setShowAuth(false); router.push("/"); }}
+                      <button onClick={() => { setShowAuth(false); logoutUser(); router.push("/"); }}
                         className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-body-sm hover:bg-destructive/10 text-destructive border-t border-border font-semibold transition-colors">
                         <LogOut className="w-4 h-4" />
                         <span>Disconnect</span>

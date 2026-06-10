@@ -143,7 +143,7 @@ function VerifyContent() {
 
       if (type === "VERIFY_EMAIL") {
         const role = searchParams.get("role") || "";
-        const loginPath = role === "vendor" ? "/login/vendor" : role === "officer" ? "/login/organizer" : "/login";
+        const loginPath = role === "vendor" ? "/login/vendor" : role === "officer" ? "/login/officer" : "/login";
         setTimeout(() => {
           router.push(`${loginPath}?verified=1&email=${encodeURIComponent(email)}`);
         }, 1500);

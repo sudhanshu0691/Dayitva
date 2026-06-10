@@ -62,11 +62,11 @@ export const ROUTES = {
   TENDER_DETAIL: "/tenders/:id",
 
   // Officer
-  OFFICER_DASHBOARD: "/admin",
-  CREATE_TENDER: "/admin/create-tender",
-  OFFICER_PROFILE: "/admin/profile",
-  TENDER_MANAGEMENT: "/admin/tenders",
-  KYC_VERIFICATION: "/admin/kyc",
+  OFFICER_DASHBOARD: "/officer",
+  CREATE_TENDER: "/officer/create-tender",
+  OFFICER_PROFILE: "/officer/profile",
+  TENDER_MANAGEMENT: "/officer/tenders",
+  KYC_VERIFICATION: "/officer/kyc",
 
   // Vendor
   VENDOR_DASHBOARD: "/vendor",

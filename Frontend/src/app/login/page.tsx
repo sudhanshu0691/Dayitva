@@ -66,9 +66,9 @@ function LoginContent() {
       loginUser(result.user.role, result.user);
 
       if (result.user.role === "officer") {
-        router.push("/admin");
+        router.push("/officer/dashboard");
       } else if (result.user.role === "vendor") {
-        router.push("/vendor");
+        router.push("/vendor/dashboard");
       }
     } catch (err: any) {
       const responseData = err?.response?.data;

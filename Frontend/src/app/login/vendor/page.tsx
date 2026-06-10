@@ -20,14 +20,10 @@ function VendorLoginContent() {
 
   const [verifiedSuccess, setVerifiedSuccess] = useState(false);
 
-  // Read verified flag from query parameters
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    
-    // Show success message if redirected from email verification
     if (params.get("verified") === "1") {
       setVerifiedSuccess(true);
-      // Pre-fill email if provided
       const emailParam = params.get("email");
       if (emailParam) {
         setEmail(decodeURIComponent(emailParam));
@@ -35,7 +31,6 @@ function VendorLoginContent() {
     }
   }, []);
 
-  // Credentials states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -55,29 +50,24 @@ function VendorLoginContent() {
     try {
       const result = await authService.login({ email, password });
 
-      // Store auth data in localStorage
       await authService.storeAuthData({
         token: result.token,
         refreshToken: result.refreshToken,
         user: result.user,
       });
 
-      // Validate role
       if (result.user.role !== "vendor") {
-        setError("This account is not authorized as a Vendor. Please use the organizer login.");
+        setError("This account is not authorized as a Vendor. Please use the officer login.");
         authService.clearAuthData();
         return;
       }
 
-      // Update context with user data
       loginUser(result.user.role, result.user);
 
-      // Redirect to vendor dashboard
-      router.push("/vendor");
+      router.push("/vendor/dashboard");
     } catch (err: any) {
       const responseData = err?.response?.data;
 
-      // Handle email not verified - redirect to OTP verification
       if (responseData?.needsVerification) {
         router.push(`/verify?email=${encodeURIComponent(responseData.email)}&type=VERIFY_EMAIL&role=vendor`);
         return;
@@ -106,7 +96,7 @@ function VendorLoginContent() {
       backLabel: "Back to Home",
       rememberMe: "Remember me",
       verifiedMsg: "Email verified successfully! You can now log in with your credentials.",
-      organizerLink: "Looking for Organizer Login?",
+      officerLink: "Looking for Officer Login?",
     },
     hi: {
       title: "विक्रेता पोर्टल",
@@ -123,7 +113,7 @@ function VendorLoginContent() {
       backLabel: "होम पर वापस जाएं",
       rememberMe: "मुझे याद रखें",
       verifiedMsg: "ईमेल सफलतापूर्वक सत्यापित! अब आप अपने क्रेडेंशियल्स से लॉगिन कर सकते हैं।",
-      organizerLink: "आयोजक लॉगिन ढूंढ रहे हैं?",
+      officerLink: "अधिकारी लॉगिन ढूंढ रहे हैं?",
     }
   }[language];
 
@@ -141,7 +131,6 @@ function VendorLoginContent() {
         <BackButton href="/" label={t.backLabel} variant="text" />
       </nav>
 
-      {/* Page header */}
       <header className="text-center mb-6">
         <div className="w-12 h-12 bg-teal-950/20 border border-teal-500/40 rounded-xl flex items-center justify-center mx-auto mb-3.5 text-teal-400 shadow-lg">
           <Building className="w-5 h-5" aria-hidden="true" />
@@ -152,7 +141,6 @@ function VendorLoginContent() {
         </p>
       </header>
 
-      {/* Email verification success banner */}
       {verifiedSuccess && (
         <div className="mb-4 p-3 bg-emerald-950/30 border border-emerald-500/30 text-xs text-emerald-400 font-mono rounded-lg flex items-center gap-1.5" role="alert">
           <CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
@@ -162,7 +150,6 @@ function VendorLoginContent() {
 
       <Card variant="default" className="space-y-6">
         <CardContent className="space-y-6">
-          {/* Credentials Form */}
           <motion.form
             onSubmit={handleCredentialLogin}
             initial={{ opacity: 0, y: 5 }}
@@ -217,7 +204,6 @@ function VendorLoginContent() {
                 />
               </div>
 
-              {/* Remember me + Forgot password */}
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
                   <input
@@ -258,7 +244,6 @@ function VendorLoginContent() {
             </Button>
           </motion.form>
 
-          {/* Register link */}
           <div className="text-center text-xs text-muted-foreground">
             {t.noAccount}{" "}
             <a href="/register?role=vendor" className="text-primary underline hover:text-primary/80 font-semibold">
@@ -266,10 +251,9 @@ function VendorLoginContent() {
             </a>
           </div>
 
-          {/* Link to organizer login */}
           <div className="pt-4 border-t border-border/50 text-center text-xs">
-            <a href="/login/organizer" className="text-saffron underline hover:text-saffron/80 font-semibold">
-              {t.organizerLink}
+            <a href="/login/officer" className="text-accent underline hover:text-accent/80 font-semibold">
+              {t.officerLink}
             </a>
           </div>
         </CardContent>

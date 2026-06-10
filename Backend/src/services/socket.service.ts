@@ -12,10 +12,7 @@ export function setIO(socketIO: SocketIOServer): void {
   io = socketIO;
 }
 
-export function getIO(): SocketIOServer {
-  if (!io) {
-    throw new Error("Socket.IO not initialized");
-  }
+export function getIO(): SocketIOServer | null {
   return io;
 }
 

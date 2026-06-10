@@ -33,7 +33,7 @@ const InnerProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
 
-  const isPortalRoute = pathname.startsWith("/admin") || pathname.startsWith("/vendor");
+  const isPortalRoute = pathname.startsWith("/officer") || pathname.startsWith("/vendor");
   const isAuthRoute = pathname.startsWith("/auth") || pathname === "/login" || pathname === "/register";
   const isAuditorRoute = pathname.startsWith("/auditor");
   const hideHeader = isAuditorRoute && !pathname.includes("/login") && !pathname.includes("/register") && !pathname.includes("/forgot-password");
@@ -42,7 +42,7 @@ const InnerProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!hydrated) return;
     if (currentUser && (pathname === "/" || isAuthRoute)) {
       if (currentUser.role === "officer") {
-        router.replace("/admin");
+        router.replace("/officer");
       } else if (currentUser.role === "vendor") {
         router.replace("/vendor");
       }

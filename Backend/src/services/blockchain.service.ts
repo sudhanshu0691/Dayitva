@@ -1,8 +1,8 @@
 // ============================================================
 // Blockchain Service
-// Real Ganache local blockchain via MetaMask ONLY
+// Real Ethereum Sepolia Testnet via MetaMask ONLY
 // Backend stores transaction metadata from MetaMask confirms
-// No simulated/fallback transactions - all real on-chain
+// NO simulated/fallback transactions - all real on-chain
 // ============================================================
 
 import { ethers } from "ethers";
@@ -12,23 +12,17 @@ import { prisma } from "../config/database";
 import { TxType, TxStatus } from "@prisma/client";
 
 /**
- * Generate an explorer URL for a transaction (Ganache has no native explorer)
+ * Generate an Etherscan URL for Sepolia Testnet transactions
  */
 export function getExplorerTxUrl(txHash: string): string {
-  if (env.BLOCKCHAIN_EXPLORER_URL) {
-    return `${env.BLOCKCHAIN_EXPLORER_URL}/tx/${txHash}`;
-  }
-  return `#tx-${txHash}`; // local fallback
+  return `${env.BLOCKCHAIN_EXPLORER_URL}/tx/${txHash}`;
 }
 
 /**
- * Generate an explorer URL for an address
+ * Generate an Etherscan URL for an address on Sepolia
  */
 export function getExplorerAddressUrl(address: string): string {
-  if (env.BLOCKCHAIN_EXPLORER_URL) {
-    return `${env.BLOCKCHAIN_EXPLORER_URL}/address/${address}`;
-  }
-  return `#address-${address}`;
+  return `${env.BLOCKCHAIN_EXPLORER_URL}/address/${address}`;
 }
 
 /**
@@ -55,10 +49,11 @@ export async function storeTransaction(params: {
       entityId: params.userId || null,
       entityType: params.userId ? "user" : null,
       chainId: params.chainId || env.BLOCKCHAIN_CHAIN_ID,
+      etherscanUrl: getExplorerTxUrl(params.txHash),
     },
   });
 
-  logger.info(`✅ Blockchain tx stored: ${params.txHash} (${params.type}) on Ganache`);
+  logger.info(`✅ Blockchain tx stored: ${params.txHash} (${params.type}) on Sepolia`);
   return tx;
 }
 
@@ -74,7 +69,7 @@ export async function updateTransactionStatus(txHash: string, status: string): P
 }
 
 /**
- * Verify a transaction exists on Ganache
+ * Verify a transaction exists on Sepolia Testnet
  */
 export async function verifyTransactionOnChain(txHash: string): Promise<{
   verified: boolean;
@@ -103,7 +98,7 @@ export async function verifyTransactionOnChain(txHash: string): Promise<{
 }
 
 /**
- * Get the current gas price on Ganache
+ * Get the current gas price on Sepolia
  */
 export async function getGasPrice(): Promise<string> {
   try {
@@ -117,16 +112,16 @@ export async function getGasPrice(): Promise<string> {
 }
 
 /**
- * Check if the Ganache network is reachable
+ * Check if the Sepolia network is reachable
  */
 export async function isBlockchainReachable(): Promise<boolean> {
   try {
     const provider = new ethers.JsonRpcProvider(env.BLOCKCHAIN_RPC_URL);
     const blockNumber = await provider.getBlockNumber();
-    logger.info(`⛓️ Ganache reachable at block ${blockNumber}`);
+    logger.info(`⛓️ Sepolia reachable at block ${blockNumber}`);
     return true;
   } catch (error) {
-    logger.error("❌ Ganache not reachable:", { error });
+    logger.error("❌ Sepolia not reachable:", { error });
     return false;
   }
 }

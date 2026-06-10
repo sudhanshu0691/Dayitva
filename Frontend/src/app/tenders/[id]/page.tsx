@@ -87,8 +87,8 @@ export default function TenderDetailPage() {
 
   const getBackUrl = () => {
     if (currentUser?.role === "officer") return "/officer/dashboard";
-    if (currentUser?.role === "vendor") return "/vendor";
-    return "/public/tenders";
+    if (currentUser?.role === "vendor") return "/vendor/dashboard";
+    return "/tenders";
   };
 
   const handleCopyHash = (hash: string) => {

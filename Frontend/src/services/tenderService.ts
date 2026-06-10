@@ -1,6 +1,6 @@
 // ============================================================
 // Tender Service
-// Handles tender-related APIs
+// Handles tender-related APIs with real MetaMask tx support
 // ============================================================
 
 import api from "./api";
@@ -20,11 +20,13 @@ export interface TenderData {
 export interface BidData {
   encryptedBidHash: string;
   price?: number;
+  txHash?: string;
 }
 
 /** For the simplified bid form (just price) */
 export interface SimpleBidData {
   price: number;
+  txHash?: string;
 }
 
 class TenderService {
@@ -63,22 +65,16 @@ class TenderService {
   }
 
   async submitBid(tenderId: string, data: BidData): Promise<any> {
-    // Create encrypted hash from price data for commit-reveal scheme
-    const payload = {
-      encryptedBidHash: data.encryptedBidHash || `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
-      price: data.price,
-    };
-    const response = await api.post(`/tenders/${tenderId}/bids`, payload);
+    const response = await api.post(`/tenders/${tenderId}/bids`, data);
     return response.data.data;
   }
 
-  /** Simplified bid submission - creates an encrypted hash automatically */
+  /** Simplified bid submission with optional txHash from MetaMask */
   async submitSimpleBid(tenderId: string, data: SimpleBidData): Promise<any> {
-    // Auto-generate hash for commit phase
-    const hash = `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
     const response = await api.post(`/tenders/${tenderId}/bids`, {
-      encryptedBidHash: hash,
+      encryptedBidHash: `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
       price: data.price,
+      txHash: data.txHash,
     });
     return response.data.data;
   }
@@ -101,6 +97,21 @@ class TenderService {
   async evaluateTender(tenderId: string): Promise<any> {
     const response = await api.post(`/tenders/${tenderId}/evaluate`);
     return response.data.data;
+  }
+
+  async publishOnBlockchain(tenderId: string, data: { txHash: string; walletAddress: string }): Promise<any> {
+    const response = await api.post(`/tenders/${tenderId}/publish-blockchain`, data);
+    return response.data.data;
+  }
+
+  async getMyTenders(params?: any): Promise<any> {
+    const response = await api.get("/tenders/my", { params });
+    return response.data;
+  }
+
+  async getMyBids(params?: any): Promise<any> {
+    const response = await api.get("/tenders/my-bids", { params });
+    return response.data;
   }
 }
 

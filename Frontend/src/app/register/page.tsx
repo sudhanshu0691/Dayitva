@@ -21,6 +21,15 @@ function RegisterContent() {
   const { language } = useApp();
 
   const [regType, setRegType] = useState<"vendor" | "officer">("vendor");
+  
+  // Redirect to auditor's dedicated register page if auditor tab is clicked
+  const handleRegTypeChange = (type: "vendor" | "officer" | "auditor") => {
+    if (type === "auditor") {
+      router.push("/auditor/register");
+      return;
+    }
+    setRegType(type);
+  };
 
   // Auto-captured metadata
   const [metadata, setMetadata] = useState({
@@ -239,7 +248,7 @@ function RegisterContent() {
       {/* Tabs Selectors */}
       <div className="flex border border-border bg-muted/40 p-1.5 rounded-2xl mb-6 font-mono text-xs font-bold uppercase tracking-tight" role="tablist" aria-label="Registration type">
         <button
-          onClick={() => setRegType("vendor")}
+          onClick={() => handleRegTypeChange("vendor")}
           role="tab"
           aria-selected={regType === "vendor"}
           className={`flex-1 py-2.5 rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
@@ -250,7 +259,7 @@ function RegisterContent() {
           <span>{t.vendorTab}</span>
         </button>
         <button
-          onClick={() => setRegType("officer")}
+          onClick={() => handleRegTypeChange("officer")}
           role="tab"
           aria-selected={regType === "officer"}
           className={`flex-1 py-2.5 rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
@@ -259,6 +268,15 @@ function RegisterContent() {
         >
           <Landmark className="w-4 h-4" aria-hidden="true" />
           <span>{t.officerTab}</span>
+        </button>
+        <button
+          onClick={() => handleRegTypeChange("auditor")}
+          role="tab"
+          aria-selected={false}
+          className="flex-1 py-2.5 rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-muted-foreground hover:text-foreground"
+        >
+          <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+          <span>Auditor</span>
         </button>
       </div>
 

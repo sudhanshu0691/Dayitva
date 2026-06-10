@@ -1,6 +1,7 @@
 // ============================================================
 // Bid Service
 // Handles bid submission, reveal, and evaluation
+// Real MetaMask transactions - no simulation
 // ============================================================
 
 import { ethers } from "ethers";
@@ -8,26 +9,20 @@ import { prisma } from "../config/database";
 import { AppError } from "../middleware/errorHandler";
 import { SubmitBidInput, RevealBidInput } from "../validators/bid.validator";
 import { calculateBidScore, determineWinner } from "./scoring.service";
-import { isBlockchainReachable } from "./blockchain.service";
-
-const BLOCKCHAIN_SIMULATION_MODE = process.env.BLOCKCHAIN_SIMULATION_MODE !== "false";
-
-/**
- * Generate a simulated transaction hash and block number.
- * Real blockchain transactions are done via MetaMask on the frontend.
- */
-function generateSimulatedTxData() {
-  return {
-    txHash: "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
-    blockNumber: Math.floor(Math.random() * 50000) + 18240000,
-  };
-}
+import { storeTransaction, getExplorerTxUrl } from "./blockchain.service";
+import { getIO } from "./socket.service";
 
 /**
  * Submit an encrypted bid (commit phase).
  * Vendor submits a hash of their bid parameters.
+ * txHash comes from the frontend MetaMask transaction.
  */
-export async function submitBid(tenderId: string, input: SubmitBidInput, vendorId: string) {
+export async function submitBid(
+  tenderId: string, 
+  input: SubmitBidInput, 
+  vendorId: string,
+  txHash?: string
+) {
   // Check tender exists and is open
   const tender = await prisma.tender.findUnique({ where: { id: tenderId } });
   if (!tender) {
@@ -59,10 +54,7 @@ export async function submitBid(tenderId: string, input: SubmitBidInput, vendorI
     ethers.toUtf8Bytes(input.encryptedBidHash + vendorId + Date.now())
   );
 
-  // Generate simulated tx data (real tx happens via MetaMask on frontend)
-  const txData = generateSimulatedTxData();
-
-  // Create the bid
+  // Create the bid with real txHash from MetaMask
   const bid = await prisma.bid.create({
     data: {
       tenderId,
@@ -70,11 +62,23 @@ export async function submitBid(tenderId: string, input: SubmitBidInput, vendorI
       encryptedBidHash: input.encryptedBidHash,
       price: input.price || null,
       status: "Submitted",
-      txHash: txData.txHash,
-      blockNumber: txData.blockNumber,
+      txHash: txHash || null,
     },
     include: { vendor: true },
   });
+
+  // Store blockchain transaction record if txHash provided
+  if (txHash && vendor.walletAddress) {
+    await storeTransaction({
+      txHash,
+      walletAddress: vendor.walletAddress,
+      type: "BID_SUBMITTED",
+      status: "success",
+      metadata: { tenderTitle: tender.title, vendorName: vendor.name },
+      tenderId,
+      userId: vendorId,
+    });
+  }
 
   // Create audit log
   await prisma.auditLog.create({
@@ -82,7 +86,7 @@ export async function submitBid(tenderId: string, input: SubmitBidInput, vendorI
       title: "Encrypted Bid Submitted",
       description: `Sealed bid submitted by ${vendor.name}`,
       iconType: "bid_submitted",
-      txHash: txData.txHash,
+      txHash: txHash || null,
       tenderId,
     },
   });
@@ -98,6 +102,21 @@ export async function submitBid(tenderId: string, input: SubmitBidInput, vendorI
     },
   });
 
+  // Emit socket event for real-time update
+  const io = getIO();
+  if (io) {
+    io.to(`tender:${tenderId}`).emit("bid-submitted", {
+      tenderId,
+      message: `New bid received from ${vendor.name}`,
+    });
+    // Notify officer
+    io.to(`user:${tender.officerId}`).emit("notification", {
+      title: "New Bid Submitted",
+      message: `Vendor '${vendor.name}' submitted a sealed bid`,
+      category: "bid",
+    });
+  }
+
   return {
     id: bid.id,
     tenderId: bid.tenderId,
@@ -107,7 +126,6 @@ export async function submitBid(tenderId: string, input: SubmitBidInput, vendorI
     isEncrypted: true,
     submittedAt: bid.submittedAt.toISOString(),
     txHash: bid.txHash || undefined,
-    blockNumber: bid.blockNumber || undefined,
   };
 }
 
@@ -152,9 +170,6 @@ export async function revealBid(
     proposalQuality: input.proposalQuality,
   });
 
-  // Generate simulated tx data for reveal
-  const txData = generateSimulatedTxData();
-
   // Update bid with revealed data
   const updatedBid = await prisma.bid.update({
     where: { id: bid.id },
@@ -170,8 +185,6 @@ export async function revealBid(
       totalScore: scoreResult.totalScore,
       status: "Revealed",
       revealedAt: new Date(),
-      txHash: txData.txHash,
-      blockNumber: txData.blockNumber,
     },
     include: { vendor: true },
   });
@@ -182,7 +195,6 @@ export async function revealBid(
       title: "Bid Revealed",
       description: `Bid by ${bid.vendor.name} revealed with score ${scoreResult.totalScore}`,
       iconType: "evaluation",
-      txHash: txData.txHash,
       tenderId,
     },
   });
@@ -196,7 +208,6 @@ export async function revealBid(
     isEncrypted: false,
     submittedAt: updatedBid.submittedAt.toISOString(),
     txHash: updatedBid.txHash || undefined,
-    blockNumber: updatedBid.blockNumber || undefined,
     ...scoreResult,
   };
 }
@@ -278,9 +289,6 @@ export async function evaluateTender(tenderId: string, officerId: string) {
     throw new AppError("No revealed bids to evaluate", 400);
   }
 
-  // Generate simulated tx data for evaluation
-  const txData = generateSimulatedTxData();
-
   // Update tender with winner
   await prisma.tender.update({
     where: { id: tenderId },
@@ -289,8 +297,6 @@ export async function evaluateTender(tenderId: string, officerId: string) {
       winnerAddress: winner.winnerAddress,
       winnerPrice: winner.winnerPrice,
       winnerName: winner.winnerName,
-      txHash: txData.txHash,
-      blockNumber: txData.blockNumber,
     },
   });
 
@@ -300,7 +306,6 @@ export async function evaluateTender(tenderId: string, officerId: string) {
       title: "Winner Declared",
       description: `Winner: ${winner.winnerName} with score ${winner.winnerScore}`,
       iconType: "completed",
-      txHash: txData.txHash,
       tenderId,
     },
   });
@@ -320,9 +325,16 @@ export async function evaluateTender(tenderId: string, officerId: string) {
     });
   }
 
+  // Emit socket events
+  const io = getIO();
+  if (io) {
+    io.to(`tender:${tenderId}`).emit("winner-declared", {
+      tenderId,
+      winner: winner.winnerName,
+    });
+  }
+
   return {
     winner,
-    txHash: txData.txHash,
-    blockNumber: txData.blockNumber,
   };
 }

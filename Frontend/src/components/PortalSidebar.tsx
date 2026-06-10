@@ -14,6 +14,7 @@ import {
   Building2,
   Globe,
   ChevronRight,
+  ShoppingBag,
 } from "lucide-react";
 
 export const PortalSidebar: React.FC = () => {
@@ -23,24 +24,25 @@ export const PortalSidebar: React.FC = () => {
   if (!currentUser) return null;
 
   const officerNav = [
-    { href: "/officer", label: "Officer desk", icon: Landmark },
-    { href: "/officer/create-tender", label: "Create tender", icon: ClipboardList },
-    { href: "/officer/profile", label: "Officer profile", icon: UserCircle2 },
+    { href: "/officer/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/officer/create-tender", label: "Create Tender", icon: ClipboardList },
+    { href: "/officer/my-tenders", label: "My Tenders", icon: Landmark },
+    { href: "/officer/profile", label: "Profile & KYC", icon: UserCircle2 },
   ];
 
   const vendorNav = [
-    { href: "/vendor", label: "Vendor workspace", icon: Building2 },
-    { href: "/vendor/dashboard", label: "Vendor dashboard", icon: LayoutDashboard },
-    { href: "/vendor/profile", label: "Company profile", icon: UserCircle2 },
+    { href: "/vendor/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/vendor/my-bids", label: "My Bids", icon: ShoppingBag },
+    { href: "/vendor/profile", label: "Profile & KYC", icon: UserCircle2 },
   ];
 
   const auditorNav = [
-    { href: "/auditor/dashboard", label: "Auditor dashboard", icon: ShieldCheck },
+    { href: "/auditor/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/auditor/vendors", label: "Vendors", icon: Building2 },
     { href: "/auditor/officers", label: "Officers", icon: Landmark },
     { href: "/auditor/blacklist", label: "Blacklist", icon: ShieldCheck },
-    { href: "/auditor/fraud", label: "Fraud monitor", icon: ShieldCheck },
-    { href: "/auditor/logs", label: "Activity logs", icon: ClipboardList },
+    { href: "/auditor/fraud", label: "Fraud Monitor", icon: ShieldCheck },
+    { href: "/auditor/logs", label: "Activity Logs", icon: ClipboardList },
   ];
 
   type NavItem = { href: string; label: string; icon: React.ComponentType<{ className?: string }> };

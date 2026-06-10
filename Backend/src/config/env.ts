@@ -1,6 +1,7 @@
 // ============================================================
 // Environment Configuration Loader
 // Loads and validates environment variables with defaults
+// Updated: Sepolia Testnet defaults for real MetaMask integration
 // ============================================================
 
 import dotenv from "dotenv";
@@ -29,27 +30,17 @@ export const env = {
   PINATA_SECRET_KEY: process.env.PINATA_SECRET_KEY || "",
   PINATA_JWT: process.env.PINATA_JWT || "",
 
-  // AWS S3
-  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "",
-  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || "",
-  AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN || "",
-  AWS_REGION: process.env.AWS_REGION || "ap-south-1",
-  AWS_S3_BUCKET: process.env.AWS_S3_BUCKET || "tenderchain-documents",
-  AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT || "",
-  AWS_S3_PUBLIC_URL: process.env.AWS_S3_PUBLIC_URL || "https://tenderchain-documents.s3.ap-south-1.amazonaws.com",
-  AWS_S3_FORCE_PATH_STYLE: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
-
   // ===========================================
-  // Ganache Local Blockchain (via MetaMask)
+  // Ethereum Sepolia Testnet (Real MetaMask)
   // ===========================================
-  // Ganache default: http://127.0.0.1:7545 or http://127.0.0.1:8545
-  // Chain ID: 1337 (Ganache default) or 5777
-  BLOCKCHAIN_RPC_URL: process.env.BLOCKCHAIN_RPC_URL || "http://127.0.0.1:7545",
-  BLOCKCHAIN_CHAIN_ID: parseInt(process.env.BLOCKCHAIN_CHAIN_ID || "1337", 10),
+  // Sepolia RPC URL (Infura/Alchemy/Public)
+  // Chain ID: 11155111 (Sepolia)
+  BLOCKCHAIN_RPC_URL: process.env.BLOCKCHAIN_RPC_URL || "https://sepolia.infura.io/v3/",
+  BLOCKCHAIN_CHAIN_ID: parseInt(process.env.BLOCKCHAIN_CHAIN_ID || "11155111", 10),
   CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || "",
   
-  // Optional block explorer (Ganache has no explorer by default)
-  BLOCKCHAIN_EXPLORER_URL: process.env.BLOCKCHAIN_EXPLORER_URL || "",
+  // Etherscan URL for Sepolia
+  BLOCKCHAIN_EXPLORER_URL: process.env.BLOCKCHAIN_EXPLORER_URL || "https://sepolia.etherscan.io",
 
   // Socket.io
   SOCKET_CORS_ORIGIN: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3000",
@@ -66,6 +57,16 @@ export const env = {
 
   // Logging
   LOG_LEVEL: process.env.LOG_LEVEL || "debug",
+
+  // AWS S3
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "",
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || "",
+  AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN || "",
+  AWS_REGION: process.env.AWS_REGION || "ap-south-1",
+  AWS_S3_BUCKET: process.env.AWS_S3_BUCKET || "",
+  AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT || "",
+  AWS_S3_PUBLIC_URL: process.env.AWS_S3_PUBLIC_URL || "",
+  AWS_S3_FORCE_PATH_STYLE: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
 } as const;
 
 export function validateEnv(): void {

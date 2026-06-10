@@ -14,7 +14,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../..
 import authService from "@/services/authService";
 import { useApp } from "../../../context/AppContext";
 
-function OrganizerLoginContent() {
+function OfficerLoginContent() {
   const router = useRouter();
   const { language, loginUser, hydrated } = useApp();
 
@@ -73,13 +73,13 @@ function OrganizerLoginContent() {
       loginUser(result.user.role, result.user);
 
       // Redirect to officer dashboard
-      router.push("/admin");
+      router.push("/officer");
     } catch (err: any) {
       const responseData = err?.response?.data;
 
       // Handle email not verified - redirect to OTP verification
       if (responseData?.needsVerification) {
-        router.push(`/verify?email=${encodeURIComponent(responseData.email)}&type=VERIFY_EMAIL&role=organizer`);
+        router.push(`/verify?email=${encodeURIComponent(responseData.email)}&type=VERIFY_EMAIL&role=officer`);
         return;
       }
 
@@ -278,10 +278,10 @@ function OrganizerLoginContent() {
   );
 }
 
-export default function OrganizerLoginPage() {
+export default function OfficerLoginPage() {
   return (
     <ErrorBoundary>
-      <OrganizerLoginContent />
+      <OfficerLoginContent />
     </ErrorBoundary>
   );
 }
